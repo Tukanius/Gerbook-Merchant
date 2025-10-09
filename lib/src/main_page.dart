@@ -8,7 +8,7 @@ import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/add_ger_page.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/dashboard_page/dashboard_page.dart';
-import 'package:merchant_gerbook_flutter/src/ger_page/ger_page.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/ger_page/ger_page.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/home_page/home_page.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/order_page/order_page.dart';
 import 'package:provider/provider.dart';
