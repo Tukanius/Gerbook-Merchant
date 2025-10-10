@@ -1,12 +1,7 @@
-import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
-import 'package:merchant_gerbook_flutter/src/auth/forget_password.dart';
-import 'package:merchant_gerbook_flutter/src/main_page.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {

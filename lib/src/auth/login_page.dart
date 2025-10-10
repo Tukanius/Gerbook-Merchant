@@ -11,7 +11,7 @@ import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:merchant_gerbook_flutter/src/auth/forget_password.dart';
-import 'package:merchant_gerbook_flutter/src/auth/register_page.dart';
+import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_page.dart';
 import 'package:merchant_gerbook_flutter/src/main_page.dart';
 import 'package:merchant_gerbook_flutter/utils/secure_storage.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +31,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController controllerPhone = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
   final SecureStorage secureStorage = SecureStorage();
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     final translateKey = Provider.of<LocalizationProvider>(context);
@@ -145,7 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                                     validator: FormBuilderValidators.compose([
                                       FormBuilderValidators.required(
                                         errorText: translateKey.translate(
-                                          'please_enter_your_phone_number',
+                                          'ta_uuriyn_medeelliyg_65b43f00',
                                         ),
                                       ),
                                     ]),
@@ -275,7 +276,7 @@ class _LoginPageState extends State<LoginPage> {
                                 // _completeOnboarding(context);
                               },
                               buttonColor: primary,
-                              isLoading: false,
+                              isLoading: isLoading,
                               textColor: white,
                             ),
                           ),

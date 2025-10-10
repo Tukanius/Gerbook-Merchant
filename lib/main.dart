@@ -9,7 +9,9 @@ import 'package:merchant_gerbook_flutter/services/navigation.dart';
 import 'package:merchant_gerbook_flutter/src/auth/forget_password.dart';
 import 'package:merchant_gerbook_flutter/src/auth/login_page.dart';
 import 'package:merchant_gerbook_flutter/src/auth/onboarding_page.dart';
-import 'package:merchant_gerbook_flutter/src/auth/register_page.dart';
+import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_create_password.dart';
+import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_page.dart';
+import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_otp_page.dart';
 import 'package:merchant_gerbook_flutter/src/localization/localization_local.dart';
 import 'package:merchant_gerbook_flutter/src/main_page.dart';
 import 'package:merchant_gerbook_flutter/src/splash_page/splash_page.dart';
@@ -153,10 +155,22 @@ class _MyAppState extends State<MyApp> with AfterLayoutMixin {
                   return const RegisterPage();
                 },
               );
+            case RegisterOtpPage.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return const RegisterOtpPage();
+                },
+              );
             case ForgetPassword.routeName:
               return MaterialPageRoute(
                 builder: (context) {
                   return const ForgetPassword();
+                },
+              );
+            case RegisterCreatePassword.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return const RegisterCreatePassword();
                 },
               );
             case MainPage.routeName:
