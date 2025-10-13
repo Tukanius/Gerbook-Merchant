@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:merchant_gerbook_flutter/components/custom_comps/cards.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:provider/provider.dart';
@@ -117,7 +118,7 @@ class _HomePageState extends State<HomePage> {
                               translateKey.translate('transaction_type_profit'),
                               style: TextStyle(
                                 fontFamily: 'Lato',
-                                fontSize: 14,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w400,
                                 color: gray400,
                               ),
@@ -136,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 12),
+                    SizedBox(width: 10),
                     Expanded(
                       child: Container(
                         padding: EdgeInsets.symmetric(
@@ -154,9 +155,10 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Text(
                               translateKey.translate('total_orders'),
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontFamily: 'Lato',
-                                fontSize: 14,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w400,
                                 color: gray400,
                               ),
@@ -175,7 +177,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 12),
+                    SizedBox(width: 10),
                     Expanded(
                       child: Container(
                         padding: EdgeInsets.symmetric(
@@ -195,7 +197,7 @@ class _HomePageState extends State<HomePage> {
                               translateKey.translate('sales'),
                               style: TextStyle(
                                 fontFamily: 'Lato',
-                                fontSize: 14,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w400,
                                 color: gray400,
                               ),
@@ -240,7 +242,7 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    recentorder == false
+                    recentorder == true
                         ? Column(
                             children: [
                               SvgPicture.asset(
@@ -264,6 +266,7 @@ class _HomePageState extends State<HomePage> {
                                     translateKey.translate(
                                       'no_active_orders_at_home',
                                     ),
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       fontSize: 14,
@@ -275,7 +278,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           )
-                        : Text('data'),
+                        : Cards(),
                   ],
                 ),
               ],
@@ -310,7 +313,7 @@ class _HomePageState extends State<HomePage> {
                             color: primary,
                           ),
                         ),
-                        SizedBox(width: 2),
+                        SizedBox(width: 4),
                         SvgPicture.asset(
                           'assets/svg/chevron_right.svg',
                           height: 18,
@@ -320,76 +323,73 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 SizedBox(height: 16),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    myger == false
-                        ? Column(
+                myger == false
+                    ? Column(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/svg/empty_note.svg',
+                            width: 152,
+                          ),
+                          SizedBox(height: 16),
+                          Column(
                             children: [
-                              SvgPicture.asset(
-                                'assets/svg/empty_note.svg',
-                                width: 152,
-                              ),
-                              SizedBox(height: 16),
-                              Column(
-                                children: [
-                                  Text(
-                                    translateKey.translate('no_ger'),
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: gray900,
-                                    ),
-                                  ),
-                                  SizedBox(height: 2),
-                                  Text(
-                                    translateKey.translate('no_ger_please_add'),
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      color: gray600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 24),
-                              Container(
-                                padding: EdgeInsets.only(
-                                  top: 10,
-                                  bottom: 10,
-                                  left: 12,
-                                  right: 16,
+                              Text(
+                                translateKey.translate('no_ger'),
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: gray900,
                                 ),
-                                decoration: BoxDecoration(
-                                  color: primary,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(8),
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.add, color: white, size: 20),
-                                    SizedBox(width: 8),
-                                    Text(
-                                      translateKey.translate('create_listing'),
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: white,
-                                      ),
-                                    ),
-                                  ],
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                translateKey.translate('no_ger_please_add'),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: gray600,
                                 ),
                               ),
                             ],
-                          )
-                        : Text('data'),
-                  ],
-                ),
+                          ),
+                          SizedBox(height: 24),
+                          Container(
+                            padding: EdgeInsets.only(
+                              top: 10,
+                              bottom: 10,
+                              left: 12,
+                              right: 16,
+                            ),
+                            decoration: BoxDecoration(
+                              color: primary,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.add, color: white, size: 20),
+                                SizedBox(width: 8),
+                                Text(
+                                  translateKey.translate('create_listing'),
+                                  style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )
+                    : Text('data'),
               ],
             ),
           ),
