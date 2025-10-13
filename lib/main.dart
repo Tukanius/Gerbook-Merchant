@@ -12,6 +12,9 @@ import 'package:merchant_gerbook_flutter/src/auth/onboarding_page.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_create_password.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_page.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_otp_page.dart';
+import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_stepper.dart/register_bank.dart';
+import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_stepper.dart/register_info.dart';
+import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_stepper.dart/register_sign.dart';
 import 'package:merchant_gerbook_flutter/src/localization/localization_local.dart';
 import 'package:merchant_gerbook_flutter/src/main_page.dart';
 import 'package:merchant_gerbook_flutter/src/splash_page/splash_page.dart';
@@ -179,6 +182,24 @@ class _MyAppState extends State<MyApp> with AfterLayoutMixin {
               return MaterialPageRoute(
                 builder: (context) {
                   return MainPage(changeIndex: arguments.changeIndex);
+                },
+              );
+            case RegisterSign.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return const RegisterSign();
+                },
+              );
+            case RegisterInfo.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return const RegisterInfo();
+                },
+              );
+            case RegisterBank.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return const RegisterBank();
                 },
               );
             default:

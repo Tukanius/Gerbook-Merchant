@@ -9,7 +9,7 @@ import 'package:merchant_gerbook_flutter/components/custom_comps/custom_button.d
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
-import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_otp_page.dart';
+import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_stepper.dart/register_info.dart';
 import 'package:provider/provider.dart';
 
 class RegisterCreatePassword extends StatefulWidget {
@@ -230,59 +230,17 @@ class _RegisterCreatePasswordState extends State<RegisterCreatePassword> {
                       child: Column(
                         children: [
                           CustomButton(
-                            labelText: translateKey.translate('get_otp'),
+                            labelText: translateKey.translate('continue'),
                             onClick: () {
                               Navigator.of(
                                 context,
-                              ).pushNamed(RegisterOtpPage.routeName);
+                              ).pushNamed(RegisterInfo.routeName);
                             },
                             isLoading: isLoading,
                             buttonColor: primary,
                             textColor: white,
                             buttonLoaderColor: white,
                           ),
-                          SizedBox(height: 10),
-                          Container(
-                            width: mediaQuery.size.width,
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: Wrap(
-                              runAlignment: WrapAlignment.center,
-                              alignment: WrapAlignment.center,
-                              children: [
-                                Text(
-                                  "${translateKey.translate('have_an_account')} ",
-                                  style: TextStyle(
-                                    color: gray800,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text(
-                                    translateKey.translate('login'),
-                                    style: TextStyle(
-                                      color: gray800,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 10),
-
-                          // Text(
-                          //   translateKey.translate('register_description'),
-                          //   style: TextStyle(
-                          //     color: gray600,
-                          //     fontSize: 14,
-                          //     fontWeight: FontWeight.w400,
-                          //   ),
-                          // ),
                         ],
                       ),
                     ),
