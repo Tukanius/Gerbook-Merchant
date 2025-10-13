@@ -40,6 +40,7 @@ class FormTextField extends StatefulWidget {
   final TextAlign? textAlign;
   final Color? labelColor;
   final Function()? onTap;
+  final bool? isDense;
 
   const FormTextField({
     super.key,
@@ -79,6 +80,7 @@ class FormTextField extends StatefulWidget {
     this.labelText,
     this.labelColor,
     this.onTap,
+    this.isDense,
   });
 
   @override
@@ -212,6 +214,7 @@ class FormTextFieldState extends State<FormTextField> {
                   fontSize: 14,
                 ),
                 fillColor: widget.color,
+                isDense: widget.isDense ?? false,
               ),
 
           name: widget.name!,
