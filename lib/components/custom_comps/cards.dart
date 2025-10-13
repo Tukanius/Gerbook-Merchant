@@ -168,7 +168,7 @@ class _CardsState extends State<Cards> {
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(320),
-                      color: paid,
+                      color: greenSuccess,
                     ),
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     child: Text(

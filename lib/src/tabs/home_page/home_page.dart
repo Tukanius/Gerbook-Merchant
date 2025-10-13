@@ -277,10 +277,10 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                             ],
-                          )
-                        : Cards(),
-                  ],
-                ),
+                          ),
+                        ],
+                      )
+                    : OrderCard(),
               ],
             ),
           ),

@@ -82,5 +82,3 @@ const Color gray600 = Color(0xFF475467);
 const Color gray700 = Color(0xFF344053);
 const Color gray800 = Color(0xFF1D2838);
 const Color gray900 = Color(0xFF0F1728);
-
-const Color paid = Color(0x039855);
