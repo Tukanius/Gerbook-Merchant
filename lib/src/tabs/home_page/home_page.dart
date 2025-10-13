@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:merchant_gerbook_flutter/components/custom_comps/cards.dart';
+import 'package:merchant_gerbook_flutter/components/custom_comps/order_card.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:provider/provider.dart';
@@ -238,12 +238,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 SizedBox(height: 16),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    recentorder == true
-                        ? Column(
+                recentorder == true
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Column(
                             children: [
                               SvgPicture.asset(
                                 'assets/svg/empty_box.svg',
@@ -278,11 +278,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           )
-                        : Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [Cards(), Card(), Card()],
-                          ),
+                        : Cards(),
                   ],
                 ),
               ],
