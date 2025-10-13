@@ -278,7 +278,11 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           )
-                        : Cards(),
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [Cards(), Card(), Card()],
+                          ),
                   ],
                 ),
               ],
