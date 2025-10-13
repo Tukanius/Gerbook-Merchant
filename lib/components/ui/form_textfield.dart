@@ -41,6 +41,7 @@ class FormTextField extends StatefulWidget {
   final Color? labelColor;
   final Function()? onTap;
   final bool? isDense;
+  final EdgeInsetsGeometry? contentPadding;
 
   const FormTextField({
     super.key,
@@ -81,6 +82,7 @@ class FormTextField extends StatefulWidget {
     this.labelColor,
     this.onTap,
     this.isDense,
+    this.contentPadding,
   });
 
   @override
@@ -172,23 +174,23 @@ class FormTextFieldState extends State<FormTextField> {
               widget.decoration ??
               InputDecoration(
                 errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(color: gray300),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(color: gray300),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(color: gray300),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(color: gray300),
                 ),
                 disabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(color: gray300),
                 ),
                 hintText: widget.hintText,
@@ -202,12 +204,9 @@ class FormTextFieldState extends State<FormTextField> {
                   borderRadius: BorderRadius.circular(16),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.only(
-                  left: 15,
-                  right: 15,
-                  top: 15,
-                  bottom: 15,
-                ),
+                contentPadding: widget.contentPadding != null
+                    ? widget.contentPadding
+                    : const EdgeInsets.all(16),
                 filled: true,
                 hintStyle: TextStyle(
                   color: widget.hintTextColor ?? gray103,
