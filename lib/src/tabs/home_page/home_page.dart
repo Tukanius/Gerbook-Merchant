@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:merchant_gerbook_flutter/components/custom_comps/ger_card.dart';
 import 'package:merchant_gerbook_flutter/components/custom_comps/order_card.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
@@ -19,11 +20,16 @@ class _HomePageState extends State<HomePage> {
   bool notificationdot = false;
   bool recentorder = false;
   bool myger = false;
+  ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
     final translateKey = Provider.of<LocalizationProvider>(context);
+
     return Scaffold(
+      backgroundColor: white,
+
       appBar: AppBar(
         shape: Border(bottom: BorderSide(color: gray200, width: 2)),
         toolbarHeight: 68,
@@ -90,310 +96,390 @@ class _HomePageState extends State<HomePage> {
           SizedBox(width: 16),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          color: white,
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                          border: Border.all(color: gray200),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              translateKey.translate('transaction_type_profit'),
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                color: gray400,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              recentOrder == true ? '202,400₮' : '-',
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          color: white,
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                          border: Border.all(color: gray200),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              translateKey.translate('total_orders'),
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                color: gray400,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              recentOrder == false ? '12' : '-',
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          color: white,
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                          border: Border.all(color: gray200),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              translateKey.translate('sales'),
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                color: gray400,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              recentOrder == true ? '12,042,759₮' : '-',
-                              style: TextStyle(
-                                overflow: TextOverflow.ellipsis,
-                                fontFamily: 'Lato',
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
 
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  translateKey.translate('recent_orders'),
-                  style: TextStyle(
-                    fontFamily: 'Lato',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    color: gray900,
-                  ),
-                ),
-                SizedBox(height: 16),
-                recentorder == true
-                    ? Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Column(
-                            children: [
-                              SvgPicture.asset(
-                                'assets/svg/empty_box.svg',
-                                width: 141,
-                              ),
-                              SizedBox(height: 16),
-                              Column(
-                                children: [
-                                  Text(
-                                    translateKey.translate('no_active_orders'),
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: gray900,
-                                    ),
-                                  ),
-                                  SizedBox(height: 2),
-                                  Text(
-                                    translateKey.translate(
-                                      'no_active_orders_at_home',
-                                    ),
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      color: gray600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 12,
                           ),
-                        ],
-                      )
-                    : OrderCard(),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      translateKey.translate('my_ger'),
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: gray900,
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          translateKey.translate('all'),
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: primary,
+                          decoration: BoxDecoration(
+                            color: white,
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            border: Border.all(color: gray200),
                           ),
-                        ),
-                        SizedBox(width: 4),
-                        SvgPicture.asset(
-                          'assets/svg/chevron_right.svg',
-                          height: 18,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
-                myger == false
-                    ? Column(
-                        children: [
-                          SvgPicture.asset(
-                            'assets/svg/empty_note.svg',
-                            width: 152,
-                          ),
-                          SizedBox(height: 16),
-                          Column(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
-                                translateKey.translate('no_ger'),
+                                translateKey.translate(
+                                  'transaction_type_profit',
+                                ),
                                 style: TextStyle(
                                   fontFamily: 'Lato',
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: gray900,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: gray400,
                                 ),
                               ),
                               SizedBox(height: 4),
                               Text(
-                                translateKey.translate('no_ger_please_add'),
-                                textAlign: TextAlign.center,
+                                recentOrder == true ? '202,400₮' : '-',
                                 style: TextStyle(
                                   fontFamily: 'Lato',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: gray600,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: primary,
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(height: 24),
-                          Container(
-                            padding: EdgeInsets.only(
-                              top: 10,
-                              bottom: 10,
-                              left: 12,
-                              right: 16,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: white,
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            border: Border.all(color: gray200),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                translateKey.translate('total_orders'),
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: gray400,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                recentOrder == false ? '12' : '-',
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: white,
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            border: Border.all(color: gray200),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                translateKey.translate('sales'),
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: gray400,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                recentOrder == true ? '12,042,759₮' : '-',
+                                style: TextStyle(
+                                  overflow: TextOverflow.ellipsis,
+                                  fontFamily: 'Lato',
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    translateKey.translate('recent_orders'),
+                    style: TextStyle(
+                      fontFamily: 'Lato',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: gray900,
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  recentorder == true
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Column(
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/svg/empty_box.svg',
+                                  width: 141,
+                                ),
+                                SizedBox(height: 16),
+                                Column(
+                                  children: [
+                                    Text(
+                                      translateKey.translate(
+                                        'no_active_orders',
+                                      ),
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: gray900,
+                                      ),
+                                    ),
+                                    SizedBox(height: 2),
+                                    Text(
+                                      translateKey.translate(
+                                        'no_active_orders_at_home',
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: gray600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            decoration: BoxDecoration(
-                              color: primary,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8),
+                          ],
+                        )
+                      : Stack(
+                          alignment: Alignment.bottomCenter,
+                          children: [
+                            Column(
+                              children: [
+                                OrderCard(),
+                                SizedBox(height: 14),
+                                OrderCard(),
+                                SizedBox(height: 14),
+                                OrderCard(),
+                              ],
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              child: Container(
+                                height: MediaQuery.of(context).size.width - 98,
+                                width: MediaQuery.of(context).size.width - 32,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [white.withValues(alpha: 0), white],
+                                  ),
+                                ),
                               ),
                             ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.add, color: white, size: 20),
-                                SizedBox(width: 8),
-                                Text(
-                                  translateKey.translate('create_listing'),
+                            Positioned(
+                              bottom: 16,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 16,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: white,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(32),
+                                  ),
+                                  border: Border.all(color: gray300),
+                                ),
+                                child: Text(
+                                  translateKey.translate('see_all'),
                                   style: TextStyle(
                                     fontFamily: 'Lato',
                                     fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: white,
+                                    fontWeight: FontWeight.w600,
+                                    color: gray700,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                ],
+              ),
+            ),
+            Divider(color: gray200, height: 1, thickness: 2),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        translateKey.translate('my_ger'),
+                        style: TextStyle(
+                          fontFamily: 'Lato',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: gray900,
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            translateKey.translate('all'),
+                            style: TextStyle(
+                              fontFamily: 'Lato',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: primary,
+                            ),
+                          ),
+                          SizedBox(width: 4),
+                          SvgPicture.asset(
+                            'assets/svg/chevron_right.svg',
+                            height: 18,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  myger == true
+                      ? Column(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/svg/empty_note.svg',
+                              width: 152,
+                            ),
+                            SizedBox(height: 16),
+                            Column(
+                              children: [
+                                Text(
+                                  translateKey.translate('no_ger'),
+                                  style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: gray900,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  translateKey.translate('no_ger_please_add'),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: gray600,
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                      )
-                    : Text('data'),
-              ],
+                            SizedBox(height: 24),
+                            Container(
+                              padding: EdgeInsets.only(
+                                top: 10,
+                                bottom: 10,
+                                left: 12,
+                                right: 16,
+                              ),
+                              decoration: BoxDecoration(
+                                color: primary,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.add, color: white, size: 20),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    translateKey.translate('create_listing'),
+                                    style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
+                      : Column(
+                          children: [1, 2, 3, 4, 5]
+                              .map(
+                                (item) => Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        GerCard(),
+                                        SizedBox(width: 14),
+                                        GerCard(),
+                                      ],
+                                    ),
+                                    SizedBox(height: 14),
+                                  ],
+                                ),
+                              )
+                              .toList(),
+                        ),
+                ],
+              ),
             ),
-          ),
-        ],
+            SizedBox(height: mediaQuery.padding.bottom + 6),
+          ],
+        ),
       ),
     );
   }

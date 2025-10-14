@@ -92,6 +92,7 @@ class _OrderCardState extends State<OrderCard> {
                         ],
                       ),
                     ),
+                    SizedBox(width: 16),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [

@@ -30,15 +30,16 @@ class _OrderPageState extends State<OrderPage> {
     'Хүлээн авсан': "DONE",
   };
   ScrollController scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     final translateKey = Provider.of<LocalizationProvider>(context);
     final mediaQuery = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: white,
-        centerTitle: false,
         elevation: 1,
+        centerTitle: false,
+        backgroundColor: white,
         automaticallyImplyLeading: false,
         title: Text(
           '${translateKey.translate('order')[0].toUpperCase()}${translateKey.translate('order').substring(1)}',
