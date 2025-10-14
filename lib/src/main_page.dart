@@ -103,7 +103,6 @@ class _MainPageState extends State<MainPage> {
                       label: translateKey.translate('ger'),
                     ),
                     SizedBox(width: 4),
-
                     _buildNavItem(
                       selectedIconPath: 'assets/svg/addger_unselected.svg',
                       unselectedIconPath: 'assets/svg/addger_unselected.svg',
@@ -113,7 +112,6 @@ class _MainPageState extends State<MainPage> {
                       label: translateKey.translate('create_listing'),
                     ),
                     SizedBox(width: 4),
-
                     _buildNavItem(
                       selectedIconPath: 'assets/svg/order_selected.svg',
                       unselectedIconPath: 'assets/svg/order_unselected.svg',

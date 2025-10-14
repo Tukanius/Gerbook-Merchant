@@ -49,9 +49,10 @@ class _OrderPageState extends State<OrderPage> {
           ),
         ),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(24),
+          preferredSize: Size.fromHeight(32),
           child: Container(
             alignment: Alignment.centerLeft,
+            padding: EdgeInsets.only(bottom: 12),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -65,8 +66,8 @@ class _OrderPageState extends State<OrderPage> {
                           setState(() {
                             filterIndex = index;
                           });
-                          final selectedTab = tabs[filterIndex];
-                          final filter = tabFilters[selectedTab];
+                          // final selectedTab = tabs[filterIndex];
+                          // final filter = tabFilters[selectedTab];
                           scrollController.animateTo(
                             scrollController.position.minScrollExtent,
                             duration: Duration(milliseconds: 500),
