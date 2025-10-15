@@ -37,21 +37,26 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
-        leading: Padding(
-          padding: const EdgeInsets.only(top: 10, bottom: 10),
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-            decoration: BoxDecoration(
-              color: primary,
-              borderRadius: BorderRadius.only(
-                bottomRight: Radius.circular(320),
-                topRight: Radius.circular(320),
+        leading: GestureDetector(
+          onTap: () {
+            print('Working');
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              decoration: BoxDecoration(
+                color: primary,
+                borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(320),
+                  topRight: Radius.circular(320),
+                ),
               ),
-            ),
 
-            child: SvgPicture.asset(
-              'assets/svg/list.svg',
-              fit: BoxFit.fitWidth,
+              child: SvgPicture.asset(
+                'assets/svg/list.svg',
+                fit: BoxFit.fitWidth,
+              ),
             ),
           ),
         ),
@@ -334,13 +339,18 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   border: Border.all(color: gray300),
                                 ),
-                                child: Text(
-                                  translateKey.translate('see_all'),
-                                  style: TextStyle(
-                                    fontFamily: 'Lato',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: gray700,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    print('Working');
+                                  },
+                                  child: Text(
+                                    translateKey.translate('see_all'),
+                                    style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: gray700,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -368,24 +378,29 @@ class _HomePageState extends State<HomePage> {
                           color: gray900,
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            translateKey.translate('all'),
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: primary,
+                      GestureDetector(
+                        onTap: () {
+                          print('Working');
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              translateKey.translate('all'),
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: primary,
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 4),
-                          SvgPicture.asset(
-                            'assets/svg/chevron_right.svg',
-                            height: 18,
-                          ),
-                        ],
+                            SizedBox(width: 4),
+                            SvgPicture.asset(
+                              'assets/svg/chevron_right.svg',
+                              height: 18,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

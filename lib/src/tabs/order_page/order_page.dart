@@ -37,7 +37,8 @@ class _OrderPageState extends State<OrderPage> {
     final mediaQuery = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
-        elevation: 1,
+        shape: Border(bottom: BorderSide(color: gray200, width: 2)),
+        elevation: 0,
         centerTitle: false,
         backgroundColor: white,
         automaticallyImplyLeading: false,

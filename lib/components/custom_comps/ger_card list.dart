@@ -39,7 +39,7 @@ class _GerCardListState extends State<GerCardList> {
                         height: 91,
                         width: 104,
                         child: Image.network(
-                          'https://placehold.co/104x91/gray5/gray50/png',
+                          'https://placehold.co/104x91/black10/gray50/png',
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -75,7 +75,7 @@ class _GerCardListState extends State<GerCardList> {
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         fontFamily: 'Lato',
-                                        color: gray900,
+                                        color: gray800,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,
                                       ),
