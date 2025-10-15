@@ -1,7 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:merchant_gerbook_flutter/components/custom_comps/ger_card%20list.dart';
+import 'package:merchant_gerbook_flutter/components/custom_comps/ger_card.dart';
 import 'package:merchant_gerbook_flutter/components/custom_comps/order_card.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
@@ -20,18 +20,6 @@ class _GerPageState extends State<GerPage> {
   final items = List.generate(400, (index) => '$index');
   int filterIndex = 0;
   TextEditingController searchController = TextEditingController();
-  final List<String> tabs = [
-    'Бүгд',
-    'Хүлээгдэж байгаа',
-    'Төлбөр төлөгдсөн',
-    'Цуцлагдсан',
-  ];
-  final Map<String, String> tabFilters = {
-    'Бүгд': "",
-    'Хүлээгдэж байгаа': "NEW",
-    'Төлбөр төлөгдсөн': "PENDING",
-    'Цуцлагдсан': "DONE",
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -46,74 +34,11 @@ class _GerPageState extends State<GerPage> {
         backgroundColor: white,
         automaticallyImplyLeading: false,
         title: Text(
-          '${translateKey.translate('order')[0].toUpperCase()}${translateKey.translate('order').substring(1)}',
+          '${translateKey.translate('your_listings')[0].toUpperCase()}${translateKey.translate('your_listings').substring(1)}',
           style: TextStyle(
             color: gray800,
             fontSize: 18,
             fontWeight: FontWeight.w700,
-          ),
-        ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(24),
-          child: Container(
-            alignment: Alignment.centerLeft,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 12,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      children: List.generate(tabs.length, (index) {
-                        final bool isSelected = filterIndex == index;
-                        return GestureDetector(
-                          onTap: () async {
-                            setState(() {
-                              filterIndex = index;
-                            });
-                            final selectedTab = tabs[filterIndex];
-                            final filter = tabFilters[selectedTab];
-                            scrollController.animateTo(
-                              scrollController.position.minScrollExtent,
-                              duration: Duration(milliseconds: 500),
-                              curve: Curves.easeOut,
-                            );
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(right: 10),
-                            padding: EdgeInsets.symmetric(
-                              vertical: 6,
-                              horizontal: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
-                              color: isSelected ? primary : white,
-                              border: Border.all(
-                                color: isSelected ? primary : gray200,
-                              ),
-                            ),
-                            child: Text(
-                              tabs[index],
-                              style: TextStyle(
-                                color: isSelected ? white : gray800,
-                                fontFamily: 'Lato',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ),
-                        );
-                      }),
-                    ),
-                  ],
-                ),
-              ),
-            ),
           ),
         ),
       ),
@@ -173,7 +98,6 @@ class _GerPageState extends State<GerPage> {
           Expanded(
             child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
-
               controller: scrollController,
               child: Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16),
@@ -184,12 +108,7 @@ class _GerPageState extends State<GerPage> {
                       children: [1, 2, 3, 4, 5]
                           .map(
                             (item) => Column(
-                              children: [
-                                OrderCard(),
-                                SizedBox(height: 12),
-                                OrderCard(),
-                                SizedBox(height: 12),
-                              ],
+                              children: [GerCardList(), SizedBox(height: 12)],
                             ),
                           )
                           .toList(),

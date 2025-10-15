@@ -55,41 +55,45 @@ class _OrderCardState extends State<OrderCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Ар царам жуулчны бааз',
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: gray800,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            maxLines: 1,
-                          ),
-                          SizedBox(height: 4),
-                          Row(
+                    Container(
+                      child: Container(
+                        child: Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SvgPicture.asset(
-                                'assets/svg/location.svg',
-                                width: 14,
-                                height: 14,
-                              ),
                               Text(
-                                'Увс аймаг, Бөхмөрөн сум',
+                                'Ар царам жуулчны бааз',
                                 style: TextStyle(
                                   fontFamily: 'Lato',
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  color: gray600,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: gray800,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
+                                maxLines: 1,
+                              ),
+                              SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/svg/location.svg',
+                                    width: 14,
+                                    height: 14,
+                                  ),
+                                  Text(
+                                    'Увс аймаг, Бөхмөрөн сум',
+                                    style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      color: gray600,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                     SizedBox(width: 16),
