@@ -325,24 +325,24 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                             ),
-                            Positioned(
-                              bottom: 16,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 10,
-                                  horizontal: 16,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: white,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(32),
+                            GestureDetector(
+                              onTap: () {
+                                print('Working');
+                              },
+                              child: Positioned(
+                                bottom: 16,
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: 16,
                                   ),
-                                  border: Border.all(color: gray300),
-                                ),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    print('Working');
-                                  },
+                                  decoration: BoxDecoration(
+                                    color: white,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(32),
+                                    ),
+                                    border: Border.all(color: gray300),
+                                  ),
                                   child: Text(
                                     translateKey.translate('see_all'),
                                     style: TextStyle(

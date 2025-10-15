@@ -34,7 +34,7 @@ class _GerCardListState extends State<GerCardList> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadiusGeometry.circular(8),
+                      borderRadius: BorderRadiusGeometry.circular(4),
                       child: Container(
                         height: 91,
                         width: 104,

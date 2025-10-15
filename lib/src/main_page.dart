@@ -83,6 +83,7 @@ class _MainPageState extends State<MainPage> {
                   left: 8,
                 ),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildNavItem(
@@ -91,7 +92,7 @@ class _MainPageState extends State<MainPage> {
                       index: 0,
                       selectedIndex: _selectedIndex,
                       onTap: onItemTapped,
-                      label: translateKey.translate('home_page'),
+                      label: translateKey.translate('home'),
                     ),
                     SizedBox(width: 4),
                     _buildNavItem(
@@ -172,6 +173,7 @@ Widget _buildNavItem({
               ),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
+              textAlign: TextAlign.center,
             ),
           ],
         ),
