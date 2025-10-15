@@ -70,7 +70,7 @@ class _GerCardListState extends State<GerCardList> {
                                     ),
                                     SizedBox(height: 2),
                                     Text(
-                                      'MongolianMongolianMongolianMongolianMongolianMongolianMongolian ',
+                                      'Imperial Mount Resort in Terelj, Mongolia',
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
