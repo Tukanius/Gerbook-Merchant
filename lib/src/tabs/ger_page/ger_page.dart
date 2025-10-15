@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:merchant_gerbook_flutter/components/custom_comps/ger_card%20list.dart';
-import 'package:merchant_gerbook_flutter/components/custom_comps/ger_card.dart';
-import 'package:merchant_gerbook_flutter/components/custom_comps/order_card.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
