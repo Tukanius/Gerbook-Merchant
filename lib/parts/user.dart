@@ -8,7 +8,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
     sessionId: json['sessionId'] != null ? json['sessionId'] as String : null,
     isActive: json['isActive'] != null ? json['isActive'] as bool : null,
     email: json['email'] != null ? json['email'] as String : null,
-    username: json['username'] != null ? json['username'] as String : null,
+    userName: json['userName'] != null ? json['userName'] as String : null,
     phone: json['phone'] != null ? json['phone'] as String : null,
     password: json['password'] != null ? json['password'] as String : null,
     sessionScope: json['sessionScope'] != null
@@ -57,7 +57,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
         ? json['postalCode'] as String
         : null,
 
-    // avatar: isAvatar(json),
+    avatar: isAvatar(json),
     //  avatar:
     //     json['avatar'] != null ? Avatar.fromJson(json['avatar']) : null,
     notificationCount: json['notificationCount'] != null
@@ -72,20 +72,36 @@ User _$UserFromJson(Map<String, dynamic> json) {
     isEmailHidden: json['isEmailHidden'] != null
         ? json['isEmailHidden'] as bool
         : null,
+    merchantType: json['merchantType'] != null
+        ? json['merchantType'] as String
+        : null,
+    registerNo: json['registerNo'] != null
+        ? json['registerNo'] as String
+        : null,
+    contract: json['contract'] != null ? json['contract'] as String : null,
+
+    signature: json['signature'] != null ? json['signature'] as String : null,
+    bank: json['bank'] != null ? json['bank'] as String : null,
+    bankAccount: json['bankAccount'] != null
+        ? json['bankAccount'] as String
+        : null,
+    bankAccountName: json['bankAccountName'] != null
+        ? json['bankAccountName'] as String
+        : null,
   );
 }
 
-// isAvatar(Map<String, dynamic> json) {
-//   if (json["avatar"] != null) {
-//     if (json["avatar"] is String) {
-//       return json['avatar'] as String;
-//     } else {
-//       return Avatar.fromJson(json['avatar']);
-//     }
-//   } else {
-//     return null;
-//   }
-// }
+isAvatar(Map<String, dynamic> json) {
+  if (json["avatar"] != null) {
+    if (json["avatar"] is String) {
+      return json['avatar'] as String;
+    } else {
+      return Avatar.fromJson(json['avatar']);
+    }
+  } else {
+    return null;
+  }
+}
 
 Map<String, dynamic> _$UserToJson(User instance) {
   Map<String, dynamic> json = {};
@@ -103,7 +119,7 @@ Map<String, dynamic> _$UserToJson(User instance) {
   if (instance.sessionId != null) json['sessionId'] = instance.sessionId;
   if (instance.isActive != null) json['isActive'] = instance.isActive;
   if (instance.email != null) json['email'] = instance.email;
-  if (instance.username != null) json['username'] = instance.username;
+  if (instance.userName != null) json['userName'] = instance.userName;
   if (instance.phone != null) json['phone'] = instance.phone;
   if (instance.password != null) json['password'] = instance.password;
   if (instance.sessionScope != null)
@@ -118,7 +134,7 @@ Map<String, dynamic> _$UserToJson(User instance) {
     json['userStatusDate'] = instance.userStatusDate;
   if (instance.message != null) json['message'] = instance.message;
   if (instance.oldPassword != null) json['oldPassword'] = instance.oldPassword;
-  // if (instance.avatar != null) json['avatar'] = instance.avatar;
+  if (instance.avatar != null) json['avatar'] = instance.avatar;
 
   if (instance.firstName != null) json['firstName'] = instance.firstName;
   if (instance.lastName != null) json['lastName'] = instance.lastName;
@@ -136,6 +152,15 @@ Map<String, dynamic> _$UserToJson(User instance) {
   if (instance.deviceToken != null) json['deviceToken'] = instance.deviceToken;
   if (instance.isEmailHidden != null)
     json['isEmailHidden'] = instance.isEmailHidden;
+  if (instance.merchantType != null)
+    json['merchantType'] = instance.merchantType;
+  if (instance.registerNo != null) json['registerNo'] = instance.registerNo;
+  if (instance.contract != null) json['contract'] = instance.contract;
+  if (instance.signature != null) json['signature'] = instance.signature;
+  if (instance.bank != null) json['bank'] = instance.bank;
+  if (instance.bankAccount != null) json['bankAccount'] = instance.bankAccount;
+  if (instance.bankAccountName != null)
+    json['bankAccountName'] = instance.bankAccountName;
 
   return json;
 }

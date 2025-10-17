@@ -9,6 +9,7 @@ environment:
 dependencies:
   after_layout: ^1.2.0
   blurrycontainer: ^2.1.0
+  camera: ^0.11.2
   cookie_jar: ^4.0.8
   dio: ^5.9.0
   dio_cookie_manager: ^3.3.0
@@ -21,10 +22,12 @@ dependencies:
   flutter_widget_from_html: ^0.17.1
   form_builder_validators: ^11.2.0
   get_it: ^8.2.0
+  image_picker: ^1.2.0
   intl: ^0.20.2
   path_provider: ^2.1.5
   pinput: ^5.0.2
   provider: ^6.1.5+1
+  pull_to_refresh: ^2.0.0
   shared_preferences: ^2.5.3
   signature: ^6.3.0
 

@@ -12,6 +12,7 @@ import 'package:merchant_gerbook_flutter/src/auth/onboarding_page.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_create_password.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_page.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_otp_page.dart';
+import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_stepper.dart/camera_page.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_stepper.dart/register_bank.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_stepper.dart/register_info.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_stepper.dart/register_sign.dart';
@@ -158,10 +159,16 @@ class _MyAppState extends State<MyApp> with AfterLayoutMixin {
                   return const RegisterPage();
                 },
               );
+
             case RegisterOtpPage.routeName:
+              RegisterOtpPageArguments arguments =
+                  settings.arguments as RegisterOtpPageArguments;
               return MaterialPageRoute(
                 builder: (context) {
-                  return const RegisterOtpPage();
+                  return RegisterOtpPage(
+                    method: arguments.method,
+                    email: arguments.email,
+                  );
                 },
               );
             case ForgetPassword.routeName:
@@ -170,10 +177,13 @@ class _MyAppState extends State<MyApp> with AfterLayoutMixin {
                   return const ForgetPassword();
                 },
               );
+
             case RegisterCreatePassword.routeName:
+              RegisterCreatePasswordArguments arguments =
+                  settings.arguments as RegisterCreatePasswordArguments;
               return MaterialPageRoute(
                 builder: (context) {
-                  return const RegisterCreatePassword();
+                  return RegisterCreatePassword(method: arguments.method);
                 },
               );
             case MainPage.routeName:
@@ -200,6 +210,16 @@ class _MyAppState extends State<MyApp> with AfterLayoutMixin {
               return MaterialPageRoute(
                 builder: (context) {
                   return const RegisterBank();
+                },
+              );
+            case CameraPage.routeName:
+              CameraPageArguments arguments =
+                  settings.arguments as CameraPageArguments;
+              return MaterialPageRoute(
+                builder: (context) {
+                  return CameraPage(
+                    listenController: arguments.listenController,
+                  );
                 },
               );
             default:

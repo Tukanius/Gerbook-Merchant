@@ -1,5 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:async';
+
+import 'package:after_layout/after_layout.dart';
 import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -9,10 +12,12 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:merchant_gerbook_flutter/components/custom_comps/custom_button.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
+import 'package:merchant_gerbook_flutter/models/user.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
+import 'package:merchant_gerbook_flutter/provider/user_provider.dart';
 import 'package:merchant_gerbook_flutter/src/auth/forget_password.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_page.dart';
-import 'package:merchant_gerbook_flutter/src/main_page.dart';
+import 'package:merchant_gerbook_flutter/src/splash_page/splash_page.dart';
 import 'package:merchant_gerbook_flutter/utils/secure_storage.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +29,7 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> with AfterLayoutMixin {
   bool isVisible = true;
   bool saveUserName = false;
   GlobalKey<FormBuilderState> fbkey = GlobalKey<FormBuilderState>();
@@ -32,6 +37,59 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController controllerPassword = TextEditingController();
   final SecureStorage secureStorage = SecureStorage();
   bool isLoading = false;
+  @override
+  FutureOr<void> afterFirstLayout(BuildContext context) async {
+    Future<String?> usernameStore = secureStorage.getUserName();
+    String resultUsername = await usernameStore ?? "";
+    print('=============STORED==========');
+    print(resultUsername);
+    print('=============STORED==========');
+    if (resultUsername != "") {
+      setState(() {
+        controllerPhone.text = resultUsername;
+        saveUserName = true;
+      });
+    }
+  }
+
+  onSubmit() async {
+    FocusScope.of(context).unfocus();
+    final String userName;
+    if (fbkey.currentState!.saveAndValidate()) {
+      try {
+        setState(() {
+          isLoading = true;
+        });
+        if (saveUserName == true) {
+          userName = fbkey.currentState?.fields['email']?.value;
+          _storePhone(userName);
+        } else {
+          secureStorage.deleteAll();
+        }
+        User save = User.fromJson(fbkey.currentState!.value);
+        save.email.toString().trim();
+
+        await Provider.of<UserProvider>(context, listen: false).login(save);
+        UserProvider().setUsername(save.userName.toString());
+        await Provider.of<UserProvider>(context, listen: false).me(true);
+
+        setState(() {
+          isLoading = false;
+        });
+        await Navigator.of(context).pushNamed(SplashPage.routeName);
+      } catch (e) {
+        setState(() {
+          isLoading = false;
+        });
+        print(e.toString());
+      }
+    }
+  }
+
+  _storePhone(String userName) async {
+    await secureStorage.setUserName(userName);
+  }
+
   @override
   Widget build(BuildContext context) {
     final translateKey = Provider.of<LocalizationProvider>(context);
@@ -131,7 +189,7 @@ class _LoginPageState extends State<LoginPage> {
                                     inputType: TextInputType.text,
                                     controller: controllerPhone,
                                     colortext: black,
-                                    name: 'userName',
+                                    name: 'email',
                                     color: white,
                                     suffixIcon: null,
                                     hintText:
@@ -269,10 +327,7 @@ class _LoginPageState extends State<LoginPage> {
                               buttonLoaderColor: white,
                               labelText: translateKey.translate('login'),
                               onClick: () {
-                                Navigator.of(context).pushNamed(
-                                  MainPage.routeName,
-                                  arguments: MainPageArguments(changeIndex: 0),
-                                );
+                                onSubmit();
                                 // _completeOnboarding(context);
                               },
                               buttonColor: primary,

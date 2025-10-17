@@ -3,7 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 
 class CustomAppBar extends StatefulWidget {
-  const CustomAppBar({super.key});
+  final Function() onTap;
+  const CustomAppBar({super.key, required this.onTap});
 
   @override
   State<CustomAppBar> createState() => _CustomAppBarState();
@@ -18,7 +19,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
       elevation: 0,
       leading: GestureDetector(
         onTap: () {
-          Navigator.of(context).pop();
+          widget.onTap();
         },
         child: Row(
           mainAxisSize: MainAxisSize.min,

@@ -88,6 +88,12 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  registerEmailMerchant(User data) async {
+    user = await AuthApi().registerMerchant(data);
+    setAccessToken(user.accessToken);
+    notifyListeners();
+  }
+
   getOtp(String otpMethod, String email) async {
     var res = await AuthApi().getOtp(otpMethod, email);
     await setAccessToken(user.accessToken);

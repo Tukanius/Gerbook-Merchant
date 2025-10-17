@@ -16,7 +16,7 @@ class _GerCardListState extends State<GerCardList> {
   @override
   Widget build(BuildContext context) {
     final translateKey = Provider.of<LocalizationProvider>(context);
-    final mediaQuery = MediaQuery.of(context);
+    // final mediaQuery = MediaQuery.of(context);
 
     return Container(
       decoration: BoxDecoration(

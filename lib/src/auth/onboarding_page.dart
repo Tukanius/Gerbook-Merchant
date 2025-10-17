@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:merchant_gerbook_flutter/components/custom_comps/custom_button.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
-import 'package:merchant_gerbook_flutter/src/auth/login_page.dart';
+import 'package:merchant_gerbook_flutter/src/splash_page/splash_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,7 +20,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Future<void> _completeOnboarding(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('seenOnboarding', true);
-    Navigator.of(context).pushNamed(LoginPage.routeName);
+    Navigator.of(context).pushNamed(SplashPage.routeName);
   }
 
   @override

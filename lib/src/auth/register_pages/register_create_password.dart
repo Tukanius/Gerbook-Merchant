@@ -8,13 +8,22 @@ import 'package:merchant_gerbook_flutter/components/custom_comps/custom_app_bar.
 import 'package:merchant_gerbook_flutter/components/custom_comps/custom_button.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
+import 'package:merchant_gerbook_flutter/models/user.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
-import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_stepper.dart/register_info.dart';
+import 'package:merchant_gerbook_flutter/provider/user_provider.dart';
+import 'package:merchant_gerbook_flutter/src/splash_page/splash_page.dart';
 import 'package:provider/provider.dart';
 
+class RegisterCreatePasswordArguments {
+  String method;
+  RegisterCreatePasswordArguments({required this.method});
+}
+
 class RegisterCreatePassword extends StatefulWidget {
+  final String method;
+
   static const routeName = "RegisterCreatePassword";
-  const RegisterCreatePassword({super.key});
+  const RegisterCreatePassword({super.key, required this.method});
 
   @override
   State<RegisterCreatePassword> createState() => _RegisterCreatePasswordState();
@@ -28,8 +37,9 @@ class _RegisterCreatePasswordState extends State<RegisterCreatePassword> {
   bool isLoading = false;
   Color combinationColor = gray600;
   Color lengthColor = gray600;
-  bool isVisible = false;
-  bool isVisibleVerify = false;
+  bool isVisible = true;
+  bool isVisibleVerify = true;
+
   void validatePassword(String value) {
     setState(() {
       // Validate combination of characters
@@ -64,6 +74,33 @@ class _RegisterCreatePasswordState extends State<RegisterCreatePassword> {
     });
   }
 
+  onSubmit() async {
+    if (fbkey.currentState!.saveAndValidate()) {
+      try {
+        setState(() {
+          isLoading = true;
+        });
+        User save = User.fromJson(fbkey.currentState!.value);
+        await Provider.of<UserProvider>(
+          context,
+          listen: false,
+        ).changePassword(save);
+        setState(() {
+          isLoading = false;
+        });
+        Navigator.of(context).pushNamed(SplashPage.routeName);
+        setState(() {
+          isLoading = false;
+        });
+      } catch (e) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+      // Navigator.of(context).pushNamed(RegisterInfo.routeName);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final translateKey = Provider.of<LocalizationProvider>(context);
@@ -76,7 +113,11 @@ class _RegisterCreatePasswordState extends State<RegisterCreatePassword> {
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight),
-          child: CustomAppBar(),
+          child: CustomAppBar(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ),
         backgroundColor: white,
         body: Stack(
@@ -232,9 +273,7 @@ class _RegisterCreatePasswordState extends State<RegisterCreatePassword> {
                           CustomButton(
                             labelText: translateKey.translate('continue'),
                             onClick: () {
-                              Navigator.of(
-                                context,
-                              ).pushNamed(RegisterInfo.routeName);
+                              onSubmit();
                             },
                             isLoading: isLoading,
                             buttonColor: primary,

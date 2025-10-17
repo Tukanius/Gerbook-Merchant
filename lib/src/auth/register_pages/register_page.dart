@@ -8,7 +8,9 @@ import 'package:merchant_gerbook_flutter/components/custom_comps/custom_app_bar.
 import 'package:merchant_gerbook_flutter/components/custom_comps/custom_button.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
+import 'package:merchant_gerbook_flutter/models/user.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
+import 'package:merchant_gerbook_flutter/provider/user_provider.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_otp_page.dart';
 import 'package:provider/provider.dart';
 
@@ -24,6 +26,36 @@ class _RegisterPageState extends State<RegisterPage> {
   GlobalKey<FormBuilderState> fbkey = GlobalKey<FormBuilderState>();
   TextEditingController controllerUsername = TextEditingController();
   bool isLoading = false;
+
+  onSubmit() async {
+    if (fbkey.currentState!.saveAndValidate()) {
+      try {
+        setState(() {
+          isLoading = true;
+        });
+        FocusScope.of(context).unfocus();
+        User save = User.fromJson(fbkey.currentState!.value);
+        await Provider.of<UserProvider>(
+          context,
+          listen: false,
+        ).registerEmailMerchant(save);
+        Navigator.of(context).pushNamed(
+          RegisterOtpPage.routeName,
+          arguments: RegisterOtpPageArguments(
+            email: save.email!,
+            method: 'REGISTER',
+          ),
+        );
+        setState(() {
+          isLoading = false;
+        });
+      } catch (e) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +73,11 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Scaffold(
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: CustomAppBar(),
+            child: CustomAppBar(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+            ),
           ),
           backgroundColor: white,
           body: Stack(
@@ -78,15 +114,14 @@ class _RegisterPageState extends State<RegisterPage> {
                             inputType: TextInputType.text,
                             controller: controllerUsername,
                             colortext: black,
-                            name: 'userName',
+                            name: 'email',
                             color: white,
                             suffixIcon: null,
                             hintText:
-                                "${translateKey.translate('phone_number')}, ${translateKey.translate('email')}",
+                                "${translateKey.translate('please_enter_your_email')}",
                             hintTextColor: gray500,
                             labelColor: gray800,
-                            labelText:
-                                "${translateKey.translate('login')} ${translateKey.translate('name').toLowerCase()}",
+                            labelText: "${translateKey.translate('email')} ",
                             validator: FormBuilderValidators.compose([
                               FormBuilderValidators.required(
                                 errorText: translateKey.translate(
@@ -115,9 +150,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             CustomButton(
                               labelText: translateKey.translate('get_otp'),
                               onClick: () {
-                                Navigator.of(
-                                  context,
-                                ).pushNamed(RegisterOtpPage.routeName);
+                                onSubmit();
                               },
                               isLoading: isLoading,
                               buttonColor: primary,

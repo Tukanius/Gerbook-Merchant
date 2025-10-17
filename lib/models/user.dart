@@ -1,3 +1,5 @@
+import 'package:merchant_gerbook_flutter/models/avatar_upload.dart';
+
 part '../parts/user.dart';
 
 class User {
@@ -21,7 +23,7 @@ class User {
   String? updatedAt;
   String? sessionId;
   String? message;
-  String? username;
+  String? userName;
   String? password;
   String? sessionScope;
   bool? passwordExpired;
@@ -34,12 +36,19 @@ class User {
   String? otpCode;
   String? oldPassword;
   // Avatar? avatar;
-  // dynamic avatar;
+  dynamic avatar;
   int? notificationCount;
   String? idToken;
   String? code;
   String? deviceToken;
   bool? isEmailHidden;
+  String? merchantType;
+  String? registerNo;
+  String? contract;
+  String? bank;
+  String? bankAccount;
+  String? bankAccountName;
+  String? signature;
 
   User({
     this.otpMethod,
@@ -54,7 +63,7 @@ class User {
     this.sessionId,
     this.isActive,
     this.email,
-    this.username,
+    this.userName,
     this.phone,
     this.password,
     this.sessionScope,
@@ -73,13 +82,20 @@ class User {
     this.city,
     this.state,
     this.postalCode,
-    // this.avatar,
+    this.avatar,
     this.notificationCount,
     this.newEmail,
     this.idToken,
     this.code,
     this.deviceToken,
     this.isEmailHidden,
+    this.merchantType,
+    this.registerNo,
+    this.contract,
+    this.bank,
+    this.bankAccount,
+    this.bankAccountName,
+    this.signature,
   });
 
   static $fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

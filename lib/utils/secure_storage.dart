@@ -3,12 +3,12 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class SecureStorage {
   final storage = const FlutterSecureStorage();
 
-  final String _keyUserName = 'email';
+  final String _keyUserName = 'userName';
   final String _keyPassWord = 'password';
   final String _isBiometric = 'biometric';
 
-  Future setUserName(String email) async {
-    await storage.write(key: _keyUserName, value: email);
+  Future setUserName(String userName) async {
+    await storage.write(key: _keyUserName, value: userName);
   }
 
   Future<String?> getUserName() async {

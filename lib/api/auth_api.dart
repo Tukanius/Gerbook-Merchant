@@ -1,10 +1,31 @@
+import 'package:dio/dio.dart';
+import 'package:merchant_gerbook_flutter/models/upload_image.dart';
 import 'package:merchant_gerbook_flutter/utils/http_request.dart';
 
 import '../models/user.dart';
 
 class AuthApi extends HttpRequest {
   login(User user) async {
-    var res = await post('/auth/login', data: user.toJson(), handler: true);
+    var res = await post(
+      '/auth/login/merchant',
+      data: user.toJson(),
+      handler: true,
+    );
+    return User.fromJson(res as Map<String, dynamic>);
+  }
+
+  postContract(User user) async {
+    var res = await post(
+      '/merchant-contract/sign',
+      data: user.toJson(),
+      handler: true,
+    );
+    return res;
+    // return User.fromJson(res as Map<String, dynamic>);
+  }
+
+  postBankAccount(User user) async {
+    var res = await put('/merchants/bank-account', data: user.toJson());
     return User.fromJson(res as Map<String, dynamic>);
   }
 
@@ -64,15 +85,15 @@ class AuthApi extends HttpRequest {
     return res;
   }
 
-  // upload(String path) async {
-  //   String fileName = path.split('/').last;
-  //   FormData formData = FormData.fromMap({
-  //     'file': await MultipartFile.fromFile(path, filename: fileName),
-  //   });
-  //   var res = await post('/media/image/upload', data: formData);
+  upload(String path) async {
+    String fileName = path.split('/').last;
+    FormData formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(path, filename: fileName),
+    });
+    var res = await post('/media/image/upload', data: formData);
 
-  //   return UploadImage.fromJson(res as Map<String, dynamic>);
-  // }
+    return UploadImage.fromJson(res as Map<String, dynamic>);
+  }
 
   changeNames(User data) async {
     var res = await put("/user/name", data: data.toJson());
@@ -153,6 +174,20 @@ class AuthApi extends HttpRequest {
       data: data.toJson(),
       handler: true,
     );
+    return User.fromJson(res as Map<String, dynamic>);
+  }
+
+  registerMerchant(User data) async {
+    var res = await post(
+      '/auth/register/merchant',
+      data: data.toJson(),
+      handler: true,
+    );
+    return User.fromJson(res as Map<String, dynamic>);
+  }
+
+  updateProfile(User data) async {
+    var res = await put('/merchants/profile', data: data.toJson());
     return User.fromJson(res as Map<String, dynamic>);
   }
 }
