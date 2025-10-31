@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
+import 'package:merchant_gerbook_flutter/models/properties.dart';
+import 'package:merchant_gerbook_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 
 class GerCardList extends StatefulWidget {
-  const GerCardList({super.key});
+  final Properties data;
+  const GerCardList({super.key, required this.data});
 
   @override
   State<GerCardList> createState() => _GerCardListState();
@@ -35,12 +39,14 @@ class _GerCardListState extends State<GerCardList> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadiusGeometry.circular(4),
-                      child: Container(
-                        height: 91,
+                      child: SizedBox(
+                        height: 104,
                         width: 104,
-                        child: Image.network(
-                          'https://placehold.co/104x91/black10/gray50/png',
-                          fit: BoxFit.cover,
+                        child: BlurHash(
+                          color: gray100,
+                          hash: '${widget.data.mainImage?.blurhash}',
+                          image: '${widget.data.mainImage?.url}',
+                          imageFit: BoxFit.cover,
                         ),
                       ),
                     ),
@@ -58,7 +64,7 @@ class _GerCardListState extends State<GerCardList> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      translateKey.translate('confirmed'),
+                                      '${translateKey.translate('${widget.data.status}')}',
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -70,7 +76,7 @@ class _GerCardListState extends State<GerCardList> {
                                     ),
                                     SizedBox(height: 2),
                                     Text(
-                                      'Imperial Mount Resort in Terelj, Mongolia',
+                                      '${widget.data.name ?? "-"}',
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -106,7 +112,7 @@ class _GerCardListState extends State<GerCardList> {
                                   ),
                                   SizedBox(width: 2),
                                   Text(
-                                    '1',
+                                    '0',
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       fontSize: 12,
@@ -137,7 +143,7 @@ class _GerCardListState extends State<GerCardList> {
                                   ),
                                   SizedBox(width: 2),
                                   Text(
-                                    '1',
+                                    '0',
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       fontSize: 12,
@@ -169,7 +175,7 @@ class _GerCardListState extends State<GerCardList> {
                                   ),
                                   SizedBox(width: 2),
                                   Text(
-                                    '1',
+                                    '0',
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       fontSize: 12,
@@ -189,7 +195,7 @@ class _GerCardListState extends State<GerCardList> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '2,500,000₮',
+                                    '${Utils().formatCurrencyDouble(widget.data.price?.toDouble() ?? 0)}₮',
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       fontSize: 18,
@@ -212,7 +218,7 @@ class _GerCardListState extends State<GerCardList> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
-                                    '12',
+                                    '0',
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       fontSize: 18,
@@ -267,7 +273,7 @@ class _GerCardListState extends State<GerCardList> {
                       ),
                     ),
                     SizedBox(width: 4),
-                    status == false
+                    widget.data.isActive == true
                         ? Text(
                             translateKey.translate('active'),
                             style: TextStyle(
@@ -300,7 +306,7 @@ class _GerCardListState extends State<GerCardList> {
                       ),
                     ),
                     SizedBox(width: 4),
-                    status == true
+                    widget.data.isAdminActive == true
                         ? Text(
                             translateKey.translate('active'),
                             style: TextStyle(

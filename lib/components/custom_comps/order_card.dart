@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
+import 'package:merchant_gerbook_flutter/models/booking_list.dart';
+import 'package:merchant_gerbook_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 
 class OrderCard extends StatefulWidget {
-  const OrderCard({super.key});
+  final BookingList data;
+  const OrderCard({super.key, required this.data});
 
   @override
   State<OrderCard> createState() => _OrderCardState();
@@ -33,7 +37,7 @@ class _OrderCardState extends State<OrderCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'B250630104',
+                      '${widget.data.code ?? '-'}',
                       style: TextStyle(
                         color: gray600,
                         fontSize: 12,
@@ -41,7 +45,7 @@ class _OrderCardState extends State<OrderCard> {
                       ),
                     ),
                     Text(
-                      '2025-06-30 22:22',
+                      '${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.parse(widget.data.createdAt!).toLocal())}',
                       style: TextStyle(
                         color: gray600,
                         fontSize: 12,
@@ -55,45 +59,45 @@ class _OrderCardState extends State<OrderCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      child: Container(
-                        child: Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${widget.data.property?.name ?? '-'}',
+                            style: TextStyle(
+                              fontFamily: 'Lato',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: gray800,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            maxLines: 1,
+                          ),
+                          SizedBox(height: 4),
+                          Row(
                             children: [
-                              Text(
-                                'Ар царам жуулчны бааз',
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: gray800,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                maxLines: 1,
+                              SvgPicture.asset(
+                                'assets/svg/location.svg',
+                                width: 14,
+                                height: 14,
                               ),
-                              SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/svg/location.svg',
-                                    width: 14,
-                                    height: 14,
+                              Expanded(
+                                child: Text(
+                                  '${widget.data.property?.addressString ?? '-'}',
+                                  style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    color: gray600,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  Text(
-                                    'Увс аймаг, Бөхмөрөн сум',
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: gray600,
-                                    ),
-                                  ),
-                                ],
+                                  maxLines: 1,
+                                ),
                               ),
                             ],
                           ),
-                        ),
+                        ],
                       ),
                     ),
                     SizedBox(width: 16),
@@ -111,7 +115,7 @@ class _OrderCardState extends State<OrderCard> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          '200,000₮',
+                          '${Utils().formatCurrencyDouble(widget.data.totalAmount?.toDouble() ?? 0)}₮',
                           style: TextStyle(
                             fontFamily: 'Lato',
                             fontSize: 14,
@@ -130,57 +134,70 @@ class _OrderCardState extends State<OrderCard> {
           Container(
             padding: EdgeInsets.all(10),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: primary100,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  padding: EdgeInsets.all(8),
-                  child: SvgPicture.asset(
-                    'assets/svg/calendar_check.svg',
-                    width: 16,
-                  ),
-                ),
-                SizedBox(width: 8),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      Text(
-                        '2 Хоног',
-                        style: TextStyle(
-                          color: gray800,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                      Container(
+                        decoration: BoxDecoration(
+                          color: primary100,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        padding: EdgeInsets.all(8),
+                        child: SvgPicture.asset(
+                          'assets/svg/calendar_check.svg',
+                          width: 16,
                         ),
                       ),
-                      Text(
-                        '2025/04/15 - 2025/04/16',
-                        style: TextStyle(
-                          color: gray600,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${widget.data.days ?? '-'} ${translateKey.translate('nights')}',
+                              style: TextStyle(
+                                color: gray800,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              '${'${DateFormat("yyyy/MM/dd").format(DateTime.parse(widget.data.startDate!).toLocal())}'} - ${'${DateFormat("yyyy/MM/dd").format(DateTime.parse(widget.data.endDate!).toLocal())}'} 123312123312123312',
+                              style: TextStyle(
+                                color: gray600,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(width: 8),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: greenSuccess,
-                  ),
-                  child: Text(
-                    'Төлбөр төлөгдсөн',
-                    style: TextStyle(
-                      color: white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
+                Row(
+                  children: [
+                    SizedBox(width: 8),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: greenSuccess,
+                      ),
+                      child: Text(
+                        '${translateKey.translate('booking_status_label.${widget.data.status}')}',
+                        style: TextStyle(
+                          color: white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),

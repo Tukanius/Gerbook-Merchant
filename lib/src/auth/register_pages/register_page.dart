@@ -14,9 +14,15 @@ import 'package:merchant_gerbook_flutter/provider/user_provider.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_otp_page.dart';
 import 'package:provider/provider.dart';
 
+class RegisterPageArguments {
+  final bool isRegister;
+  RegisterPageArguments({required this.isRegister});
+}
+
 class RegisterPage extends StatefulWidget {
+  final bool isRegister;
   static const routeName = "RegisterPage";
-  const RegisterPage({super.key});
+  const RegisterPage({super.key, required this.isRegister});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -34,16 +40,33 @@ class _RegisterPageState extends State<RegisterPage> {
           isLoading = true;
         });
         FocusScope.of(context).unfocus();
-        User save = User.fromJson(fbkey.currentState!.value);
-        await Provider.of<UserProvider>(
-          context,
-          listen: false,
-        ).registerEmailMerchant(save);
-        Navigator.of(context).pushNamed(
+        String input =
+            fbkey.currentState?.fields['username']?.value.toString().trim() ??
+            '';
+
+        // 📌 Email эсвэл Phone эсэхийг шалгах
+        bool isEmail = RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(input);
+        bool isPhone = RegExp(r'^\d+$').hasMatch(input);
+
+        // 📌 Model-д тохируулж өгөгдөл бэлдэх
+        User save = User(
+          email: isEmail ? input : null,
+          phone: isPhone ? input : null,
+        );
+        widget.isRegister == true
+            ? await Provider.of<UserProvider>(
+                context,
+                listen: false,
+              ).registerEmailMerchant(save)
+            : await Provider.of<UserProvider>(
+                context,
+                listen: false,
+              ).forgot(save);
+        await Navigator.of(context).pushNamed(
           RegisterOtpPage.routeName,
           arguments: RegisterOtpPageArguments(
-            email: save.email!,
-            method: 'REGISTER',
+            userName: input,
+            method: widget.isRegister == true ? 'REGISTER' : "FORGOT",
           ),
         );
         setState(() {
@@ -88,7 +111,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      translateKey.translate('sign_up'),
+                      widget.isRegister == true
+                          ? translateKey.translate('sign_up')
+                          : translateKey.translate('change_passwords'),
                       style: TextStyle(
                         color: black,
                         fontSize: 24,
@@ -114,14 +139,15 @@ class _RegisterPageState extends State<RegisterPage> {
                             inputType: TextInputType.text,
                             controller: controllerUsername,
                             colortext: black,
-                            name: 'email',
+                            name: 'username',
                             color: white,
                             suffixIcon: null,
                             hintText:
-                                "${translateKey.translate('please_enter_your_email')}",
+                                "${translateKey.translate('phone_number')}, ${translateKey.translate('email')}",
                             hintTextColor: gray500,
                             labelColor: gray800,
-                            labelText: "${translateKey.translate('email')} ",
+                            labelText:
+                                "${translateKey.translate('phone')} / ${translateKey.translate('email')}",
                             validator: FormBuilderValidators.compose([
                               FormBuilderValidators.required(
                                 errorText: translateKey.translate(

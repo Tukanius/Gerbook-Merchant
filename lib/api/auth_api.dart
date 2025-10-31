@@ -30,12 +30,20 @@ class AuthApi extends HttpRequest {
   }
 
   registerEmail(User data) async {
-    var res = await post('/auth/register', data: data.toJson(), handler: true);
+    var res = await post(
+      '/auth/register/merchant',
+      data: data.toJson(),
+      handler: true,
+    );
     return User.fromJson(res as Map<String, dynamic>);
   }
 
   forgot(User data) async {
-    var res = await post('/auth/forgot', data: data.toJson(), handler: true);
+    var res = await post(
+      '/auth/forgot/merchant',
+      data: data.toJson(),
+      handler: true,
+    );
     return User.fromJson(res as Map<String, dynamic>);
   }
 
@@ -45,7 +53,7 @@ class AuthApi extends HttpRequest {
   }
 
   logout() async {
-    var res = await post('/auth/logout', handler: false);
+    var res = await post('/auth/logout/', handler: false);
     return res;
   }
 

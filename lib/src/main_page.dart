@@ -9,6 +9,7 @@ import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/add_ger_page.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/dashboard_page/dashboard_page.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/ger_page/ger_page.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/home_page/custom_drawer.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/home_page/home_page.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/order_page/order_page.dart';
 import 'package:provider/provider.dart';
@@ -38,9 +39,16 @@ class _MainPageState extends State<MainPage> {
   }
 
   List<Widget> get widgetOptions {
-    return [HomePage(), GerPage(), AddGerPage(), OrderPage(), DashboardPage()];
+    return [
+      HomePage(scaffoldKey: scaffoldKey, ),
+      GerPage(),
+      AddGerPage(),
+      OrderPage(),
+      DashboardPage(),
+    ];
   }
 
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     final bool isKeyboardVisible = KeyboardVisibilityProvider.isKeyboardVisible(
@@ -60,6 +68,8 @@ class _MainPageState extends State<MainPage> {
     return PopScope(
       canPop: false,
       child: Scaffold(
+        key: scaffoldKey,
+        drawer: CustomDrawer(),
         extendBodyBehindAppBar: true,
         body: Center(child: widgetOptions.elementAt(_selectedIndex)),
         backgroundColor: white,

@@ -17,16 +17,20 @@ import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 
 class RegisterOtpPageArguments {
-  final String email;
+  final String userName;
   final String method;
-  RegisterOtpPageArguments({required this.email, required this.method});
+  RegisterOtpPageArguments({required this.userName, required this.method});
 }
 
 class RegisterOtpPage extends StatefulWidget {
-  final String email;
+  final String userName;
   final String method;
   static const routeName = 'RegisterOtpPage';
-  const RegisterOtpPage({super.key, required this.email, required this.method});
+  const RegisterOtpPage({
+    super.key,
+    required this.userName,
+    required this.method,
+  });
 
   @override
   State<RegisterOtpPage> createState() => _RegisterOtpPageState();
@@ -66,7 +70,7 @@ class _RegisterOtpPageState extends State<RegisterOtpPage>
     user = await Provider.of<UserProvider>(
       context,
       listen: false,
-    ).getOtp(widget.method, widget.email.toLowerCase().trim());
+    ).getOtp(widget.method, widget.userName.toLowerCase().trim());
     setState(() {
       isLoadingPage = false;
     });
@@ -274,7 +278,9 @@ class _RegisterOtpPageState extends State<RegisterOtpPage>
                                               listen: false,
                                             ).getOtp(
                                               widget.method,
-                                              widget.email.toLowerCase().trim(),
+                                              widget.userName
+                                                  .toLowerCase()
+                                                  .trim(),
                                             );
                                       },
                                       child: Text(

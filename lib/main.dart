@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/user_provider.dart';
 import 'package:merchant_gerbook_flutter/services/navigation.dart';
-import 'package:merchant_gerbook_flutter/src/auth/forget_password.dart';
 import 'package:merchant_gerbook_flutter/src/auth/login_page.dart';
 import 'package:merchant_gerbook_flutter/src/auth/onboarding_page.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_create_password.dart';
@@ -16,8 +15,10 @@ import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_steppe
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_stepper.dart/register_bank.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_stepper.dart/register_info.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_stepper.dart/register_sign.dart';
+import 'package:merchant_gerbook_flutter/src/localization/change_language.dart';
 import 'package:merchant_gerbook_flutter/src/localization/localization_local.dart';
 import 'package:merchant_gerbook_flutter/src/main_page.dart';
+import 'package:merchant_gerbook_flutter/src/notification_page/notification_page.dart';
 import 'package:merchant_gerbook_flutter/src/splash_page/splash_page.dart';
 // import 'package:gerbook_flutter/src/widget/dialog/dialog_manager.dart';
 import 'package:provider/provider.dart';
@@ -154,12 +155,13 @@ class _MyAppState extends State<MyApp> with AfterLayoutMixin {
                 },
               );
             case RegisterPage.routeName:
+              RegisterPageArguments arguments =
+                  settings.arguments as RegisterPageArguments;
               return MaterialPageRoute(
                 builder: (context) {
-                  return const RegisterPage();
+                  return RegisterPage(isRegister: arguments.isRegister);
                 },
               );
-
             case RegisterOtpPage.routeName:
               RegisterOtpPageArguments arguments =
                   settings.arguments as RegisterOtpPageArguments;
@@ -167,17 +169,10 @@ class _MyAppState extends State<MyApp> with AfterLayoutMixin {
                 builder: (context) {
                   return RegisterOtpPage(
                     method: arguments.method,
-                    email: arguments.email,
+                    userName: arguments.userName,
                   );
                 },
               );
-            case ForgetPassword.routeName:
-              return MaterialPageRoute(
-                builder: (context) {
-                  return const ForgetPassword();
-                },
-              );
-
             case RegisterCreatePassword.routeName:
               RegisterCreatePasswordArguments arguments =
                   settings.arguments as RegisterCreatePasswordArguments;
@@ -220,6 +215,35 @@ class _MyAppState extends State<MyApp> with AfterLayoutMixin {
                   return CameraPage(
                     listenController: arguments.listenController,
                   );
+                },
+              );
+            case ChangeLanguagePage.routeName:
+              return PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) {
+                  return const ChangeLanguagePage();
+                },
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                      const begin = Offset(0.0, 1.0);
+                      const end = Offset.zero;
+                      const curve = Curves.easeInOut;
+
+                      var tween = Tween(
+                        begin: begin,
+                        end: end,
+                      ).chain(CurveTween(curve: curve));
+                      var offsetAnimation = animation.drive(tween);
+
+                      return SlideTransition(
+                        position: offsetAnimation,
+                        child: child,
+                      );
+                    },
+              );
+            case NotificationPage.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return const NotificationPage();
                 },
               );
             default:

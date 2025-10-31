@@ -17,8 +17,8 @@ import 'http_handler.dart';
 
 class HttpRequest {
   // static const host = "http://dev-cb-admin.zto.mn";
-  static const host = 'https://gerbook.com';
-  // static const host = 'https://gb.zto.mn';
+  // static const host = 'https://gerbook.com';
+  static const host = 'https://gb.zto.mn';
 
   // static const host = 'https://app.xotsocial.mn';
 

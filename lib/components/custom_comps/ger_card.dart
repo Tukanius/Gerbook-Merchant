@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
+import 'package:merchant_gerbook_flutter/models/properties.dart';
+import 'package:merchant_gerbook_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 
 class GerCard extends StatefulWidget {
-  const GerCard({super.key});
+  final Function() onTap;
+  final Properties data;
+  const GerCard({super.key, required this.onTap, required this.data});
 
   @override
   State<GerCard> createState() => _GerCardState();
@@ -16,34 +21,47 @@ class _GerCardState extends State<GerCard> {
   @override
   Widget build(BuildContext context) {
     final translateKey = Provider.of<LocalizationProvider>(context);
-    final mediaQuery = MediaQuery.of(context);
+    // final mediaQuery = MediaQuery.of(context);
 
-    return Expanded(
+    return GestureDetector(
+      onTap: () {
+        widget.onTap();
+      },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
-            width: mediaQuery.size.width,
-            height: 178,
-            clipBehavior: Clip.antiAlias,
-            decoration: ShapeDecoration(
-              image: DecorationImage(
-                image: NetworkImage(
-                  "https://placehold.co/178x178/gray5/gray50/png",
-                ),
-                fit: BoxFit.cover,
-              ),
-              shape: RoundedRectangleBorder(
-                side: BorderSide(width: 1, color: gray200),
-                borderRadius: BorderRadius.circular(12),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadiusGeometry.circular(12),
+              child: BlurHash(
+                color: gray100,
+                hash: '${widget.data.mainImage?.blurhash}',
+                image: '${widget.data.mainImage?.url}',
+                imageFit: BoxFit.cover,
               ),
             ),
+            // Container(
+            //   width: mediaQuery.size.width,
+            //   clipBehavior: Clip.antiAlias,
+            //   decoration: ShapeDecoration(
+            //     image: DecorationImage(
+            //       image: NetworkImage(
+            //         "https://placehold.co/178x178/gray5/gray50/png",
+            //       ),
+            //       fit: BoxFit.cover,
+            //     ),
+            //     shape: RoundedRectangleBorder(
+            //       side: BorderSide(width: 1, color: gray200),
+            //       borderRadius: BorderRadius.circular(12),
+            //     ),
+            //   ),
+            // ),
           ),
           SizedBox(height: 4),
           Text(
-            'Mongolian traditional house Ger',
-            maxLines: 2,
+            '${widget.data.name ?? '-'}',
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontFamily: 'Lato',
@@ -64,8 +82,9 @@ class _GerCardState extends State<GerCard> {
                   fontWeight: FontWeight.w400,
                 ),
               ),
+
               SizedBox(width: 4),
-              status == false
+              widget.data.isActive == true
                   ? Text(
                       translateKey.translate('active'),
                       style: TextStyle(
@@ -99,7 +118,8 @@ class _GerCardState extends State<GerCard> {
                 ),
               ),
               SizedBox(width: 4),
-              status == true
+
+              widget.data.isAdminActive == true
                   ? Text(
                       translateKey.translate('active'),
                       style: TextStyle(
@@ -130,7 +150,7 @@ class _GerCardState extends State<GerCard> {
               ),
               SizedBox(width: 2),
               Text(
-                '4.5',
+                '${widget.data.avgRate?.toStringAsFixed(1) ?? '0'}',
                 style: TextStyle(
                   color: gray600,
                   fontSize: 12,
@@ -152,7 +172,7 @@ class _GerCardState extends State<GerCard> {
                     ),
                     SizedBox(width: 2),
                     Text(
-                      '1',
+                      '0',
                       style: TextStyle(
                         fontFamily: 'Lato',
                         fontSize: 12,
@@ -183,7 +203,7 @@ class _GerCardState extends State<GerCard> {
                     ),
                     SizedBox(width: 2),
                     Text(
-                      '1',
+                      '0',
                       style: TextStyle(
                         fontFamily: 'Lato',
                         fontSize: 12,
@@ -215,7 +235,7 @@ class _GerCardState extends State<GerCard> {
                     ),
                     SizedBox(width: 2),
                     Text(
-                      '1',
+                      '0',
                       style: TextStyle(
                         fontFamily: 'Lato',
                         fontSize: 12,
@@ -230,15 +250,18 @@ class _GerCardState extends State<GerCard> {
           ),
           SizedBox(height: 4),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                '2,500,000₮',
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: primary,
+              Expanded(
+                child: Text(
+                  '${Utils().formatCurrencyDouble(widget.data.price?.toDouble() ?? 0)}₮',
+                  style: TextStyle(
+                    fontFamily: 'Lato',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: primary,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               SizedBox(width: 4),
@@ -250,6 +273,8 @@ class _GerCardState extends State<GerCard> {
                   fontWeight: FontWeight.w400,
                   color: gray600,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),

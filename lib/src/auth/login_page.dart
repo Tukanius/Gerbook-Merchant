@@ -15,7 +15,6 @@ import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
 import 'package:merchant_gerbook_flutter/models/user.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/user_provider.dart';
-import 'package:merchant_gerbook_flutter/src/auth/forget_password.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_page.dart';
 import 'package:merchant_gerbook_flutter/src/splash_page/splash_page.dart';
 import 'package:merchant_gerbook_flutter/utils/secure_storage.dart';
@@ -54,23 +53,35 @@ class _LoginPageState extends State<LoginPage> with AfterLayoutMixin {
 
   onSubmit() async {
     FocusScope.of(context).unfocus();
-    final String userName;
     if (fbkey.currentState!.saveAndValidate()) {
       try {
         setState(() {
           isLoading = true;
         });
-        if (saveUserName == true) {
-          userName = fbkey.currentState?.fields['email']?.value;
-          _storePhone(userName);
+        String input =
+            fbkey.currentState?.fields['username']?.value.toString().trim() ??
+            '';
+
+        // 📌 Email эсвэл Phone эсэхийг шалгах
+        bool isEmail = RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(input);
+        bool isPhone = RegExp(r'^\d+$').hasMatch(input);
+
+        // 📌 Model-д тохируулж өгөгдөл бэлдэх
+        User save = User(
+          email: isEmail ? input : null,
+          phone: isPhone ? input : null,
+          password: fbkey.currentState?.fields['password']?.value,
+        );
+
+        // Хэрэглэгчийн нэрийг хадгалах тохиргоо
+        if (saveUserName) {
+          _storeUserName(input);
         } else {
           secureStorage.deleteAll();
         }
-        User save = User.fromJson(fbkey.currentState!.value);
-        save.email.toString().trim();
 
         await Provider.of<UserProvider>(context, listen: false).login(save);
-        UserProvider().setUsername(save.userName.toString());
+        await UserProvider().setUsername(save.userName.toString());
         await Provider.of<UserProvider>(context, listen: false).me(true);
 
         setState(() {
@@ -86,7 +97,7 @@ class _LoginPageState extends State<LoginPage> with AfterLayoutMixin {
     }
   }
 
-  _storePhone(String userName) async {
+  _storeUserName(String userName) async {
     await secureStorage.setUserName(userName);
   }
 
@@ -189,7 +200,7 @@ class _LoginPageState extends State<LoginPage> with AfterLayoutMixin {
                                     inputType: TextInputType.text,
                                     controller: controllerPhone,
                                     colortext: black,
-                                    name: 'email',
+                                    name: 'username',
                                     color: white,
                                     suffixIcon: null,
                                     hintText:
@@ -200,7 +211,7 @@ class _LoginPageState extends State<LoginPage> with AfterLayoutMixin {
                                     },
                                     labelColor: white,
                                     labelText:
-                                        "${translateKey.translate('login')} ${translateKey.translate('name').toLowerCase()}",
+                                        "${translateKey.translate('phone')} / ${translateKey.translate('email')}",
                                     validator: FormBuilderValidators.compose([
                                       FormBuilderValidators.required(
                                         errorText: translateKey.translate(
@@ -303,9 +314,12 @@ class _LoginPageState extends State<LoginPage> with AfterLayoutMixin {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    Navigator.of(
-                                      context,
-                                    ).pushNamed(ForgetPassword.routeName);
+                                    Navigator.of(context).pushNamed(
+                                      RegisterPage.routeName,
+                                      arguments: RegisterPageArguments(
+                                        isRegister: false,
+                                      ),
+                                    );
                                   },
                                   child: Text(
                                     translateKey.translate('forgot_password'),
@@ -360,6 +374,10 @@ class _LoginPageState extends State<LoginPage> with AfterLayoutMixin {
                                             onTap: () {
                                               Navigator.of(context).pushNamed(
                                                 RegisterPage.routeName,
+                                                arguments:
+                                                    RegisterPageArguments(
+                                                      isRegister: true,
+                                                    ),
                                               );
                                             },
                                             child: Text(
@@ -377,75 +395,75 @@ class _LoginPageState extends State<LoginPage> with AfterLayoutMixin {
                                       ),
                                     ),
                                     SizedBox(height: 16),
-                                    Row(
-                                      children: [
-                                        SizedBox(width: 16),
-                                        Expanded(
-                                          child: Container(
-                                            height: 1,
-                                            color: white,
-                                          ),
-                                        ),
-                                        SizedBox(width: 12),
-                                        Text(
-                                          translateKey.translate('or'),
-                                          style: TextStyle(
-                                            color: white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        SizedBox(width: 12),
-                                        Expanded(
-                                          child: Container(
-                                            height: 1,
-                                            color: white,
-                                          ),
-                                        ),
-                                        SizedBox(width: 16),
-                                      ],
-                                    ),
-                                    SizedBox(height: 16),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
-                                            color: white,
-                                            border: Border.all(color: gray300),
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: 10,
-                                            horizontal: 12,
-                                          ),
-                                          child: SvgPicture.asset(
-                                            'assets/svg/google.svg',
-                                          ),
-                                        ),
-                                        SizedBox(width: 16),
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
-                                            color: black,
-                                            border: Border.all(color: black),
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: 10,
-                                            horizontal: 12,
-                                          ),
-                                          child: SvgPicture.asset(
-                                            'assets/svg/apple.svg',
-                                            color: white,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                    // Row(
+                                    //   children: [
+                                    //     SizedBox(width: 16),
+                                    //     Expanded(
+                                    //       child: Container(
+                                    //         height: 1,
+                                    //         color: white,
+                                    //       ),
+                                    //     ),
+                                    //     SizedBox(width: 12),
+                                    //     Text(
+                                    //       translateKey.translate('or'),
+                                    //       style: TextStyle(
+                                    //         color: white,
+                                    //         fontSize: 14,
+                                    //         fontWeight: FontWeight.w600,
+                                    //       ),
+                                    //     ),
+                                    //     SizedBox(width: 12),
+                                    //     Expanded(
+                                    //       child: Container(
+                                    //         height: 1,
+                                    //         color: white,
+                                    //       ),
+                                    //     ),
+                                    //     SizedBox(width: 16),
+                                    //   ],
+                                    // ),
+                                    // SizedBox(height: 16),
+                                    // Row(
+                                    //   mainAxisAlignment:
+                                    //       MainAxisAlignment.center,
+                                    //   children: [
+                                    //     Container(
+                                    //       decoration: BoxDecoration(
+                                    //         borderRadius: BorderRadius.circular(
+                                    //           12,
+                                    //         ),
+                                    //         color: white,
+                                    //         border: Border.all(color: gray300),
+                                    //       ),
+                                    //       padding: EdgeInsets.symmetric(
+                                    //         vertical: 10,
+                                    //         horizontal: 12,
+                                    //       ),
+                                    //       child: SvgPicture.asset(
+                                    //         'assets/svg/google.svg',
+                                    //       ),
+                                    //     ),
+                                    //     SizedBox(width: 16),
+                                    //     Container(
+                                    //       decoration: BoxDecoration(
+                                    //         borderRadius: BorderRadius.circular(
+                                    //           12,
+                                    //         ),
+                                    //         color: black,
+                                    //         border: Border.all(color: black),
+                                    //       ),
+                                    //       padding: EdgeInsets.symmetric(
+                                    //         vertical: 10,
+                                    //         horizontal: 12,
+                                    //       ),
+                                    //       child: SvgPicture.asset(
+                                    //         'assets/svg/apple.svg',
+                                    //         color: white,
+                                    //       ),
+                                    //     ),
+                                    //   ],
+                                    // ),
                                   ],
                                 )
                               : SizedBox(),

@@ -61,6 +61,7 @@ class _RegisterSignState extends State<RegisterSign> with AfterLayoutMixin {
 
   onSubmit() async {
     UploadImage upload = UploadImage();
+    User uploadSign = User();
 
     if (signController.isEmpty == false && checkTerm == true) {
       try {
@@ -86,9 +87,9 @@ class _RegisterSignState extends State<RegisterSign> with AfterLayoutMixin {
         await file.writeAsBytes(signatureBytes);
 
         upload = await AuthApi().upload(file.path);
-        user.signature = upload.url;
+        uploadSign.signature = upload.url;
 
-        await AuthApi().postContract(user);
+        await AuthApi().postContract(uploadSign);
         setState(() {
           isLoading = false;
         });
@@ -362,37 +363,41 @@ class _RegisterSignState extends State<RegisterSign> with AfterLayoutMixin {
                         ),
                       ),
                     ),
-                    Align(
-                      alignment: AlignmentGeometry.bottomCenter,
-                      child: Container(
-                        padding: EdgeInsets.only(
-                          bottom: Platform.isIOS
-                              ? MediaQuery.of(context).padding.bottom
-                              : 16,
-                          left: 16,
-                          right: 16,
-                          top: 16,
-                        ),
-                        color: white,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            CustomButton(
-                              labelText: translateKey.translate('continue'),
-                              onClick: () {
-                                Navigator.of(
-                                  context,
-                                ).pushNamed(RegisterBank.routeName);
-                              },
-                              isLoading: isLoading,
-                              buttonColor: primary,
-                              textColor: white,
-                              buttonLoaderColor: white,
+                    canEdit == false
+                        ? Align(
+                            alignment: AlignmentGeometry.bottomCenter,
+                            child: Container(
+                              padding: EdgeInsets.only(
+                                bottom: Platform.isIOS
+                                    ? MediaQuery.of(context).padding.bottom
+                                    : 16,
+                                left: 16,
+                                right: 16,
+                                top: 16,
+                              ),
+                              color: white,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  CustomButton(
+                                    labelText: translateKey.translate(
+                                      'continue',
+                                    ),
+                                    onClick: () {
+                                      Navigator.of(
+                                        context,
+                                      ).pushNamed(RegisterBank.routeName);
+                                    },
+                                    isLoading: isLoading,
+                                    buttonColor: primary,
+                                    textColor: white,
+                                    buttonLoaderColor: white,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
+                          )
+                        : SizedBox(),
                   ],
                 ),
         ),

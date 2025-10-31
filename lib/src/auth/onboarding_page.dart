@@ -17,10 +17,17 @@ class OnboardingPage extends StatefulWidget {
 }
 
 class _OnboardingPageState extends State<OnboardingPage> {
+  bool isLoading = false;
   Future<void> _completeOnboarding(BuildContext context) async {
+    setState(() {
+      isLoading = true;
+    });
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('seenOnboarding', true);
-    Navigator.of(context).pushNamed(SplashPage.routeName);
+    await Navigator.of(context).pushNamed(SplashPage.routeName);
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -79,11 +86,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     CustomButton(
                       buttonLoaderColor: white,
                       labelText: translateKey.translate('continue'),
-                      onClick: () {
-                        _completeOnboarding(context);
-                      },
+                      onClick: isLoading == true
+                          ? () {}
+                          : () {
+                              _completeOnboarding(context);
+                            },
                       buttonColor: primary,
-                      isLoading: false,
+                      isLoading: isLoading,
                       textColor: white,
                     ),
                     SizedBox(

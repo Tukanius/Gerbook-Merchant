@@ -56,6 +56,7 @@ const Color borderColor = Color(0xffDCDCE5);
 
 const Color textBlue = Color(0xff1570EF);
 const Color primary = Color(0xff326144);
+const Color primaryDrawer = Color(0xff67C78C);
 // const Color primary50 = Color(0xffF2F7F3);
 const Color primary200 = Color(0xffC2D8C7);
 const Color primary100 = Color(0xffE0EBE2);
@@ -65,6 +66,8 @@ const Color blue200 = Color(0xffBADFFD);
 const Color oceanBlue = Color(0xff0259A2);
 const Color lightBlue = Color(0xff0BA5EC);
 const Color grayAccent = Color(0xFFF9F9F9);
+
+const Color unselectedBar = Color(0xFFE3E3E3);
 
 const Color gray24 = Color(0xFFFBFCFC);
 const Color gray25 = Color(0xFFFCFCFD);
