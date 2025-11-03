@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/add_ger_page.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/dashboard_page/dashboard_page.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/ger_page/ger_page.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/home_page/custom_drawer.dart';
@@ -40,9 +41,13 @@ class _MainPageState extends State<MainPage> {
 
   List<Widget> get widgetOptions {
     return [
-      HomePage(scaffoldKey: scaffoldKey, ),
+      HomePage(
+        scaffoldKey: scaffoldKey,
+        onChangePage: (index) => onItemTapped(index),
+      ),
       GerPage(),
       AddGerPage(),
+
       OrderPage(),
       DashboardPage(),
     ];
@@ -119,7 +124,23 @@ class _MainPageState extends State<MainPage> {
                       unselectedIconPath: 'assets/svg/addger_unselected.svg',
                       index: 2,
                       selectedIndex: _selectedIndex,
-                      onTap: onItemTapped,
+                      onTap: (index) {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(16),
+                              topRight: Radius.circular(16),
+                            ),
+                          ),
+                          isDismissible: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) {
+                            return CreateCamp();
+                          },
+                        );
+                      },
                       label: translateKey.translate('create_listing'),
                     ),
                     SizedBox(width: 4),

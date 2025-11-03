@@ -73,7 +73,7 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
     setState(() {
       limit = 10;
     });
-    await await listOfBookings(
+    await listOfBookings(
       page,
       limit,
       query: searchController.text,
@@ -91,7 +91,7 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
     setState(() {
       limit += 10;
     });
-    await await listOfBookings(
+    await listOfBookings(
       page,
       limit,
       query: searchController.text,

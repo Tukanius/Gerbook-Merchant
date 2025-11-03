@@ -21,7 +21,13 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HomePage extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
-  const HomePage({super.key, required this.scaffoldKey});
+  final Function(int) onChangePage;
+
+  const HomePage({
+    super.key,
+    required this.scaffoldKey,
+    required this.onChangePage,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -430,7 +436,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
                                       right: 0,
                                       child: GestureDetector(
                                         onTap: () {
-                                          
+                                          widget.onChangePage(3);
                                         },
                                         child: Row(
                                           mainAxisAlignment:
@@ -491,7 +497,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  print('Working');
+                                  widget.onChangePage(1);
                                 },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,

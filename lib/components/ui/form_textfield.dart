@@ -42,6 +42,7 @@ class FormTextField extends StatefulWidget {
   final Function()? onTap;
   final bool? isDense;
   final EdgeInsetsGeometry? contentPadding;
+  final double? borderRadius;
 
   const FormTextField({
     super.key,
@@ -83,6 +84,7 @@ class FormTextField extends StatefulWidget {
     this.onTap,
     this.isDense,
     this.contentPadding,
+    this.borderRadius,
   });
 
   @override
@@ -174,23 +176,23 @@ class FormTextFieldState extends State<FormTextField> {
               widget.decoration ??
               InputDecoration(
                 errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(widget.borderRadius ?? 8),
                   borderSide: BorderSide(color: gray300),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(widget.borderRadius ?? 8),
                   borderSide: BorderSide(color: gray300),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(widget.borderRadius ?? 8),
                   borderSide: BorderSide(color: gray300),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(widget.borderRadius ?? 8),
                   borderSide: BorderSide(color: gray300),
                 ),
                 disabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(widget.borderRadius ?? 8),
                   borderSide: BorderSide(color: gray300),
                 ),
                 hintText: widget.hintText,
@@ -201,7 +203,9 @@ class FormTextFieldState extends State<FormTextField> {
                 ),
                 suffixIcon: widget.suffixIcon,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(
+                    widget.borderRadius ?? 16,
+                  ),
                   borderSide: BorderSide.none,
                 ),
                 contentPadding: widget.contentPadding != null

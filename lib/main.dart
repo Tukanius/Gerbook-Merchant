@@ -20,6 +20,9 @@ import 'package:merchant_gerbook_flutter/src/localization/localization_local.dar
 import 'package:merchant_gerbook_flutter/src/main_page.dart';
 import 'package:merchant_gerbook_flutter/src/notification_page/notification_page.dart';
 import 'package:merchant_gerbook_flutter/src/splash_page/splash_page.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_camp_data.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/ger_page/ger_detail_page.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/order_page/order_detail_page.dart';
 // import 'package:gerbook_flutter/src/widget/dialog/dialog_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
@@ -244,6 +247,28 @@ class _MyAppState extends State<MyApp> with AfterLayoutMixin {
               return MaterialPageRoute(
                 builder: (context) {
                   return const NotificationPage();
+                },
+              );
+            case CreateCampData.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return const CreateCampData();
+                },
+              );
+            case GerDetailPage.routeName:
+              GerDetailPageArguments arguments =
+                  settings.arguments as GerDetailPageArguments;
+              return MaterialPageRoute(
+                builder: (context) {
+                  return GerDetailPage(id: arguments.id);
+                },
+              );
+            case OrderDetailPage.routeName:
+              OrderDetailPageArguments arguments =
+                  settings.arguments as OrderDetailPageArguments;
+              return MaterialPageRoute(
+                builder: (context) {
+                  return OrderDetailPage(id: arguments.id);
                 },
               );
             default:

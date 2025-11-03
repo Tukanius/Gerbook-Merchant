@@ -1,4 +1,5 @@
 import 'package:merchant_gerbook_flutter/models/booking_list.dart';
+import 'package:merchant_gerbook_flutter/models/camp_list_data.dart';
 import 'package:merchant_gerbook_flutter/models/chart_data.dart';
 import 'package:merchant_gerbook_flutter/models/dashboard.dart';
 import 'package:merchant_gerbook_flutter/models/notify_list.dart';
@@ -59,4 +60,14 @@ class ProductApi extends HttpRequest {
     );
     return Result.fromJson(res, Transaction.fromJson);
   }
+
+  getCampList(ResultArguments resultArguments) async {
+    var res = await get('/merchants/camps', data: resultArguments.toJson());
+    return Result.fromJson(res, CampListData.fromJson);
+  }
+
+  // getOrderData(String id) async {
+  //   var res = await get('/merchants/orders/chart/$id');
+  //   return OrderData.fromJson(res as Map<String, dynamic>);
+  // }
 }
