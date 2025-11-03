@@ -35,6 +35,8 @@ const Color error700 = Color(0xFFB42318);
 const Color green = Color(0xFF008000);
 const Color greenSuccess = Color(0xFF039855);
 const Color success100 = Color(0xFFD1FADF);
+const Color success500 = Color(0xFF12B669);
+const Color success600 = Color(0xFF039754);
 const Color success700 = Color(0xFF027A48);
 
 const Color blackText = Color(0xFF0C0C0D);

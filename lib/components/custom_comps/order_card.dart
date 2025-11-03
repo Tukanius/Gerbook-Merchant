@@ -24,7 +24,10 @@ class _OrderCardState extends State<OrderCard> {
 
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed(OrderDetailPage.routeName);
+        Navigator.of(context).pushNamed(
+          OrderDetailPage.routeName,
+          arguments: OrderDetailPageArguments(id: widget.data.id!),
+        );
       },
       child: Container(
         decoration: BoxDecoration(
