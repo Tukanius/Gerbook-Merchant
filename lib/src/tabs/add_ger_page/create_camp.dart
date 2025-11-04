@@ -11,7 +11,7 @@ import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
-import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_camp_data.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_camp_pages.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -176,76 +176,67 @@ class _CreateCampState extends State<CreateCamp> with AfterLayoutMixin {
                     isLoadingCamp == true
                         ? CustomLoader()
                         : campList.rows?.isEmpty == true
-                        ? Row(
+                        ? Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Column(
-                                children: [
-                                  SizedBox(height: 32),
-                                  SvgPicture.asset(
-                                    'assets/svg/empty_box.svg',
-                                    width: 141,
+                              SizedBox(height: 32),
+                              SvgPicture.asset(
+                                'assets/svg/empty_box.svg',
+                                width: 141,
+                              ),
+                              SizedBox(height: 12),
+                              Text(
+                                translateKey.translate('no_camp_data'),
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: gray900,
+                                ),
+                              ),
+                              SizedBox(height: 2),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Text(
+                                  translateKey.translate('no_camp_create_camp'),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: gray600,
                                   ),
-                                  SizedBox(height: 12),
-                                  Column(
-                                    children: [
-                                      Text(
-                                        translateKey.translate('no_camp_data'),
-                                        style: TextStyle(
-                                          fontFamily: 'Lato',
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          color: gray900,
-                                        ),
-                                      ),
-                                      SizedBox(height: 2),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 16,
-                                        ),
-                                        child: Text(
-                                          translateKey.translate(
-                                            'no_camp_create_camp',
-                                          ),
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontFamily: 'Lato',
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                            color: gray600,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                ),
+                              ),
+                              SizedBox(height: 12),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(
+                                    context,
+                                  ).popAndPushNamed(CreateCampPages.routeName);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: gray300),
                                   ),
-                                  SizedBox(height: 12),
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).popAndPushNamed(
-                                        CreateCampData.routeName,
-                                      );
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(color: gray300),
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 10,
-                                      ),
-                                      child: Text(
-                                        translateKey.translate('create_camp'),
-                                        style: TextStyle(
-                                          color: gray700,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 10,
+                                  ),
+                                  child: Text(
+                                    translateKey.translate('create_camp'),
+                                    style: TextStyle(
+                                      color: gray700,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                ],
+                                ),
                               ),
                             ],
                           )
@@ -293,7 +284,7 @@ class _CreateCampState extends State<CreateCamp> with AfterLayoutMixin {
                           onTap: () {
                             Navigator.of(
                               context,
-                            ).popAndPushNamed(CreateCampData.routeName);
+                            ).popAndPushNamed(CreateCampPages.routeName);
                           },
                           child: Container(
                             decoration: BoxDecoration(

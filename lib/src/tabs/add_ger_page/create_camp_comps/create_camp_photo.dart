@@ -14,7 +14,6 @@ import 'package:provider/provider.dart';
 class CreateCampPhoto extends StatefulWidget {
   final PageController pageController;
 
-  static const routeName = 'CreateCampPhoto';
   const CreateCampPhoto({super.key, required this.pageController});
 
   @override
@@ -133,357 +132,382 @@ class _CreateCampPhotoState extends State<CreateCampPhoto> {
     final translateKey = Provider.of<LocalizationProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: white,
-        elevation: 1,
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [SvgPicture.asset('assets/svg/chevron_left.svg')],
-          ),
-        ),
-        centerTitle: false,
-        title: Text(
-          translateKey.translate('create_camp'),
-          style: TextStyle(
-            color: gray800,
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(32),
-          child: Row(
-            children: [
-              SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    translateKey.translate('insert_picture'),
-                    style: TextStyle(
-                      color: gray800,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 2),
-                  Text(
-                    '${translateKey.translate('please_insert_camp_picture')}',
-                    // '${translateKey.translate('please_insert_camp_picture')}12312331231231212331213213213231213212311231233123123121233121321321323121321231',
-                    style: TextStyle(
-                      color: gray600,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        // actions: [],
-      ),
       backgroundColor: white,
       body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(height: 16),
-                  mainImage == null
-                      ? Container(
-                          height: 267,
-                          child: DottedBorder(
-                            options: RoundedRectDottedBorderOptions(
-                              dashPattern: [10, 5],
-                              strokeWidth: 1,
-                              radius: Radius.circular(16),
-                              color: gray400,
+          Column(
+            children: [
+              Padding(
+                padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SvgPicture.asset('assets/svg/selected_step.svg'),
+                    Expanded(child: Container(height: 2, color: gray200)),
+                    SvgPicture.asset('assets/svg/unselected_step.svg'),
+                    Expanded(child: Container(height: 2, color: gray200)),
+                    SvgPicture.asset('assets/svg/unselected_step.svg'),
+                    Expanded(child: Container(height: 2, color: gray200)),
+                    SvgPicture.asset('assets/svg/unselected_step.svg'),
+                    Expanded(child: Container(height: 2, color: gray200)),
+                    SvgPicture.asset('assets/svg/unselected_step.svg'),
+                  ],
+                ),
+              ),
+              SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(color: gray100)),
+                ),
+                padding: EdgeInsets.only(bottom: 12),
+                child: Row(
+                  children: [
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            translateKey.translate('insert_picture'),
+                            style: TextStyle(
+                              color: gray800,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
                             ),
-                            child: Container(
-                              width: mediaQuery.size.width,
-                              child: Column(
-                                children: [
-                                  SizedBox(height: 50),
-                                  SvgPicture.asset(
-                                    'assets/svg/upload_image.svg',
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            '${translateKey.translate('please_insert_camp_picture')}',
+                            style: TextStyle(
+                              color: gray600,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 16),
+                  ],
+                ),
+              ),
+
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 16),
+                        mainImage == null
+                            ? Container(
+                                height: 267,
+                                child: DottedBorder(
+                                  options: RoundedRectDottedBorderOptions(
+                                    dashPattern: [10, 5],
+                                    strokeWidth: 1,
+                                    radius: Radius.circular(16),
+                                    color: gray400,
                                   ),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    translateKey.translate('Ковер зураг нэмэх'),
-                                    style: TextStyle(
-                                      color: primary,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
+                                  child: Container(
+                                    width: mediaQuery.size.width,
+                                    child: Column(
+                                      children: [
+                                        SizedBox(height: 50),
+                                        SvgPicture.asset(
+                                          'assets/svg/upload_image.svg',
+                                        ),
+                                        SizedBox(height: 8),
+                                        Text(
+                                          translateKey.translate(
+                                            'Ковер зураг нэмэх',
+                                          ),
+                                          style: TextStyle(
+                                            color: primary,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          'PNG, JPG ${translateKey.translate('format')}',
+                                          style: TextStyle(
+                                            color: gray600,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                        // SizedBox(height: 2),
+                                        // Text(
+                                        //   translateKey.translate(
+                                        //     ' (Зургын хэмжээ томдоо 1200x1200)',
+                                        //   ),
+                                        //   style: TextStyle(
+                                        //     color: gray600,
+                                        //     fontSize: 12,
+                                        //     fontWeight: FontWeight.w400,
+                                        //   ),
+                                        // ),
+                                        SizedBox(height: 16),
+                                        GestureDetector(
+                                          onTap: () {
+                                            showOptions(context, false);
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: primary,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 10,
+                                            ),
+                                            child: Text(
+                                              translateKey.translate(
+                                                'insert_picture',
+                                              ),
+                                              style: TextStyle(
+                                                color: white,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 50),
+                                      ],
                                     ),
                                   ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    'PNG, JPG ${translateKey.translate('format')}',
-                                    style: TextStyle(
-                                      color: gray600,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
+                                ),
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadiusGeometry.circular(16),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      width: mediaQuery.size.width,
+                                      height: 267,
+                                      child: Image.file(
+                                        mainImage!,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
-                                  ),
-                                  // SizedBox(height: 2),
-                                  // Text(
-                                  //   translateKey.translate(
-                                  //     ' (Зургын хэмжээ томдоо 1200x1200)',
-                                  //   ),
-                                  //   style: TextStyle(
-                                  //     color: gray600,
-                                  //     fontSize: 12,
-                                  //     fontWeight: FontWeight.w400,
-                                  //   ),
-                                  // ),
-                                  SizedBox(height: 16),
-                                  GestureDetector(
-                                    onTap: () {
-                                      showOptions(context, false);
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: primary,
-                                        borderRadius: BorderRadius.circular(8),
+                                    Positioned(
+                                      top: 12,
+                                      right: 12,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            mainImage = null;
+                                          });
+                                        },
+                                        child: SvgPicture.asset(
+                                          'assets/svg/close_image.svg',
+                                        ),
                                       ),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 10,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                        SizedBox(height: 16),
+                        images!.isEmpty
+                            ? DottedBorder(
+                                options: RoundedRectDottedBorderOptions(
+                                  dashPattern: [10, 5],
+                                  strokeWidth: 1,
+                                  radius: Radius.circular(16),
+                                  color: gray400,
+                                ),
+                                child: Container(
+                                  width: mediaQuery.size.width,
+                                  child: Column(
+                                    children: [
+                                      SizedBox(height: 50),
+                                      SvgPicture.asset(
+                                        'assets/svg/upload_image.svg',
                                       ),
-                                      child: Text(
+                                      SizedBox(height: 8),
+                                      Text(
                                         translateKey.translate(
-                                          'insert_picture',
+                                          'add_camp_image',
                                         ),
                                         style: TextStyle(
-                                          color: white,
-                                          fontSize: 14,
+                                          color: primary,
+                                          fontSize: 16,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 50),
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                      : ClipRRect(
-                          borderRadius: BorderRadiusGeometry.circular(16),
-                          child: Stack(
-                            children: [
-                              Container(
-                                width: mediaQuery.size.width,
-                                height: 267,
-                                child: Image.file(
-                                  mainImage!,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Positioned(
-                                top: 12,
-                                right: 12,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      mainImage = null;
-                                    });
-                                  },
-                                  child: SvgPicture.asset(
-                                    'assets/svg/close_image.svg',
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                  SizedBox(height: 16),
-                  images!.isEmpty
-                      ? DottedBorder(
-                          options: RoundedRectDottedBorderOptions(
-                            dashPattern: [10, 5],
-                            strokeWidth: 1,
-                            radius: Radius.circular(16),
-                            color: gray400,
-                          ),
-                          child: Container(
-                            width: mediaQuery.size.width,
-                            child: Column(
-                              children: [
-                                SizedBox(height: 50),
-                                SvgPicture.asset('assets/svg/upload_image.svg'),
-                                SizedBox(height: 8),
-                                Text(
-                                  translateKey.translate('add_camp_image'),
-                                  style: TextStyle(
-                                    color: primary,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                SizedBox(height: 4),
-                                Text(
-                                  'PNG, JPG ${translateKey.translate('format')}',
-                                  style: TextStyle(
-                                    color: gray600,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                // SizedBox(height: 2),
-                                // Text(
-                                //   translateKey.translate(
-                                //     ' (Зургын хэмжээ томдоо 1200x1200)',
-                                //   ),
-                                //   style: TextStyle(
-                                //     color: gray600,
-                                //     fontSize: 12,
-                                //     fontWeight: FontWeight.w400,
-                                //   ),
-                                // ),
-                                SizedBox(height: 16),
-                                GestureDetector(
-                                  onTap: () {
-                                    showOptions(context, true);
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: primary,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 10,
-                                    ),
-                                    child: Text(
-                                      translateKey.translate('insert_picture'),
-                                      style: TextStyle(
-                                        color: white,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 50),
-                              ],
-                            ),
-                          ),
-                        )
-                      : Column(
-                          children: [
-                            Stack(
-                              children: [
-                                GridView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: images!.length,
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        crossAxisSpacing: 14,
-                                        mainAxisSpacing: 14,
-                                        childAspectRatio: 1,
-                                      ),
-                                  itemBuilder: (context, index) {
-                                    return Stack(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                          child: Image.file(
-                                            images![index],
-                                            fit: BoxFit.cover,
-                                            width: mediaQuery.size.width,
-                                            height: mediaQuery.size.height,
-                                          ),
+                                      SizedBox(height: 4),
+                                      Text(
+                                        'PNG, JPG ${translateKey.translate('format')}',
+                                        style: TextStyle(
+                                          color: gray600,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
                                         ),
-                                        Positioned(
-                                          top: 8,
-                                          right: 8,
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                images!.removeAt(index);
-                                              });
-                                            },
-                                            child: SvgPicture.asset(
-                                              'assets/svg/close_image.svg',
-                                              height: 32,
-                                              width: 32,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                ),
-                                Positioned(
-                                  bottom: 0,
-                                  left: 0,
-                                  right: 0,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
+                                      ),
+                                      // SizedBox(height: 2),
+                                      // Text(
+                                      //   translateKey.translate(
+                                      //     ' (Зургын хэмжээ томдоо 1200x1200)',
+                                      //   ),
+                                      //   style: TextStyle(
+                                      //     color: gray600,
+                                      //     fontSize: 12,
+                                      //     fontWeight: FontWeight.w400,
+                                      //   ),
+                                      // ),
+                                      SizedBox(height: 16),
                                       GestureDetector(
-                                        onTap: () => showOptions(context, true),
+                                        onTap: () {
+                                          showOptions(context, true);
+                                        },
                                         child: Container(
                                           decoration: BoxDecoration(
-                                            color: white,
-                                            border: Border.all(color: gray300),
+                                            color: primary,
                                             borderRadius: BorderRadius.circular(
-                                              100,
+                                              8,
                                             ),
                                           ),
-                                          padding: const EdgeInsets.symmetric(
+                                          padding: EdgeInsets.symmetric(
                                             horizontal: 16,
                                             vertical: 10,
                                           ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                          child: Text(
+                                            translateKey.translate(
+                                              'insert_picture',
+                                            ),
+                                            style: TextStyle(
+                                              color: white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 50),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : Column(
+                                children: [
+                                  Stack(
+                                    children: [
+                                      GridView.builder(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: images!.length,
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 2,
+                                              crossAxisSpacing: 14,
+                                              mainAxisSpacing: 14,
+                                              childAspectRatio: 1,
+                                            ),
+                                        itemBuilder: (context, index) {
+                                          return Stack(
                                             children: [
-                                              SvgPicture.asset(
-                                                'assets/svg/add_camp_info.svg',
-                                              ),
-                                              SizedBox(width: 8),
-                                              Text(
-                                                translateKey.translate(
-                                                  'add_more_images',
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                child: Image.file(
+                                                  images![index],
+                                                  fit: BoxFit.cover,
+                                                  width: mediaQuery.size.width,
+                                                  height:
+                                                      mediaQuery.size.height,
                                                 ),
-                                                style: const TextStyle(
-                                                  color: gray700,
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
+                                              ),
+                                              Positioned(
+                                                top: 8,
+                                                right: 8,
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      images!.removeAt(index);
+                                                    });
+                                                  },
+                                                  child: SvgPicture.asset(
+                                                    'assets/svg/close_image.svg',
+                                                    height: 32,
+                                                    width: 32,
+                                                  ),
                                                 ),
                                               ),
                                             ],
-                                          ),
+                                          );
+                                        },
+                                      ),
+                                      Positioned(
+                                        bottom: 0,
+                                        left: 0,
+                                        right: 0,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () =>
+                                                  showOptions(context, true),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: white,
+                                                  border: Border.all(
+                                                    color: gray300,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                        100,
+                                                      ),
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 16,
+                                                      vertical: 10,
+                                                    ),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      'assets/svg/add_camp_info.svg',
+                                                    ),
+                                                    SizedBox(width: 8),
+                                                    Text(
+                                                      translateKey.translate(
+                                                        'add_more_images',
+                                                      ),
+                                                      style: const TextStyle(
+                                                        color: gray700,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                  SizedBox(height: mediaQuery.padding.top + 80),
-                ],
+                                ],
+                              ),
+                        SizedBox(height: mediaQuery.padding.bottom + 80),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
           Align(
             alignment: Alignment.bottomCenter,
@@ -506,8 +530,18 @@ class _CreateCampPhotoState extends State<CreateCampPhoto> {
                 children: [
                   GestureDetector(
                     onTap: mainImage == null || images?.length == 0
-                        ? () {}
-                        : () {},
+                        ? () {
+                            widget.pageController.nextPage(
+                              duration: Duration(microseconds: 1000),
+                              curve: Curves.ease,
+                            );
+                          }
+                        : () {
+                            widget.pageController.nextPage(
+                              duration: Duration(microseconds: 1000),
+                              curve: Curves.ease,
+                            );
+                          },
                     child: Container(
                       decoration: BoxDecoration(
                         color: mainImage == null || images?.length == 0
