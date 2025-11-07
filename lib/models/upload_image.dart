@@ -8,8 +8,16 @@ class UploadImage {
   String? url;
   String? createdAt;
   String? updatedAt;
+  String? blurhash;
 
-  UploadImage({this.id, this.user, this.url, this.createdAt, this.updatedAt});
+  UploadImage({
+    this.id,
+    this.user,
+    this.url,
+    this.createdAt,
+    this.updatedAt,
+    this.blurhash,
+  });
   static $fromJson(Map<String, dynamic> json) => _$UploadImageFromJson(json);
 
   factory UploadImage.fromJson(Map<String, dynamic> json) =>

@@ -7,8 +7,8 @@ FilterModel _$FilterModelFromJson(Map<String, dynamic> json) {
     priceMax: json['priceMax'] != null ? json['priceMax'] as int : null,
     placeOffers: json['placeOffers'] != null
         ? (json['placeOffers'] as List)
-            .map((e) => PlaceOffers.fromJson(e))
-            .toList()
+              .map((e) => PlaceOffers.fromJson(e))
+              .toList()
         : null,
     tags: json['tags'] != null
         ? (json['tags'] as List).map((e) => Tags.fromJson(e)).toList()

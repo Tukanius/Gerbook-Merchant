@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 
 class CustomLoader extends StatefulWidget {
-  const CustomLoader({super.key});
+  final Color? loadColor;
+  const CustomLoader({super.key, this.loadColor});
 
   @override
   State<CustomLoader> createState() => _CustomLoaderState();
@@ -16,8 +17,15 @@ class _CustomLoaderState extends State<CustomLoader> {
   Widget build(BuildContext context) {
     return Platform.isAndroid
         ? Center(
-            child: CircularProgressIndicator(color: primary, strokeWidth: 1),
+            child: CircularProgressIndicator(
+              color: widget.loadColor ?? primary,
+              strokeWidth: 1,
+            ),
           )
-        : Center(child: CupertinoActivityIndicator(color: primary));
+        : Center(
+            child: CupertinoActivityIndicator(
+              color: widget.loadColor ?? primary,
+            ),
+          );
   }
 }

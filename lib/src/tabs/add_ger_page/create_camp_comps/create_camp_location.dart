@@ -2,14 +2,15 @@
 
 import 'dart:async';
 import 'dart:io';
-
+import 'dart:math';
 import 'package:after_layout/after_layout.dart';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:merchant_gerbook_flutter/api/product_api.dart';
 import 'package:merchant_gerbook_flutter/components/custom_loader/custom_loader.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
@@ -17,6 +18,7 @@ import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
 import 'package:merchant_gerbook_flutter/models/address.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/tools/create_camp_map.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/tools/custom_drop_down.dart';
 import 'package:provider/provider.dart';
 
@@ -47,12 +49,16 @@ class _CreateCampLocationState extends State<CreateCampLocation>
 
   TextEditingController country = TextEditingController();
   String? selectedCountry;
+  MapLibreMapController? mapController;
+  Result zones = Result();
+  String? selectedZone;
+  bool isLoadingButton = false;
 
   @override
   FutureOr<void> afterFirstLayout(BuildContext context) async {
     try {
       await listCountry(page, limit, level0: 0);
-      // await listPlace(page, limit, level0: 0);
+      zones = await ProductApi().getZones();
       setState(() {
         isLoadingPage = false;
       });
@@ -82,13 +88,94 @@ class _CreateCampLocationState extends State<CreateCampLocation>
   }
 
   String? level0Id;
-  String? level0Name;
   String? level1Id;
-  String? level1Name;
   String? level2Id;
-  String? level2Name;
   String? level3Id;
-  String? level3Name;
+  Address? selectedLevel0;
+  Address? selectedLevel1;
+  Address? selectedLevel2;
+  Address? selectedLevel3;
+  LatLng? droppedPin;
+
+  void openMapBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+      ),
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return CreateCampMap(
+          saveLatLng: (latlng) async {
+            Navigator.of(context).pop();
+            setState(() {
+              droppedPin = latlng;
+            });
+
+            await mapController?.addSymbol(
+              SymbolOptions(
+                geometry: droppedPin,
+                iconImage: 'custom-marker',
+                iconSize: 3,
+              ),
+            );
+            print('=========lattt=====');
+            print(latlng);
+            print('=========lattt=====');
+
+            // marker нэмнэ
+            // await controller!.addSymbol(
+            //   SymbolOptions(
+            //     geometry: latlng,
+            //     iconImage: 'custom-marker',
+            //     iconSize: 1.2,
+            //   ),
+            // );
+
+            await mapController?.animateCamera(
+              CameraUpdate.newLatLngZoom(latlng, 14),
+            );
+            print('=========lattt=====');
+            print(latlng);
+            print(mapController);
+            print('=========lattt=====');
+          },
+        );
+      },
+    );
+  }
+
+  onSubmit() async {
+    widget.pageController.nextPage(
+      duration: Duration(microseconds: 1000),
+      curve: Curves.ease,
+    );
+    if (isLoadingButton) {
+      try {
+        setState(() {
+          isLoadingButton = true;
+        });
+        widget.pageController.previousPage(
+          duration: Duration(microseconds: 1000),
+          curve: Curves.ease,
+        );
+        setState(() {
+          isLoadingButton = false;
+        });
+      } catch (e) {
+        setState(() {
+          isLoadingButton = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -108,32 +195,6 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                 children: [
                   Column(
                     children: [
-                      Padding(
-                        padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SvgPicture.asset('assets/svg/completed_step.svg'),
-                            Expanded(
-                              child: Container(height: 2, color: gray200),
-                            ),
-                            SvgPicture.asset('assets/svg/completed_step.svg'),
-                            Expanded(
-                              child: Container(height: 2, color: gray200),
-                            ),
-                            SvgPicture.asset('assets/svg/selected_step.svg'),
-                            Expanded(
-                              child: Container(height: 2, color: gray200),
-                            ),
-                            SvgPicture.asset('assets/svg/unselected_step.svg'),
-                            Expanded(
-                              child: Container(height: 2, color: gray200),
-                            ),
-                            SvgPicture.asset('assets/svg/unselected_step.svg'),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 8),
                       Container(
                         decoration: BoxDecoration(
                           border: Border(bottom: BorderSide(color: gray100)),
@@ -166,10 +227,28 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                 ],
                               ),
                             ),
+                            SizedBox(width: 8),
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: white,
+                                border: Border.all(color: gray300),
+                              ),
+                              padding: EdgeInsets.all(10),
+                              child: Text(
+                                '3/6',
+                                style: TextStyle(
+                                  color: gray800,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
                             SizedBox(width: 16),
                           ],
                         ),
                       ),
+
                       Expanded(
                         child: SingleChildScrollView(
                           child: Padding(
@@ -184,6 +263,22 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                       Row(
                                         children: [
                                           CustomDropDown(
+                                            searchLevel: 0,
+                                            clearId: (value) {
+                                              if (value == 0) {
+                                                setState(() {
+                                                  selectedLevel0 = null;
+                                                  selectedLevel1 = null;
+                                                  selectedLevel2 = null;
+                                                  selectedLevel3 = null;
+                                                  level0Id = null;
+                                                  level1Id = null;
+                                                  level2Id = null;
+                                                  level3Id = null;
+                                                });
+                                              }
+                                            },
+                                            onActive: true,
                                             titleText:
                                                 '${translateKey.translate('country')}',
                                             hintText:
@@ -201,18 +296,12 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                                 limit,
                                                 // query: value,
                                                 level0: 1,
-                                                parent: value,
+                                                parent: value != ""
+                                                    ? value
+                                                    : null,
                                               );
                                             },
-                                            textController: (value) {
-                                              print('=====text====value');
-                                              print(value);
-                                              print('=====text====value');
 
-                                              setState(() {
-                                                level0Name = value;
-                                              });
-                                            },
                                             countyData: countListData,
                                             onQueryChanged: (value) async {
                                               await listCountry(
@@ -225,12 +314,28 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                           ),
                                           SizedBox(width: 16),
                                           CustomDropDown(
+                                            searchLevel: 1,
+                                            clearId: (value) {
+                                              if (value == 1) {
+                                                setState(() {
+                                                  selectedLevel1 = null;
+                                                  selectedLevel2 = null;
+                                                  selectedLevel3 = null;
+                                                  level1Id = null;
+                                                  level2Id = null;
+                                                  level3Id = null;
+                                                });
+                                              }
+                                            },
+                                            onActive: level0Id != null
+                                                ? true
+                                                : false,
                                             titleText: translateKey.translate(
                                               'level_1',
                                             ),
                                             hintText:
                                                 '${translateKey.translate('select_city')}',
-                                            countId: (value) {
+                                            countId: (value) async {
                                               print('=====text====id');
                                               print(value);
                                               print('=====text====id');
@@ -238,100 +343,25 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                               setState(() {
                                                 level1Id = value;
                                               });
-                                            },
-                                            textController: (value) {
-                                              print('=====text====value');
-                                              print(value);
-                                              print('=====text====value');
-
-                                              setState(() {
-                                                level1Name = value;
-                                              });
-                                            },
-                                            countyData: countListData,
-                                            onQueryChanged: (value) async {
                                               await listCountry(
                                                 page,
                                                 limit,
-                                                query: value,
-
-                                                level0: 0,
+                                                // query: value,
+                                                level0: 2,
+                                                parent: value != ""
+                                                    ? value
+                                                    : null,
                                               );
                                             },
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 16),
-                                      Row(
-                                        children: [
-                                          CustomDropDown(
-                                            titleText: translateKey.translate(
-                                              'level_2',
-                                            ),
-                                            hintText:
-                                                '${translateKey.translate('select_state')}',
-                                            countId: (value) {
-                                              print('=====text====id');
-                                              print(value);
-                                              print('=====text====id');
 
-                                              setState(() {
-                                                level2Id = value;
-                                              });
-                                            },
-                                            textController: (value) {
-                                              print('=====text====value');
-                                              print(value);
-                                              print('=====text====value');
-
-                                              setState(() {
-                                                level2Name = value;
-                                              });
-                                            },
                                             countyData: countListData,
                                             onQueryChanged: (value) async {
                                               await listCountry(
                                                 page,
                                                 limit,
                                                 query: value,
-
-                                                level0: 0,
-                                              );
-                                            },
-                                          ),
-
-                                          SizedBox(width: 16),
-                                          CustomDropDown(
-                                            titleText: translateKey.translate(
-                                              'level_3',
-                                            ),
-                                            hintText:
-                                                '${translateKey.translate('level_3')}',
-                                            countId: (value) {
-                                              print('=====text====id');
-                                              print(value);
-                                              print('=====text====id');
-
-                                              setState(() {
-                                                level3Id = value;
-                                              });
-                                            },
-                                            textController: (value) {
-                                              print('=====text====value');
-                                              print(value);
-                                              print('=====text====value');
-
-                                              setState(() {
-                                                level3Name = value;
-                                              });
-                                            },
-                                            countyData: countListData,
-                                            onQueryChanged: (value) async {
-                                              await listCountry(
-                                                page,
-                                                limit,
-                                                query: value,
-                                                level0: 0,
+                                                parent: level0Id,
+                                                level0: 1,
                                               );
                                             },
                                           ),
@@ -339,6 +369,105 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                       ),
                                     ],
                                   ),
+                                ),
+                                SizedBox(height: 16),
+                                Row(
+                                  children: [
+                                    CustomDropDown(
+                                      searchLevel: 2,
+                                      clearId: (value) {
+                                        if (value == 2) {
+                                          setState(() {
+                                            selectedLevel2 = null;
+                                            selectedLevel3 = null;
+                                            level2Id = null;
+                                            level3Id = null;
+                                          });
+                                        }
+                                      },
+                                      onActive:
+                                          level0Id != null && level1Id != null
+                                          ? true
+                                          : false,
+
+                                      titleText: translateKey.translate(
+                                        'level_2',
+                                      ),
+                                      hintText:
+                                          '${translateKey.translate('select_state')}',
+                                      countId: (value) async {
+                                        print('=====text====id');
+                                        print(value);
+                                        print('=====text====id');
+
+                                        setState(() {
+                                          level2Id = value;
+                                        });
+                                        await listCountry(
+                                          page,
+                                          limit,
+                                          // query: value,
+                                          level0: 3,
+                                          parent: value != "" ? value : null,
+                                        );
+                                      },
+                                      countyData: countListData,
+                                      onQueryChanged: (value) async {
+                                        await listCountry(
+                                          page,
+                                          limit,
+                                          query: value,
+                                          parent: level1Id,
+                                          level0: 2,
+                                        );
+                                      },
+                                    ),
+                                    SizedBox(width: 16),
+                                    CustomDropDown(
+                                      searchLevel: 3,
+                                      clearId: (value) {
+                                        if (value == 3) {
+                                          setState(() {
+                                            selectedLevel3 = null;
+                                            level3Id = null;
+                                          });
+                                        }
+                                      },
+                                      onActive:
+                                          level0Id != null &&
+                                              level1Id != null &&
+                                              level2Id != null
+                                          ? true
+                                          : false,
+                                      titleText: translateKey.translate(
+                                        'level_3',
+                                      ),
+                                      hintText:
+                                          '${translateKey.translate('level_3')}',
+                                      countId: (value) async {
+                                        setState(() {
+                                          level3Id = value;
+                                        });
+                                        await listCountry(
+                                          page,
+                                          limit,
+                                          // query: value,
+                                          level0: 3,
+                                          parent: value != "" ? value : null,
+                                        );
+                                      },
+                                      countyData: countListData,
+                                      onQueryChanged: (value) async {
+                                        await listCountry(
+                                          page,
+                                          limit,
+                                          query: value,
+                                          parent: level1Id,
+                                          level0: 3,
+                                        );
+                                      },
+                                    ),
+                                  ],
                                 ),
                                 SizedBox(height: 16),
                                 FormBuilder(
@@ -375,6 +504,168 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                   ),
                                 ),
                                 SizedBox(height: 16),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      translateKey.translate('region'),
+                                      style: TextStyle(
+                                        color: gray700,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    SizedBox(height: 6),
+                                    DropdownButtonFormField<String>(
+                                      icon: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          selectedZone != null
+                                              ? GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      selectedZone = null;
+                                                    });
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      SvgPicture.asset(
+                                                        'assets/svg/close.svg',
+                                                        height: 26,
+                                                        width: 26,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              : SvgPicture.asset(
+                                                  'assets/svg/drop_down.svg',
+                                                ),
+                                          SizedBox(width: 12),
+                                        ],
+                                      ),
+                                      autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
+                                      isDense: true,
+                                      isExpanded: false,
+                                      decoration: InputDecoration(
+                                        // suffixIcon: selectedId != null
+                                        //     ? GestureDetector(
+                                        //         onTap: () {
+                                        //           setState(() {
+                                        //             selectedId = null;
+                                        //           });
+                                        //         },
+                                        //         child: Row(
+                                        //           children: [
+                                        //             SvgPicture.asset(
+                                        //               'assets/svg/close.svg',
+                                        //               height: 20,
+                                        //               width: 20,
+                                        //             ),
+                                        //             SizedBox(width: 12),
+                                        //           ],
+                                        //         ),
+                                        //       )
+                                        //     : null,
+                                        errorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: gray300,
+                                          ),
+                                        ),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: gray300,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: gray300,
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: gray300,
+                                          ),
+                                        ),
+                                        disabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: gray300,
+                                          ),
+                                        ),
+                                        border: InputBorder.none,
+                                        hintText: translateKey.translate(
+                                          'region',
+                                        ),
+                                        hintMaxLines: 1,
+                                        hintStyle: TextStyle(
+                                          color: gray500,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        contentPadding: EdgeInsets.all(10),
+                                      ),
+                                      // decoration: InputDecoration(
+                                      //   labelText: 'Байршил сонгох',
+
+                                      //   suffixIcon: selectedId != null
+                                      //       ? IconButton(
+                                      //           icon: const Icon(
+                                      //             Icons.close,
+                                      //             color: Colors.grey,
+                                      //           ),
+                                      //           onPressed: () {
+                                      //             setState(() {
+                                      //               selectedId = null;
+                                      //             });
+                                      //           },
+                                      //         )
+                                      //       : null,
+                                      //   border: OutlineInputBorder(
+                                      //     borderRadius:
+                                      //         BorderRadius.circular(8),
+                                      //   ),
+                                      // ),
+                                      value: selectedZone,
+                                      items: zones.rows!.map((item) {
+                                        return DropdownMenuItem<String>(
+                                          value: item.id,
+                                          child: Text(
+                                            item.name,
+                                            style: TextStyle(
+                                              color: gray900,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                          ),
+                                        );
+                                      }).toList(),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedZone = value;
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 16),
                                 Row(
                                   children: [
                                     Expanded(
@@ -408,7 +699,9 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                               children: [
                                                 Expanded(
                                                   child: Text(
-                                                    '0,0',
+                                                    droppedPin != null
+                                                        ? '${droppedPin!.latitude}'
+                                                        : '0,0',
                                                     style: TextStyle(
                                                       color: gray900,
                                                       fontSize: 16,
@@ -441,7 +734,6 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                             ),
                                           ),
                                           SizedBox(height: 6),
-
                                           Container(
                                             decoration: BoxDecoration(
                                               border: Border.all(
@@ -459,7 +751,9 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                               children: [
                                                 Expanded(
                                                   child: Text(
-                                                    '0,0',
+                                                    droppedPin != null
+                                                        ? '${droppedPin!.longitude}'
+                                                        : '0,0',
                                                     style: TextStyle(
                                                       color: gray900,
                                                       fontSize: 16,
@@ -480,55 +774,112 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                   ],
                                 ),
                                 SizedBox(height: 8),
+                                // Байршлыг сонгоно уу
                                 ClipRRect(
                                   borderRadius: BorderRadiusGeometry.circular(
                                     12,
                                   ),
-                                  child: Stack(
-                                    children: [
-                                      Image.asset(
-                                        'assets/images/zurag.png',
-                                        fit: BoxFit.cover,
-                                      ),
-                                      Positioned(
-                                        top: 0,
-                                        left: 0,
-                                        right: 0,
-                                        bottom: 0,
-                                        child: Center(
-                                          child: GestureDetector(
-                                            onTap: () {},
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: primary,
-                                                borderRadius:
-                                                    BorderRadius.circular(100),
-                                              ),
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 42,
-                                                vertical: 10,
-                                              ),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    translateKey.translate(
-                                                      'mark_on_map',
-                                                    ),
-                                                    style: TextStyle(
-                                                      color: white,
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                    ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(color: gray300),
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          width: mediaQuery.size.width,
+                                          height: 300,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadiusGeometry.circular(
+                                                  12,
+                                                ),
+                                            child: MapLibreMap(
+                                              styleString:
+                                                  'assets/map_style.json',
+                                              onMapCreated: (controller) async {
+                                                mapController = controller;
+
+                                                final ByteData
+                                                bytes = await rootBundle.load(
+                                                  'assets/images/map_pin.png',
+                                                );
+                                                final Uint8List list = bytes
+                                                    .buffer
+                                                    .asUint8List();
+                                                await controller.addImage(
+                                                  'custom-marker',
+                                                  list,
+                                                );
+                                              },
+
+                                              onMapClick: (point, coordinates) {
+                                                openMapBottomSheet(context);
+                                              },
+                                              initialCameraPosition:
+                                                  CameraPosition(
+                                                    target:
+                                                        droppedPin ??
+                                                        const LatLng(
+                                                          47.9189,
+                                                          106.9170,
+                                                        ),
+                                                    zoom: 12.0,
                                                   ),
-                                                ],
-                                              ),
+                                              myLocationEnabled: false,
+                                              compassEnabled: false,
+                                              zoomGesturesEnabled: false,
+                                              scrollGesturesEnabled: false,
+                                              attributionButtonMargins:
+                                                  const Point(-100, -100),
+                                              attributionButtonPosition:
+                                                  AttributionButtonPosition
+                                                      .topLeft,
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                        if (droppedPin == null)
+                                          Positioned.fill(
+                                            child: Center(
+                                              child: GestureDetector(
+                                                onTap: () =>
+                                                    openMapBottomSheet(context),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: primary,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          100,
+                                                        ),
+                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 42,
+                                                        vertical: 10,
+                                                      ),
+                                                  child: Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        translateKey.translate(
+                                                          'mark_on_map',
+                                                        ),
+                                                        style: TextStyle(
+                                                          color: white,
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
@@ -609,14 +960,11 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                     SizedBox(width: 16),
                                     Expanded(
                                       child: GestureDetector(
-                                        onTap: () {
-                                          widget.pageController.nextPage(
-                                            duration: Duration(
-                                              microseconds: 1000,
-                                            ),
-                                            curve: Curves.ease,
-                                          );
-                                        },
+                                        onTap: isLoadingButton == true
+                                            ? () {}
+                                            : () {
+                                                onSubmit();
+                                              },
                                         child: Container(
                                           decoration: BoxDecoration(
                                             color: primary,

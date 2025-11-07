@@ -8,18 +8,24 @@ class CustomDropDown extends StatefulWidget {
   final String titleText;
   final String hintText;
   final Function(String) countId;
-  final Function(String) textController;
   final List<Address> countyData;
   final Function(String) onQueryChanged;
+  final bool onActive;
+  final Function(int) clearId;
+  final int searchLevel;
+  final Address? selectedItem;
 
   const CustomDropDown({
     super.key,
     required this.titleText,
     required this.hintText,
     required this.countId,
-    required this.textController,
     required this.countyData,
     required this.onQueryChanged,
+    required this.onActive,
+    required this.clearId,
+    required this.searchLevel,
+    this.selectedItem,
   });
 
   @override
@@ -27,6 +33,14 @@ class CustomDropDown extends StatefulWidget {
 }
 
 class _CustomDropDownState extends State<CustomDropDown> {
+  Address? localSelected;
+
+  @override
+  void initState() {
+    super.initState();
+    localSelected = widget.selectedItem;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -48,12 +62,16 @@ class _CustomDropDownState extends State<CustomDropDown> {
                 child: DropdownSearch<Address>(
                   autoValidateMode: AutovalidateMode.onUserInteraction,
                   // suffixProps: ,
+                  enabled: widget.onActive,
                   mode: Mode.custom,
+                  selectedItem: localSelected,
                   dropdownBuilder: (ctx, selectedItem) => Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: white,
-                      border: Border.all(color: gray300),
+                      border: Border.all(
+                        color: widget.onActive == true ? gray300 : gray100,
+                      ),
                     ),
                     padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                     child: Row(
@@ -70,11 +88,31 @@ class _CustomDropDownState extends State<CustomDropDown> {
                             maxLines: 1,
                           ),
                         ),
-                        SvgPicture.asset('assets/svg/drop_down.svg'),
+                        selectedItem != null
+                            ? GestureDetector(
+                                onTap: () {
+                                  print('=======click+dropdown====');
+                                  setState(() {
+                                    // selectedItem = null;
+                                    localSelected = null;
+                                  });
+                                  widget.clearId(widget.searchLevel);
+                                  widget.countId('');
+                                  print(selectedItem.nameEng);
+                                  print(localSelected);
+                                  print('=======click+dropdown====');
+                                },
+                                child: SvgPicture.asset(
+                                  'assets/svg/x.svg',
+                                  fit: BoxFit.contain,
+                                  // height: 20,
+                                  width: 20,
+                                ),
+                              )
+                            : SvgPicture.asset('assets/svg/drop_down.svg'),
                       ],
                     ),
                   ),
-
                   items: (filter, loadProps) {
                     return widget.countyData
                         .where(
@@ -84,12 +122,21 @@ class _CustomDropDownState extends State<CustomDropDown> {
                         )
                         .toList();
                   },
-
                   itemAsString: (Address u) => u.nameEng!,
                   onChanged: (Address? data) {
+                    localSelected = data;
+                    if (widget.searchLevel == 0) {
+                      widget.clearId(0);
+                    } else if (widget.searchLevel == 1) {
+                      widget.clearId(1);
+                    } else if (widget.searchLevel == 2) {
+                      widget.clearId(2);
+                    } else if (widget.searchLevel == 3) {
+                      widget.clearId(3);
+                    }
+                    // widget.searchLevel == 0 ?
                     setState(() {
                       widget.countId(data!.id!);
-                      widget.textController(data.nameEng!);
                       // selectedCountry. = data?.id;
                       // textController.text = data?.nameEng ?? '';
                     });

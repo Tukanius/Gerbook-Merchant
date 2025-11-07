@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:merchant_gerbook_flutter/provider/camp_create_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/user_provider.dart';
 import 'package:merchant_gerbook_flutter/services/navigation.dart';
@@ -21,6 +22,7 @@ import 'package:merchant_gerbook_flutter/src/main_page.dart';
 import 'package:merchant_gerbook_flutter/src/notification_page/notification_page.dart';
 import 'package:merchant_gerbook_flutter/src/splash_page/splash_page.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_camp_pages.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_ger_comps/create_ger_pages.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/ger_page/ger_detail_page.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/order_page/order_detail_page.dart';
 // import 'package:gerbook_flutter/src/widget/dialog/dialog_manager.dart';
@@ -61,7 +63,7 @@ void main() async {
         providers: [
           ChangeNotifierProvider(create: (_) => UserProvider()),
           ChangeNotifierProvider(create: (_) => LocalizationProvider()),
-          // ChangeNotifierProvider(create: (_) => ToolsProvider()),
+          ChangeNotifierProvider(create: (_) => CampCreateProvider()),
           // ChangeNotifierProvider(create: (_) => SearchProvider()),
           // ChangeNotifierProvider(create: (_) => SocketProvider()),
         ],
@@ -270,6 +272,12 @@ class _MyAppState extends State<MyApp> with AfterLayoutMixin {
               return MaterialPageRoute(
                 builder: (context) {
                   return CreateCampPages();
+                },
+              );
+            case CreateGerPages.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return CreateGerPages();
                 },
               );
             default:

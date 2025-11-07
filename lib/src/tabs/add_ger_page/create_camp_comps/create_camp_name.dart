@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
+import 'package:merchant_gerbook_flutter/provider/camp_create_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -23,11 +23,45 @@ class _CreateCampNameState extends State<CreateCampName> {
   GlobalKey<FormBuilderState> fbkey = GlobalKey<FormBuilderState>();
   TextEditingController campName = TextEditingController();
   TextEditingController campInfo = TextEditingController();
-  TextEditingController campBed = TextEditingController(text: '0');
-  TextEditingController campNumber = TextEditingController(text: '0');
+  // TextEditingController campBed = TextEditingController(text: '0');
+  // TextEditingController campNumber = TextEditingController(text: '0');
   bool isLoading = false;
   int bedCount = 0;
   int campCount = 0;
+  bool isLoadingButton = false;
+
+  onSubmit() async {
+    widget.pageController.nextPage(
+      duration: Duration(microseconds: 1000),
+      curve: Curves.ease,
+    );
+    if (fbkey.currentState!.saveAndValidate()) {
+      try {
+        setState(() {
+          isLoadingButton = true;
+        });
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateNameAndInfo(
+          newName: campName.text.trim(),
+          newDescription: campInfo.text.trim(),
+        );
+        widget.pageController.nextPage(
+          duration: Duration(microseconds: 1000),
+          curve: Curves.ease,
+        );
+        setState(() {
+          isLoadingButton = false;
+        });
+      } catch (e) {
+        setState(() {
+          isLoadingButton = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -45,24 +79,6 @@ class _CreateCampNameState extends State<CreateCampName> {
           children: [
             Column(
               children: [
-                Padding(
-                  padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SvgPicture.asset('assets/svg/completed_step.svg'),
-                      Expanded(child: Container(height: 2, color: gray200)),
-                      SvgPicture.asset('assets/svg/selected_step.svg'),
-                      Expanded(child: Container(height: 2, color: gray200)),
-                      SvgPicture.asset('assets/svg/unselected_step.svg'),
-                      Expanded(child: Container(height: 2, color: gray200)),
-                      SvgPicture.asset('assets/svg/unselected_step.svg'),
-                      Expanded(child: Container(height: 2, color: gray200)),
-                      SvgPicture.asset('assets/svg/unselected_step.svg'),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 8),
                 Container(
                   decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(color: gray100)),
@@ -95,10 +111,28 @@ class _CreateCampNameState extends State<CreateCampName> {
                           ],
                         ),
                       ),
+                      SizedBox(width: 8),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: white,
+                          border: Border.all(color: gray300),
+                        ),
+                        padding: EdgeInsets.all(10),
+                        child: Text(
+                          '2/6',
+                          style: TextStyle(
+                            color: gray800,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
                       SizedBox(width: 16),
                     ],
                   ),
                 ),
+
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(
@@ -115,7 +149,7 @@ class _CreateCampNameState extends State<CreateCampName> {
                                   inputType: TextInputType.text,
                                   controller: campName,
                                   colortext: black,
-                                  name: 'campName',
+                                  name: 'name',
                                   color: white,
                                   hintText:
                                       "${translateKey.translate('please_camp_name')}",
@@ -136,7 +170,7 @@ class _CreateCampNameState extends State<CreateCampName> {
                                   inputType: TextInputType.text,
                                   controller: campInfo,
                                   colortext: black,
-                                  name: 'campInfo',
+                                  name: 'description',
                                   color: white,
                                   suffixIcon: null,
                                   hintText:
@@ -158,218 +192,218 @@ class _CreateCampNameState extends State<CreateCampName> {
                             ),
                           ),
                           SizedBox(height: 16),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      translateKey.translate('bed_numbers'),
-                                      style: TextStyle(
-                                        color: gray700,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    SizedBox(height: 6),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                          100,
-                                        ),
-                                        color: white,
-                                        border: Border.all(color: gray300),
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 8,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          // ➕ Нэмэх товч
-                                          InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                bedCount++;
-                                                campBed.text = bedCount
-                                                    .toString();
-                                              });
-                                            },
-                                            child: SvgPicture.asset(
-                                              'assets/svg/plus.svg',
-                                              height: 24,
-                                              width: 24,
-                                            ),
-                                          ),
 
-                                          SizedBox(width: 8),
+                          // Row(
+                          //   children: [
+                          //     Expanded(
+                          //       child: Column(
+                          //         crossAxisAlignment: CrossAxisAlignment.start,
+                          //         children: [
+                          //           Text(
+                          //             translateKey.translate('bed_numbers'),
+                          //             style: TextStyle(
+                          //               color: gray700,
+                          //               fontSize: 14,
+                          //               fontWeight: FontWeight.w500,
+                          //             ),
+                          //           ),
+                          //           SizedBox(height: 6),
+                          //           Container(
+                          //             decoration: BoxDecoration(
+                          //               borderRadius: BorderRadius.circular(
+                          //                 100,
+                          //               ),
+                          //               color: white,
+                          //               border: Border.all(color: gray300),
+                          //             ),
+                          //             padding: EdgeInsets.symmetric(
+                          //               horizontal: 12,
+                          //               vertical: 8,
+                          //             ),
+                          //             child: Row(
+                          //               children: [
+                          //                 // ➕ Нэмэх товч
+                          //                 InkWell(
+                          //                   onTap: () {
+                          //                     setState(() {
+                          //                       bedCount++;
+                          //                       campBed.text = bedCount
+                          //                           .toString();
+                          //                     });
+                          //                   },
+                          //                   child: SvgPicture.asset(
+                          //                     'assets/svg/plus.svg',
+                          //                     height: 24,
+                          //                     width: 24,
+                          //                   ),
+                          //                 ),
 
-                                          // Тоо харуулах input
-                                          Expanded(
-                                            child: TextField(
-                                              controller: campBed,
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: gray800,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                              decoration: const InputDecoration(
-                                                border: InputBorder.none,
-                                                isDense: true,
-                                                contentPadding: EdgeInsets.zero,
-                                              ),
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  int parsed =
-                                                      int.tryParse(value) ?? 0;
-                                                  if (parsed < 0) parsed = 0;
-                                                  bedCount = parsed;
-                                                  campBed.text = bedCount
-                                                      .toString();
-                                                  campBed.selection =
-                                                      TextSelection.fromPosition(
-                                                        TextPosition(
-                                                          offset: campBed
-                                                              .text
-                                                              .length,
-                                                        ),
-                                                      );
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                          SizedBox(width: 8),
-                                          InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                if (bedCount > 0) {
-                                                  bedCount--;
-                                                  campBed.text = bedCount
-                                                      .toString();
-                                                }
-                                              });
-                                            },
-                                            child: SvgPicture.asset(
-                                              'assets/svg/minus.svg',
-                                              height: 24,
-                                              width: 24,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      translateKey.translate('ger_count'),
-                                      style: TextStyle(
-                                        color: gray700,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    SizedBox(height: 6),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                          100,
-                                        ),
-                                        color: white,
-                                        border: Border.all(color: gray300),
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 8,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                campCount++;
-                                                campNumber.text = campCount
-                                                    .toString();
-                                              });
-                                            },
-                                            child: SvgPicture.asset(
-                                              'assets/svg/plus.svg',
-                                              height: 24,
-                                              width: 24,
-                                            ),
-                                          ),
-                                          SizedBox(width: 8),
-                                          Expanded(
-                                            child: TextField(
-                                              controller: campNumber,
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: gray800,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                              decoration: const InputDecoration(
-                                                border: InputBorder.none,
-                                                isDense: true,
-                                                contentPadding: EdgeInsets.zero,
-                                              ),
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  int parsed =
-                                                      int.tryParse(value) ?? 0;
-                                                  if (parsed < 0) parsed = 0;
-                                                  campCount = parsed;
-                                                  campNumber.text = campCount
-                                                      .toString();
-                                                  campNumber.selection =
-                                                      TextSelection.fromPosition(
-                                                        TextPosition(
-                                                          offset: campNumber
-                                                              .text
-                                                              .length,
-                                                        ),
-                                                      );
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                          SizedBox(width: 8),
-                                          InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                if (campCount > 0) {
-                                                  campCount--;
-                                                  campNumber.text = campCount
-                                                      .toString();
-                                                }
-                                              });
-                                            },
-                                            child: SvgPicture.asset(
-                                              'assets/svg/minus.svg',
-                                              height: 24,
-                                              width: 24,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                          //                 SizedBox(width: 8),
 
+                          //                 // Тоо харуулах input
+                          //                 Expanded(
+                          //                   child: TextField(
+                          //                     controller: campBed,
+                          //                     keyboardType:
+                          //                         TextInputType.number,
+                          //                     textAlign: TextAlign.center,
+                          //                     style: TextStyle(
+                          //                       color: gray800,
+                          //                       fontSize: 18,
+                          //                       fontWeight: FontWeight.w500,
+                          //                     ),
+                          //                     decoration: const InputDecoration(
+                          //                       border: InputBorder.none,
+                          //                       isDense: true,
+                          //                       contentPadding: EdgeInsets.zero,
+                          //                     ),
+                          //                     onChanged: (value) {
+                          //                       setState(() {
+                          //                         int parsed =
+                          //                             int.tryParse(value) ?? 0;
+                          //                         if (parsed < 0) parsed = 0;
+                          //                         bedCount = parsed;
+                          //                         campBed.text = bedCount
+                          //                             .toString();
+                          //                         campBed.selection =
+                          //                             TextSelection.fromPosition(
+                          //                               TextPosition(
+                          //                                 offset: campBed
+                          //                                     .text
+                          //                                     .length,
+                          //                               ),
+                          //                             );
+                          //                       });
+                          //                     },
+                          //                   ),
+                          //                 ),
+                          //                 SizedBox(width: 8),
+                          //                 InkWell(
+                          //                   onTap: () {
+                          //                     setState(() {
+                          //                       if (bedCount > 0) {
+                          //                         bedCount--;
+                          //                         campBed.text = bedCount
+                          //                             .toString();
+                          //                       }
+                          //                     });
+                          //                   },
+                          //                   child: SvgPicture.asset(
+                          //                     'assets/svg/minus.svg',
+                          //                     height: 24,
+                          //                     width: 24,
+                          //                   ),
+                          //                 ),
+                          //               ],
+                          //             ),
+                          //           ),
+                          //         ],
+                          //       ),
+                          //     ),
+                          //     SizedBox(width: 16),
+                          //     Expanded(
+                          //       child: Column(
+                          //         crossAxisAlignment: CrossAxisAlignment.start,
+                          //         children: [
+                          //           Text(
+                          //             translateKey.translate('ger_count'),
+                          //             style: TextStyle(
+                          //               color: gray700,
+                          //               fontSize: 14,
+                          //               fontWeight: FontWeight.w500,
+                          //             ),
+                          //           ),
+                          //           SizedBox(height: 6),
+                          //           Container(
+                          //             decoration: BoxDecoration(
+                          //               borderRadius: BorderRadius.circular(
+                          //                 100,
+                          //               ),
+                          //               color: white,
+                          //               border: Border.all(color: gray300),
+                          //             ),
+                          //             padding: EdgeInsets.symmetric(
+                          //               horizontal: 12,
+                          //               vertical: 8,
+                          //             ),
+                          //             child: Row(
+                          //               children: [
+                          //                 InkWell(
+                          //                   onTap: () {
+                          //                     setState(() {
+                          //                       campCount++;
+                          //                       campNumber.text = campCount
+                          //                           .toString();
+                          //                     });
+                          //                   },
+                          //                   child: SvgPicture.asset(
+                          //                     'assets/svg/plus.svg',
+                          //                     height: 24,
+                          //                     width: 24,
+                          //                   ),
+                          //                 ),
+                          //                 SizedBox(width: 8),
+                          //                 Expanded(
+                          //                   child: TextField(
+                          //                     controller: campNumber,
+                          //                     keyboardType:
+                          //                         TextInputType.number,
+                          //                     textAlign: TextAlign.center,
+                          //                     style: TextStyle(
+                          //                       color: gray800,
+                          //                       fontSize: 18,
+                          //                       fontWeight: FontWeight.w500,
+                          //                     ),
+                          //                     decoration: const InputDecoration(
+                          //                       border: InputBorder.none,
+                          //                       isDense: true,
+                          //                       contentPadding: EdgeInsets.zero,
+                          //                     ),
+                          //                     onChanged: (value) {
+                          //                       setState(() {
+                          //                         int parsed =
+                          //                             int.tryParse(value) ?? 0;
+                          //                         if (parsed < 0) parsed = 0;
+                          //                         campCount = parsed;
+                          //                         campNumber.text = campCount
+                          //                             .toString();
+                          //                         campNumber.selection =
+                          //                             TextSelection.fromPosition(
+                          //                               TextPosition(
+                          //                                 offset: campNumber
+                          //                                     .text
+                          //                                     .length,
+                          //                               ),
+                          //                             );
+                          //                       });
+                          //                     },
+                          //                   ),
+                          //                 ),
+                          //                 SizedBox(width: 8),
+                          //                 InkWell(
+                          //                   onTap: () {
+                          //                     setState(() {
+                          //                       if (campCount > 0) {
+                          //                         campCount--;
+                          //                         campNumber.text = campCount
+                          //                             .toString();
+                          //                       }
+                          //                     });
+                          //                   },
+                          //                   child: SvgPicture.asset(
+                          //                     'assets/svg/minus.svg',
+                          //                     height: 24,
+                          //                     width: 24,
+                          //                   ),
+                          //                 ),
+                          //               ],
+                          //             ),
+                          //           ),
+                          //         ],
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                           SizedBox(height: mediaQuery.padding.bottom + 80),
                         ],
                       ),
@@ -401,55 +435,61 @@ class _CreateCampNameState extends State<CreateCampName> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              // Expanded(
+                              //   child: GestureDetector(
+                              //     onTap: () {
+                              //       widget.pageController.previousPage(
+                              //         duration: Duration(microseconds: 1000),
+                              //         curve: Curves.ease,
+                              //       );
+                              //     },
+                              //     child: Container(
+                              //       decoration: BoxDecoration(
+                              //         color: white,
+                              //         border: Border.all(color: gray300),
+                              //         borderRadius: BorderRadius.circular(8),
+                              //       ),
+                              //       padding: EdgeInsets.symmetric(
+                              //         horizontal: 24,
+                              //         vertical: 10,
+                              //       ),
+                              //       child: Row(
+                              //         mainAxisAlignment:
+                              //             MainAxisAlignment.center,
+                              //         children: [
+                              //           Text(
+                              //             translateKey.translate(
+                              //               'navigation_back',
+                              //             ),
+                              //             style: TextStyle(
+                              //               color: gray700,
+                              //               fontSize: 14,
+                              //               fontWeight: FontWeight.w600,
+                              //             ),
+                              //           ),
+                              //         ],
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
+                              // SizedBox(width: 16),
                               Expanded(
                                 child: GestureDetector(
-                                  onTap: () {
-                                    widget.pageController.previousPage(
-                                      duration: Duration(microseconds: 1000),
-                                      curve: Curves.ease,
-                                    );
-                                  },
+                                  onTap:
+                                      isLoadingButton == true ||
+                                          campName.text == "" ||
+                                          campInfo.text == ""
+                                      ? () {}
+                                      : () {
+                                          onSubmit();
+                                        },
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: white,
-                                      border: Border.all(color: gray300),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 24,
-                                      vertical: 10,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          translateKey.translate(
-                                            'navigation_back',
-                                          ),
-                                          style: TextStyle(
-                                            color: gray700,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 16),
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    widget.pageController.nextPage(
-                                      duration: Duration(microseconds: 1000),
-                                      curve: Curves.ease,
-                                    );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: primary,
+                                      color:
+                                          campName.text == "" ||
+                                              campInfo.text == ""
+                                          ? primary200
+                                          : primary,
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     padding: EdgeInsets.symmetric(

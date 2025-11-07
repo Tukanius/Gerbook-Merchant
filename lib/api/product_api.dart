@@ -10,6 +10,7 @@ import 'package:merchant_gerbook_flutter/models/result.dart';
 import 'package:merchant_gerbook_flutter/models/tags.dart';
 import 'package:merchant_gerbook_flutter/models/terms_of_condition.dart';
 import 'package:merchant_gerbook_flutter/models/transaction.dart';
+import 'package:merchant_gerbook_flutter/models/zones.dart';
 import 'package:merchant_gerbook_flutter/utils/http_request.dart';
 
 class ProductApi extends HttpRequest {
@@ -90,6 +91,11 @@ class ProductApi extends HttpRequest {
       data: resultArguments.toJson(),
     );
     return jsonData.map((item) => Address.fromJson(item)).toList();
+  }
+
+  getZones() async {
+    var res = await get('/zones');
+    return Result.fromJson(res, Zones.fromJson);
   }
 
   // getOrderData(String id) async {
