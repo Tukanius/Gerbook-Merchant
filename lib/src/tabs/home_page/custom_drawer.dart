@@ -16,7 +16,11 @@ import 'package:merchant_gerbook_flutter/provider/user_provider.dart';
 import 'package:merchant_gerbook_flutter/src/localization/change_language.dart';
 import 'package:merchant_gerbook_flutter/src/localization/localization_local.dart';
 import 'package:merchant_gerbook_flutter/src/splash_page/splash_page.dart';
+import 'package:merchant_gerbook_flutter/src/splash_page/profile_page/profile.dart';
+import 'package:merchant_gerbook_flutter/src/splash_page/transiction_page/transiction_page.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/order_page/order_page.dart';
 import 'package:provider/provider.dart';
+import 'package:merchant_gerbook_flutter/src/splash_page/settings_page/settings_page.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
@@ -131,79 +135,85 @@ class _CustomDrawerState extends State<CustomDrawer> with AfterLayoutMixin {
         children: [
           Column(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: AlignmentGeometry.bottomCenter,
-                    end: AlignmentGeometry.topRight,
-                    tileMode: TileMode.clamp,
-                    colors: [primary, primaryDrawer],
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfilePage(id: ''),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: AlignmentGeometry.bottomCenter,
+                      end: AlignmentGeometry.topRight,
+                      tileMode: TileMode.clamp,
+                      colors: [primary, primaryDrawer],
+                    ),
                   ),
-                ),
-                child: Column(
-                  children: [
-                    SizedBox(height: mediaQuery.padding.top + 16),
-                    Row(
-                      children: [
-                        SizedBox(width: 16),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: user.avatar != null
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: SizedBox(
+                  child: Column(
+                    children: [
+                      SizedBox(height: mediaQuery.padding.top + 16),
+                      Row(
+                        children: [
+                          SizedBox(width: 16),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: user.avatar != null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(100),
+                                    child: SizedBox(
+                                      height: 40,
+                                      width: 40,
+                                      child: BlurHash(
+                                        color: gray100,
+                                        hash:
+                                            '${(user.avatar as Avatar).blurhash}',
+                                        image: '${(user.avatar as Avatar).url}',
+                                        imageFit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  )
+                                : SvgPicture.asset(
+                                    'assets/svg/add_profile.svg',
                                     height: 40,
                                     width: 40,
-                                    child: BlurHash(
-                                      color: gray100,
-                                      hash:
-                                          '${(user.avatar as Avatar).blurhash}',
-                                      image: '${(user.avatar as Avatar).url}',
-                                      imageFit: BoxFit.cover,
-                                    ),
                                   ),
-                                )
-                              : SvgPicture.asset(
-                                  'assets/svg/add_profile.svg',
-                                  height: 40,
-                                  width: 40,
-                                ),
-                        ),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${user.firstName ?? ''} ${user.lastName ?? ''}',
-                                      style: TextStyle(
-                                        color: white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
+                          ),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${user.firstName ?? ''} ${user.lastName ?? ''}',
+                                        style: TextStyle(
+                                          color: white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(height: 4),
-                                    Text(
-                                      '${user.email ?? ''}',
-                                      style: TextStyle(
-                                        color: white,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
+                                      SizedBox(height: 4),
+                                      Text(
+                                        '${user.email ?? ''}',
+                                        style: TextStyle(
+                                          color: white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              SizedBox(width: 16),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Row(
+                                SizedBox(width: 16),
+                                Row(
                                   children: [
                                     SvgPicture.asset(
                                       'assets/svg/chevron_right.svg',
@@ -214,18 +224,25 @@ class _CustomDrawerState extends State<CustomDrawer> with AfterLayoutMixin {
                                     SizedBox(width: 16),
                                   ],
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 16),
-                  ],
+                        ],
+                      ),
+                      SizedBox(height: 16),
+                    ],
+                  ),
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TransictionPage(id: ''),
+                    ),
+                  );
+                },
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(color: gray200)),
@@ -264,7 +281,14 @@ class _CustomDrawerState extends State<CustomDrawer> with AfterLayoutMixin {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SettingsPage(id: ''),
+                    ),
+                  );
+                },
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(color: gray200)),

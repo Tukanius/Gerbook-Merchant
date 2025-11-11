@@ -602,7 +602,7 @@ class _OrderDetailPageState extends State<OrderDetailPage>
                   Row(
                     children: [
                       Text(
-                        '500,000₮',
+                        '10%',
                         style: TextStyle(
                           fontFamily: 'Lato',
                           fontSize: 14,
@@ -612,7 +612,7 @@ class _OrderDetailPageState extends State<OrderDetailPage>
                       ),
                       SizedBox(width: 6),
                       Text(
-                        'Хоногын',
+                        'Эхний 10 захиалга',
                         style: TextStyle(
                           fontFamily: 'Lato',
                           fontSize: 12,
@@ -710,7 +710,7 @@ class _OrderDetailPageState extends State<OrderDetailPage>
                 ],
               ),
             ),
-            SizedBox(height: mediaQuery.padding.bottom + 100),
+            SizedBox(height: mediaQuery.padding.bottom + 16),
           ],
         ),
       ),

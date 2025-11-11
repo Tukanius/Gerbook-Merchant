@@ -3,12 +3,9 @@ import 'dart:async';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
-import 'package:merchant_gerbook_flutter/models/properties.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:merchant_gerbook_flutter/src/localization/localization_local.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
-import 'package:provider/provider.dart';
 
 class GerDetailPageArguments {
   final String id;
