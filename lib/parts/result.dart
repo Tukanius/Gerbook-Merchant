@@ -98,6 +98,9 @@ Map<String, dynamic> _$ResultArgumentToJson(ResultArguments? instance) {
     if (instance.priceMin != null) {
       params['priceMin'] = instance.priceMin;
     }
+    if (instance.levels0 != null) {
+      params['levels[0]'] = instance.levels0;
+    }
     if (instance.priceMax != null) {
       params['priceMax'] = instance.priceMax;
     }

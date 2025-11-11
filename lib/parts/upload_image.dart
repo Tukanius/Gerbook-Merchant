@@ -7,6 +7,7 @@ UploadImage _$UploadImageFromJson(Map<String, dynamic> json) {
     url: json['url'] != null ? json['url'] as String : null,
     createdAt: json['createdAt'] != null ? json['createdAt'] as String : null,
     updatedAt: json['updatedAt'] != null ? json['updatedAt'] as String : null,
+    blurhash: json['blurhash'] != null ? json['blurhash'] as String : null,
   );
 }
 
@@ -17,6 +18,7 @@ Map<String, dynamic> _$UploadImageToJson(UploadImage instance) {
   if (instance.url != null) json['url'] = instance.url;
   if (instance.createdAt != null) json['createdAt'] = instance.createdAt;
   if (instance.updatedAt != null) json['updatedAt'] = instance.updatedAt;
+  if (instance.blurhash != null) json['blurhash'] = instance.blurhash;
 
   return json;
 }

@@ -33,6 +33,7 @@ class ResultArguments {
   int? priceMin;
   int? priceMax;
   List<String>? placeOffers;
+  int? levels0;
   int? levels1;
   int? levels2;
   String? category;
@@ -60,6 +61,7 @@ class ResultArguments {
     this.priceMin,
     this.priceMax,
     this.placeOffers,
+    this.levels0,
     this.levels1,
     this.levels2,
     this.category,

@@ -12,9 +12,7 @@
   "sources": {
     "hamuga": {
       "type": "vector",
-      "tiles": [
-        "https://backend.example.com/tiles/{z}/{x}/{y}.pbf"
-      ]
+      "tiles": ["https://gb.zto.mn/pub/hamuga/map?x={x}&y={y}&z={z}"]
     }
   },
   "sprite": "https://cdn.khamuga.com/sprite/content_v4",
