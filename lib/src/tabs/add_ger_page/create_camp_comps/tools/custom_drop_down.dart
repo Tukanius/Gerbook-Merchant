@@ -7,25 +7,25 @@ import 'package:merchant_gerbook_flutter/models/address.dart';
 class CustomDropDown extends StatefulWidget {
   final String titleText;
   final String hintText;
-  final Function(String) countId;
   final List<Address> countyData;
   final Function(String) onQueryChanged;
   final bool onActive;
-  final Function(int) clearId;
-  final int searchLevel;
   final Address? selectedItem;
+  final Function(int, Address) selectedAddress;
+  final Function(int) clearAddress;
+  final int searchLevel;
 
   const CustomDropDown({
     super.key,
     required this.titleText,
     required this.hintText,
-    required this.countId,
     required this.countyData,
     required this.onQueryChanged,
     required this.onActive,
-    required this.clearId,
     required this.searchLevel,
     this.selectedItem,
+    required this.selectedAddress,
+    required this.clearAddress,
   });
 
   @override
@@ -34,6 +34,17 @@ class CustomDropDown extends StatefulWidget {
 
 class _CustomDropDownState extends State<CustomDropDown> {
   Address? localSelected;
+
+  @override
+  void didUpdateWidget(covariant CustomDropDown oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Хэрвээ selectedItem өөрчлөгдвөл localSelected-г дагуулж өөрчлөх
+    if (oldWidget.selectedItem != widget.selectedItem) {
+      setState(() {
+        localSelected = widget.selectedItem;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -96,10 +107,18 @@ class _CustomDropDownState extends State<CustomDropDown> {
                                     // selectedItem = null;
                                     localSelected = null;
                                   });
-                                  widget.clearId(widget.searchLevel);
-                                  widget.countId('');
                                   print(selectedItem.nameEng);
                                   print(localSelected);
+                                  widget.clearAddress(widget.searchLevel);
+                                  // if (widget.searchLevel == 0) {
+
+                                  // } else if (widget.searchLevel == 1) {
+                                  //   widget.selectedAddress(selectedItem);
+                                  // } else if (widget.searchLevel == 2) {
+                                  //   widget.selectedAddress(selectedItem);
+                                  // } else if (widget.searchLevel == 3) {
+                                  //   widget.selectedAddress(selectedItem);
+                                  // }
                                   print('=======click+dropdown====');
                                 },
                                 child: SvgPicture.asset(
@@ -125,20 +144,8 @@ class _CustomDropDownState extends State<CustomDropDown> {
                   itemAsString: (Address u) => u.nameEng!,
                   onChanged: (Address? data) {
                     localSelected = data;
-                    if (widget.searchLevel == 0) {
-                      widget.clearId(0);
-                    } else if (widget.searchLevel == 1) {
-                      widget.clearId(1);
-                    } else if (widget.searchLevel == 2) {
-                      widget.clearId(2);
-                    } else if (widget.searchLevel == 3) {
-                      widget.clearId(3);
-                    }
-                    // widget.searchLevel == 0 ?
                     setState(() {
-                      widget.countId(data!.id!);
-                      // selectedCountry. = data?.id;
-                      // textController.text = data?.nameEng ?? '';
+                      widget.selectedAddress(widget.searchLevel, data!);
                     });
                   },
                   compareFn: (item1, item2) => item1.id == item2.id,
@@ -153,9 +160,6 @@ class _CustomDropDownState extends State<CustomDropDown> {
                     ),
                     searchFieldProps: TextFieldProps(
                       autocorrect: false,
-                      // onChanged: (value) async {
-                      //   await listCountry(page, limit, query: value, level0: 0);
-                      // },
                       onChanged: (value) async {
                         widget.onQueryChanged(value);
                       },

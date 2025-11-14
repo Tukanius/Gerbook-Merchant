@@ -18,7 +18,6 @@ import 'package:merchant_gerbook_flutter/src/localization/localization_local.dar
 import 'package:merchant_gerbook_flutter/src/splash_page/splash_page.dart';
 import 'package:merchant_gerbook_flutter/src/splash_page/profile_page/profile.dart';
 import 'package:merchant_gerbook_flutter/src/splash_page/transiction_page/transiction_page.dart';
-import 'package:merchant_gerbook_flutter/src/tabs/order_page/order_page.dart';
 import 'package:provider/provider.dart';
 import 'package:merchant_gerbook_flutter/src/splash_page/settings_page/settings_page.dart';
 

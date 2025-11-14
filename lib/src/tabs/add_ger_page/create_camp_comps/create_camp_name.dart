@@ -29,6 +29,23 @@ class _CreateCampNameState extends State<CreateCampName> {
   int bedCount = 0;
   int campCount = 0;
   bool isLoadingButton = false;
+  @override
+  void initState() {
+    super.initState();
+    campName.addListener(() {
+      setState(() {});
+    });
+    campInfo.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    campName.dispose();
+    campInfo.dispose();
+    super.dispose();
+  }
 
   onSubmit() async {
     widget.pageController.nextPage(
@@ -192,6 +209,129 @@ class _CreateCampNameState extends State<CreateCampName> {
                             ),
                           ),
                           SizedBox(height: 16),
+
+                          SizedBox(height: mediaQuery.padding.bottom + 80),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            !isKeyboardVisible
+                ? Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        border: Border(top: BorderSide(color: gray300)),
+                        color: white,
+                      ),
+                      padding: EdgeInsets.only(
+                        bottom: Platform.isIOS
+                            ? MediaQuery.of(context).padding.bottom
+                            : 16,
+                        left: 16,
+                        right: 16,
+                        top: 16,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // Expanded(
+                              //   child: GestureDetector(
+                              //     onTap: () {
+                              //       widget.pageController.previousPage(
+                              //         duration: Duration(microseconds: 1000),
+                              //         curve: Curves.ease,
+                              //       );
+                              //     },
+                              //     child: Container(
+                              //       decoration: BoxDecoration(
+                              //         color: white,
+                              //         border: Border.all(color: gray300),
+                              //         borderRadius: BorderRadius.circular(8),
+                              //       ),
+                              //       padding: EdgeInsets.symmetric(
+                              //         horizontal: 24,
+                              //         vertical: 10,
+                              //       ),
+                              //       child: Row(
+                              //         mainAxisAlignment:
+                              //             MainAxisAlignment.center,
+                              //         children: [
+                              //           Text(
+                              //             translateKey.translate(
+                              //               'navigation_back',
+                              //             ),
+                              //             style: TextStyle(
+                              //               color: gray700,
+                              //               fontSize: 14,
+                              //               fontWeight: FontWeight.w600,
+                              //             ),
+                              //           ),
+                              //         ],
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
+                              // SizedBox(width: 16),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap:
+                                      isLoadingButton == true ||
+                                          campName.text == "" ||
+                                          campInfo.text == ""
+                                      ? () {}
+                                      : () {
+                                          onSubmit();
+                                        },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color:
+                                          campName.text == "" ||
+                                              campInfo.text == ""
+                                          ? primary200
+                                          : primary,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                      vertical: 10,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          translateKey.translate('continue'),
+                                          style: TextStyle(
+                                            color: white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : SizedBox(),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
                           // Row(
                           //   children: [
@@ -404,125 +544,3 @@ class _CreateCampNameState extends State<CreateCampName> {
                           //     ),
                           //   ],
                           // ),
-                          SizedBox(height: mediaQuery.padding.bottom + 80),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            !isKeyboardVisible
-                ? Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        border: Border(top: BorderSide(color: gray300)),
-                        color: white,
-                      ),
-                      padding: EdgeInsets.only(
-                        bottom: Platform.isIOS
-                            ? MediaQuery.of(context).padding.bottom
-                            : 16,
-                        left: 16,
-                        right: 16,
-                        top: 16,
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // Expanded(
-                              //   child: GestureDetector(
-                              //     onTap: () {
-                              //       widget.pageController.previousPage(
-                              //         duration: Duration(microseconds: 1000),
-                              //         curve: Curves.ease,
-                              //       );
-                              //     },
-                              //     child: Container(
-                              //       decoration: BoxDecoration(
-                              //         color: white,
-                              //         border: Border.all(color: gray300),
-                              //         borderRadius: BorderRadius.circular(8),
-                              //       ),
-                              //       padding: EdgeInsets.symmetric(
-                              //         horizontal: 24,
-                              //         vertical: 10,
-                              //       ),
-                              //       child: Row(
-                              //         mainAxisAlignment:
-                              //             MainAxisAlignment.center,
-                              //         children: [
-                              //           Text(
-                              //             translateKey.translate(
-                              //               'navigation_back',
-                              //             ),
-                              //             style: TextStyle(
-                              //               color: gray700,
-                              //               fontSize: 14,
-                              //               fontWeight: FontWeight.w600,
-                              //             ),
-                              //           ),
-                              //         ],
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-                              // SizedBox(width: 16),
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap:
-                                      isLoadingButton == true ||
-                                          campName.text == "" ||
-                                          campInfo.text == ""
-                                      ? () {}
-                                      : () {
-                                          onSubmit();
-                                        },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color:
-                                          campName.text == "" ||
-                                              campInfo.text == ""
-                                          ? primary200
-                                          : primary,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 24,
-                                      vertical: 10,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          translateKey.translate('continue'),
-                                          style: TextStyle(
-                                            color: white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                : SizedBox(),
-          ],
-        ),
-      ),
-    );
-  }
-}

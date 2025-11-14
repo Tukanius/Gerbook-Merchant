@@ -28,7 +28,7 @@ class _TransictionPageState extends State<TransictionPage>
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
+    // final mediaQuery = MediaQuery.of(context);
     final translateKey = Provider.of<LocalizationProvider>(context);
 
     return Scaffold(

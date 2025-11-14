@@ -18,6 +18,7 @@ import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
 import 'package:merchant_gerbook_flutter/models/address.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
+import 'package:merchant_gerbook_flutter/provider/tools_provider.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/tools/create_camp_map.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/tools/custom_drop_down.dart';
 import 'package:provider/provider.dart';
@@ -87,14 +88,11 @@ class _CreateCampLocationState extends State<CreateCampLocation>
     });
   }
 
-  String? level0Id;
-  String? level1Id;
-  String? level2Id;
-  String? level3Id;
   Address? selectedLevel0;
   Address? selectedLevel1;
   Address? selectedLevel2;
   Address? selectedLevel3;
+
   LatLng? droppedPin;
 
   void openMapBottomSheet(BuildContext context) {
@@ -152,16 +150,16 @@ class _CreateCampLocationState extends State<CreateCampLocation>
   }
 
   onSubmit() async {
-    widget.pageController.nextPage(
-      duration: Duration(microseconds: 1000),
-      curve: Curves.ease,
-    );
-    if (isLoadingButton) {
+    if (selectedLevel0 != null &&
+        selectedLevel1 != null &&
+        fbkey.currentState!.saveAndValidate() &&
+        droppedPin != null) {
       try {
         setState(() {
           isLoadingButton = true;
         });
-        widget.pageController.previousPage(
+        await Provider.of<ToolsProvider>(context);
+        widget.pageController.nextPage(
           duration: Duration(microseconds: 1000),
           curve: Curves.ease,
         );
@@ -264,45 +262,73 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                         children: [
                                           CustomDropDown(
                                             searchLevel: 0,
-                                            clearId: (value) {
-                                              if (value == 0) {
-                                                setState(() {
-                                                  selectedLevel0 = null;
-                                                  selectedLevel1 = null;
-                                                  selectedLevel2 = null;
-                                                  selectedLevel3 = null;
-                                                  level0Id = null;
-                                                  level1Id = null;
-                                                  level2Id = null;
-                                                  level3Id = null;
-                                                });
-                                              }
-                                            },
+                                            selectedItem: selectedLevel0,
                                             onActive: true,
+                                            countyData: countListData,
                                             titleText:
                                                 '${translateKey.translate('country')}',
                                             hintText:
                                                 '${translateKey.translate('select_country')}',
-                                            countId: (value) async {
-                                              print('=====text====id');
-                                              print(value);
-                                              print('=====text====id');
-
+                                            clearAddress: (level) async {
                                               setState(() {
-                                                level0Id = value;
+                                                if (level == 0) {
+                                                  selectedLevel0 = null;
+                                                  selectedLevel1 = null;
+                                                  selectedLevel2 = null;
+                                                  selectedLevel3 = null;
+                                                } else if (level == 1) {
+                                                  selectedLevel1 = null;
+                                                  selectedLevel2 = null;
+                                                  selectedLevel3 = null;
+                                                } else if (level == 2) {
+                                                  selectedLevel2 = null;
+                                                  selectedLevel3 = null;
+                                                } else if (level == 3) {
+                                                  selectedLevel3 = null;
+                                                }
                                               });
+                                              print('===click==clear 0 ===');
+                                              print(selectedLevel0);
+                                              print(selectedLevel1);
+                                              print('===click==clear 0 ===');
                                               await listCountry(
                                                 page,
                                                 limit,
-                                                // query: value,
-                                                level0: 1,
-                                                parent: value != ""
-                                                    ? value
-                                                    : null,
+                                                level0: 0,
                                               );
                                             },
+                                            selectedAddress:
+                                                (level, data) async {
+                                                  setState(() {
+                                                    if (level == 0) {
+                                                      selectedLevel0 = data;
+                                                      selectedLevel1 = null;
+                                                      selectedLevel2 = null;
+                                                      selectedLevel3 = null;
+                                                    } else if (level == 1) {
+                                                      selectedLevel1 = null;
+                                                      selectedLevel2 = null;
+                                                      selectedLevel3 = null;
+                                                    } else if (level == 2) {
+                                                      selectedLevel2 = null;
+                                                      selectedLevel3 = null;
+                                                    } else if (level == 3) {
+                                                      selectedLevel3 = null;
+                                                    }
+                                                  });
+                                                  print('====test===data===');
+                                                  print(level);
+                                                  print(data.nameEng);
+                                                  print(selectedLevel0);
+                                                  print('====test===data===');
+                                                  await listCountry(
+                                                    page,
+                                                    limit,
+                                                    parent: selectedLevel0?.id,
+                                                    level0: 1,
+                                                  );
+                                                },
 
-                                            countyData: countListData,
                                             onQueryChanged: (value) async {
                                               await listCountry(
                                                 page,
@@ -315,52 +341,73 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                           SizedBox(width: 16),
                                           CustomDropDown(
                                             searchLevel: 1,
-                                            clearId: (value) {
-                                              if (value == 1) {
-                                                setState(() {
-                                                  selectedLevel1 = null;
-                                                  selectedLevel2 = null;
-                                                  selectedLevel3 = null;
-                                                  level1Id = null;
-                                                  level2Id = null;
-                                                  level3Id = null;
-                                                });
-                                              }
-                                            },
-                                            onActive: level0Id != null
+                                            selectedItem: selectedLevel1,
+                                            onActive: selectedLevel0 != null
                                                 ? true
                                                 : false,
+                                            countyData: countListData,
                                             titleText: translateKey.translate(
                                               'level_1',
                                             ),
                                             hintText:
                                                 '${translateKey.translate('select_city')}',
-                                            countId: (value) async {
-                                              print('=====text====id');
-                                              print(value);
-                                              print('=====text====id');
-
+                                            clearAddress: (level) async {
                                               setState(() {
-                                                level1Id = value;
+                                                if (level == 0) {
+                                                  selectedLevel0 = null;
+                                                  selectedLevel1 = null;
+                                                  selectedLevel2 = null;
+                                                  selectedLevel3 = null;
+                                                } else if (level == 1) {
+                                                  selectedLevel1 = null;
+                                                  selectedLevel2 = null;
+                                                  selectedLevel3 = null;
+                                                } else if (level == 2) {
+                                                  selectedLevel2 = null;
+                                                  selectedLevel3 = null;
+                                                } else if (level == 3) {
+                                                  selectedLevel3 = null;
+                                                }
                                               });
                                               await listCountry(
                                                 page,
                                                 limit,
-                                                // query: value,
-                                                level0: 2,
-                                                parent: value != ""
-                                                    ? value
-                                                    : null,
+                                                parent: selectedLevel0?.id,
+                                                level0: 1,
                                               );
                                             },
-
-                                            countyData: countListData,
+                                            selectedAddress:
+                                                (level, data) async {
+                                                  setState(() {
+                                                    if (level == 0) {
+                                                      selectedLevel0 = null;
+                                                      selectedLevel1 = null;
+                                                      selectedLevel2 = null;
+                                                      selectedLevel3 = null;
+                                                    } else if (level == 1) {
+                                                      selectedLevel1 = data;
+                                                      selectedLevel2 = null;
+                                                      selectedLevel3 = null;
+                                                    } else if (level == 2) {
+                                                      selectedLevel2 = null;
+                                                      selectedLevel3 = null;
+                                                    } else if (level == 3) {
+                                                      selectedLevel3 = null;
+                                                    }
+                                                  });
+                                                  await listCountry(
+                                                    page,
+                                                    limit,
+                                                    parent: selectedLevel1?.id,
+                                                    level0: 2,
+                                                  );
+                                                },
                                             onQueryChanged: (value) async {
                                               await listCountry(
                                                 page,
                                                 limit,
                                                 query: value,
-                                                parent: level0Id,
+                                                parent: selectedLevel0?.id,
                                                 level0: 1,
                                               );
                                             },
@@ -375,49 +422,76 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                   children: [
                                     CustomDropDown(
                                       searchLevel: 2,
-                                      clearId: (value) {
-                                        if (value == 2) {
-                                          setState(() {
-                                            selectedLevel2 = null;
-                                            selectedLevel3 = null;
-                                            level2Id = null;
-                                            level3Id = null;
-                                          });
-                                        }
-                                      },
+                                      selectedItem: selectedLevel2,
                                       onActive:
-                                          level0Id != null && level1Id != null
+                                          selectedLevel0 != null &&
+                                              selectedLevel1 != null
                                           ? true
                                           : false,
+                                      countyData: countListData,
 
                                       titleText: translateKey.translate(
-                                        'level_2',
+                                        'level_1',
                                       ),
                                       hintText:
                                           '${translateKey.translate('select_state')}',
-                                      countId: (value) async {
-                                        print('=====text====id');
-                                        print(value);
-                                        print('=====text====id');
-
+                                      clearAddress: (level) async {
                                         setState(() {
-                                          level2Id = value;
+                                          if (level == 0) {
+                                            selectedLevel0 = null;
+                                            selectedLevel1 = null;
+                                            selectedLevel2 = null;
+                                            selectedLevel3 = null;
+                                          } else if (level == 1) {
+                                            selectedLevel1 = null;
+                                            selectedLevel2 = null;
+                                            selectedLevel3 = null;
+                                          } else if (level == 2) {
+                                            selectedLevel2 = null;
+                                            selectedLevel3 = null;
+                                          } else if (level == 3) {
+                                            selectedLevel3 = null;
+                                          }
                                         });
                                         await listCountry(
                                           page,
                                           limit,
-                                          // query: value,
-                                          level0: 3,
-                                          parent: value != "" ? value : null,
+                                          parent: selectedLevel1?.id,
+                                          level0: 2,
                                         );
                                       },
-                                      countyData: countListData,
+                                      selectedAddress: (level, data) async {
+                                        setState(() {
+                                          if (level == 0) {
+                                            selectedLevel0 = null;
+                                            selectedLevel1 = null;
+                                            selectedLevel2 = null;
+                                            selectedLevel3 = null;
+                                          } else if (level == 1) {
+                                            selectedLevel1 = null;
+                                            selectedLevel2 = null;
+                                            selectedLevel3 = null;
+                                          } else if (level == 2) {
+                                            selectedLevel2 = data;
+                                            selectedLevel3 = null;
+                                          } else if (level == 3) {
+                                            selectedLevel3 = null;
+                                          }
+                                        });
+                                        await listCountry(
+                                          page,
+                                          limit,
+                                          parent: selectedLevel2?.id,
+                                          level0: 3,
+                                        );
+                                      },
+
                                       onQueryChanged: (value) async {
                                         await listCountry(
                                           page,
                                           limit,
                                           query: value,
-                                          parent: level1Id,
+                                          parent: selectedLevel1?.id,
                                           level0: 2,
                                         );
                                       },
@@ -425,44 +499,77 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                     SizedBox(width: 16),
                                     CustomDropDown(
                                       searchLevel: 3,
-                                      clearId: (value) {
-                                        if (value == 3) {
-                                          setState(() {
-                                            selectedLevel3 = null;
-                                            level3Id = null;
-                                          });
-                                        }
-                                      },
+                                      selectedItem: selectedLevel3,
                                       onActive:
-                                          level0Id != null &&
-                                              level1Id != null &&
-                                              level2Id != null
+                                          selectedLevel0 != null &&
+                                              selectedLevel1 != null &&
+                                              selectedLevel2 != null
                                           ? true
                                           : false,
+                                      countyData: countListData,
+
                                       titleText: translateKey.translate(
                                         'level_3',
                                       ),
                                       hintText:
                                           '${translateKey.translate('level_3')}',
-                                      countId: (value) async {
+                                      clearAddress: (level) async {
                                         setState(() {
-                                          level3Id = value;
+                                          if (level == 0) {
+                                            selectedLevel0 = null;
+                                            selectedLevel1 = null;
+                                            selectedLevel2 = null;
+                                            selectedLevel3 = null;
+                                          } else if (level == 1) {
+                                            selectedLevel1 = null;
+                                            selectedLevel2 = null;
+                                            selectedLevel3 = null;
+                                          } else if (level == 2) {
+                                            selectedLevel2 = null;
+                                            selectedLevel3 = null;
+                                          } else if (level == 3) {
+                                            selectedLevel3 = null;
+                                          }
                                         });
                                         await listCountry(
                                           page,
                                           limit,
-                                          // query: value,
+                                          parent: selectedLevel2?.id,
                                           level0: 3,
-                                          parent: value != "" ? value : null,
                                         );
                                       },
-                                      countyData: countListData,
+                                      selectedAddress: (level, data) async {
+                                        setState(() {
+                                          if (level == 0) {
+                                            selectedLevel0 = null;
+                                            selectedLevel1 = null;
+                                            selectedLevel2 = null;
+                                            selectedLevel3 = null;
+                                          } else if (level == 1) {
+                                            selectedLevel1 = null;
+                                            selectedLevel2 = null;
+                                            selectedLevel3 = null;
+                                          } else if (level == 2) {
+                                            selectedLevel2 = null;
+                                            selectedLevel3 = null;
+                                          } else if (level == 3) {
+                                            selectedLevel3 = data;
+                                          }
+                                        });
+                                        // await listCountry(
+                                        //   page,
+                                        //   limit,
+                                        //   parent: selectedLevel2?.id,
+                                        //   level0: 3,
+                                        // );
+                                      },
+
                                       onQueryChanged: (value) async {
                                         await listCountry(
                                           page,
                                           limit,
                                           query: value,
-                                          parent: level1Id,
+                                          parent: selectedLevel2?.id,
                                           level0: 3,
                                         );
                                       },
