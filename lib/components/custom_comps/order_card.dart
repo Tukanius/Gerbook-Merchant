@@ -172,7 +172,7 @@ class _OrderCardState extends State<OrderCard> {
                                 ),
                               ),
                               Text(
-                                '${'${DateFormat("yyyy/MM/dd").format(DateTime.parse(widget.data.startDate!).toLocal())}'} - ${'${DateFormat("yyyy/MM/dd").format(DateTime.parse(widget.data.endDate!).toLocal())}'} 123312123312123312',
+                                '${'${DateFormat("yyyy/MM/dd").format(DateTime.parse(widget.data.startDate!).toLocal())}'} - ${'${DateFormat("yyyy/MM/dd").format(DateTime.parse(widget.data.endDate!).toLocal())}'}',
                                 style: TextStyle(
                                   color: gray600,
                                   fontSize: 12,

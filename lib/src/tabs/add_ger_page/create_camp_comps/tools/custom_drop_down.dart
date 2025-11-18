@@ -54,6 +54,8 @@ class _CustomDropDownState extends State<CustomDropDown> {
 
   @override
   Widget build(BuildContext context) {
+    // final translateKey = Provider.of<LocalizationProvider>(context);
+
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,6 +150,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
                       widget.selectedAddress(widget.searchLevel, data!);
                     });
                   },
+
                   compareFn: (item1, item2) => item1.id == item2.id,
                   popupProps: PopupProps.menu(
                     showSearchBox: true,
@@ -164,6 +167,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
                         widget.onQueryChanged(value);
                       },
                       autofocus: true,
+
                       decoration: InputDecoration(
                         errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),

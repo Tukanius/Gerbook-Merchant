@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 
 import 'package:after_layout/after_layout.dart';
@@ -13,6 +15,7 @@ import 'package:merchant_gerbook_flutter/models/chart_data.dart';
 import 'package:merchant_gerbook_flutter/models/dashboard.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/dashboard_page/transaction_list_page.dart';
 import 'package:merchant_gerbook_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -517,21 +520,50 @@ class _DashboardPageState extends State<DashboardPage> with AfterLayoutMixin {
                             ),
                             SizedBox(height: 16),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  '${translateKey.translate('transactions')}: ',
-                                  style: TextStyle(
-                                    color: gray900,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      '${translateKey.translate('transactions')}: ',
+                                      style: TextStyle(
+                                        color: gray900,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${transactionList.count}',
+                                      style: TextStyle(
+                                        color: gray900,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  '12',
-                                  style: TextStyle(
-                                    color: gray900,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(
+                                      context,
+                                    ).pushNamed(TransactionListPage.routeName);
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        '${translateKey.translate('all')}',
+                                        style: TextStyle(
+                                          color: primary,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      SizedBox(width: 2),
+                                      SvgPicture.asset(
+                                        'assets/svg/chevron_right.svg',
+                                        color: primary,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
@@ -539,23 +571,25 @@ class _DashboardPageState extends State<DashboardPage> with AfterLayoutMixin {
                             isLoadingTransaction == true
                                 ? CustomLoader()
                                 : transactionList.rows!.isEmpty
-                                ? Column(
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/svg/empty_box.svg',
-                                        width: 141,
-                                      ),
-                                      SizedBox(height: 16),
-                                      Text(
-                                        translateKey.translate('no_data'),
-                                        style: TextStyle(
-                                          fontFamily: 'Lato',
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          color: gray900,
+                                ? Center(
+                                    child: Column(
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/svg/empty_box.svg',
+                                          width: 141,
                                         ),
-                                      ),
-                                    ],
+                                        SizedBox(height: 16),
+                                        Text(
+                                          translateKey.translate('no_data'),
+                                          style: TextStyle(
+                                            fontFamily: 'Lato',
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: gray900,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   )
                                 : ClipRRect(
                                     borderRadius: BorderRadius.circular(12),

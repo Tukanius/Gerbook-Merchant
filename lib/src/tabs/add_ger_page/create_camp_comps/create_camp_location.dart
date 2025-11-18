@@ -17,8 +17,8 @@ import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
 import 'package:merchant_gerbook_flutter/models/address.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
+import 'package:merchant_gerbook_flutter/provider/camp_create_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
-import 'package:merchant_gerbook_flutter/provider/tools_provider.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/tools/create_camp_map.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/tools/custom_drop_down.dart';
 import 'package:provider/provider.dart';
@@ -149,16 +149,96 @@ class _CreateCampLocationState extends State<CreateCampLocation>
     );
   }
 
+  bool dropPinError = false;
+  bool level0Error = false;
+  bool level1Error = false;
+
   onSubmit() async {
-    if (selectedLevel0 != null &&
+    if (droppedPin == null) {
+      setState(() {
+        dropPinError = true;
+      });
+    } else {
+      setState(() {
+        dropPinError = false;
+      });
+    }
+    if (selectedLevel0 == null) {
+      setState(() {
+        level0Error = true;
+      });
+    } else {
+      setState(() {
+        level0Error = false;
+      });
+    }
+    if (selectedLevel1 == null) {
+      setState(() {
+        level1Error = true;
+      });
+    } else {
+      setState(() {
+        level1Error = false;
+      });
+    }
+
+    if (fbkey.currentState!.saveAndValidate() &&
+        selectedLevel0 != null &&
         selectedLevel1 != null &&
-        fbkey.currentState!.saveAndValidate() &&
         droppedPin != null) {
       try {
         setState(() {
           isLoadingButton = true;
         });
-        await Provider.of<ToolsProvider>(context);
+        print(isLoadingButton);
+        print('=====am in ?? =====');
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateLevel0(
+          newLevel0: selectedLevel0 != null ? selectedLevel0!.id! : '',
+        );
+
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateLevel1(
+          newLevel1: selectedLevel1 != null ? selectedLevel1!.id! : '',
+        );
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateLevel2(
+          newLevel2: selectedLevel2 != null ? selectedLevel2!.id! : '',
+        );
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateLevel3(
+          newLevel3: selectedLevel3 != null ? selectedLevel3!.id! : '',
+        );
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateAddressDetail(
+          newAddressDetail: fbkey.currentState!.fields['campInfo'].toString(),
+        );
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateZone(newZone: selectedZone ?? '');
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateLocation(
+          newLatitude: droppedPin != null
+              ? droppedPin!.latitude.toString()
+              : '',
+          newLongitude: droppedPin != null
+              ? droppedPin!.longitude.toString()
+              : '',
+        );
+
         widget.pageController.nextPage(
           duration: Duration(microseconds: 1000),
           curve: Curves.ease,
@@ -252,11 +332,14 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SizedBox(height: 16),
                                 FormBuilder(
                                   key: fbkeyLocation,
                                   child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
@@ -265,6 +348,7 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                             selectedItem: selectedLevel0,
                                             onActive: true,
                                             countyData: countListData,
+
                                             titleText:
                                                 '${translateKey.translate('country')}',
                                             hintText:
@@ -414,6 +498,50 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                           ),
                                         ],
                                       ),
+                                      level0Error == true || level1Error == true
+                                          ? Column(
+                                              children: [
+                                                SizedBox(height: 6),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    level0Error == false
+                                                        ? SizedBox()
+                                                        : Expanded(
+                                                            child: Text(
+                                                              '${translateKey.translate('this_field_is_required')}',
+                                                              style: TextStyle(
+                                                                color:
+                                                                    redButton,
+                                                                fontSize: 11,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                    level1Error == false
+                                                        ? SizedBox()
+                                                        : Expanded(
+                                                            child: Text(
+                                                              '${translateKey.translate('this_field_is_required')}',
+                                                              style: TextStyle(
+                                                                color:
+                                                                    redButton,
+                                                                fontSize: 11,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                  ],
+                                                ),
+                                              ],
+                                            )
+                                          : SizedBox(),
                                     ],
                                   ),
                                 ),
@@ -881,6 +1009,21 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                   ],
                                 ),
                                 SizedBox(height: 8),
+                                dropPinError == true
+                                    ? Column(
+                                        children: [
+                                          Text(
+                                            '${translateKey.translate('this_field_is_required')}',
+                                            style: TextStyle(
+                                              color: redButton,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                          SizedBox(height: 8),
+                                        ],
+                                      )
+                                    : SizedBox(),
                                 // Байршлыг сонгоно уу
                                 ClipRRect(
                                   borderRadius: BorderRadiusGeometry.circular(
@@ -1087,16 +1230,21 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              Text(
-                                                translateKey.translate(
-                                                  'continue',
-                                                ),
-                                                style: TextStyle(
-                                                  color: white,
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
+                                              isLoadingButton == true
+                                                  ? CustomLoader(
+                                                      loadColor: white,
+                                                    )
+                                                  : Text(
+                                                      translateKey.translate(
+                                                        'continue',
+                                                      ),
+                                                      style: TextStyle(
+                                                        color: white,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
                                             ],
                                           ),
                                         ),

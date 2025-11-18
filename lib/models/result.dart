@@ -40,6 +40,7 @@ class ResultArguments {
   String? parent;
   String? zone;
   List<String>? statuses;
+  List<String>? types;
 
   ResultArguments({
     this.filter,
@@ -68,6 +69,7 @@ class ResultArguments {
     this.parent,
     this.zone,
     this.statuses,
+    this.types,
   });
 
   Map<String, dynamic> toJson() => _$ResultArgumentToJson(this);

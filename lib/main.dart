@@ -23,6 +23,7 @@ import 'package:merchant_gerbook_flutter/src/notification_page/notification_page
 import 'package:merchant_gerbook_flutter/src/splash_page/splash_page.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_camp_pages.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_ger_comps/create_ger_pages.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/dashboard_page/transaction_list_page.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/ger_page/ger_detail_page.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/order_page/order_detail_page.dart';
 // import 'package:gerbook_flutter/src/widget/dialog/dialog_manager.dart';
@@ -278,6 +279,12 @@ class _MyAppState extends State<MyApp> with AfterLayoutMixin {
               return MaterialPageRoute(
                 builder: (context) {
                   return CreateGerPages();
+                },
+              );
+            case TransactionListPage.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return TransactionListPage();
                 },
               );
             default:

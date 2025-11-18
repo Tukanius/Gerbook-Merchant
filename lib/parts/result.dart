@@ -126,6 +126,11 @@ Map<String, dynamic> _$ResultArgumentToJson(ResultArguments? instance) {
         params['statuses[$i]'] = instance.statuses![i];
       }
     }
+    if (instance.types != null && instance.types!.isNotEmpty) {
+      for (int i = 0; i < instance.types!.length; i++) {
+        params['types[$i]'] = instance.types![i];
+      }
+    }
   }
 
   return params;

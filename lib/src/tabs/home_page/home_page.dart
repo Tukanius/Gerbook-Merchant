@@ -59,18 +59,10 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
       dashBoard = await ProductApi().getDashBoardData();
       await listOfBookings(page, 3);
       await listOfMyGers(page, limit);
-      print('=====value======');
-      print(isLoadingPage);
-      print('=====value======');
-
       setState(() {
         isLoadingPage = false;
       });
     } catch (e) {
-      print('=====value======');
-      print(isLoadingPage);
-      print('=====value======');
-
       setState(() {
         isLoadingPage = true;
       });

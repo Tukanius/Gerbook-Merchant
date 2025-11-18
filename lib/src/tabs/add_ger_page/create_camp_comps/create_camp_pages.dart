@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_camp_confirm.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_camp_discount.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_camp_location.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_camp_name.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_camp_photo.dart';
@@ -92,6 +93,7 @@ class _CreateCampPagesState extends State<CreateCampPages>
           CreateCampName(pageController: _pageController),
           CreateCampLocation(pageController: _pageController),
           CreateCampTags(pageController: _pageController),
+          CreateCampDiscount(pageController: _pageController),
           CreateCampConfirm(pageController: _pageController),
         ],
       ),

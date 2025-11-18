@@ -1,11 +1,10 @@
 import 'dart:async';
-
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:merchant_gerbook_flutter/api/product_api.dart';
 import 'package:merchant_gerbook_flutter/components/controller/refresher.dart';
-import 'package:merchant_gerbook_flutter/components/custom_comps/order_card.dart';
+import 'package:merchant_gerbook_flutter/components/custom_comps/transaction_card.dart';
 import 'package:merchant_gerbook_flutter/components/custom_loader/custom_loader.dart';
 // import 'package:merchant_gerbook_flutter/components/custom_comps/order_card.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
@@ -15,30 +14,32 @@ import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class OrderPage extends StatefulWidget {
-  const OrderPage({super.key});
+class TransactionListPage extends StatefulWidget {
+  static const routeName = "TransactionListPage";
+
+  const TransactionListPage({super.key});
 
   @override
-  State<OrderPage> createState() => _OrderPageState();
+  State<TransactionListPage> createState() => _TransactionListPageState();
 }
 
-class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
+class _TransactionListPageState extends State<TransactionListPage>
+    with AfterLayoutMixin {
   int filterIndex = 0;
-
   TextEditingController searchController = TextEditingController();
-
   ScrollController scrollController = ScrollController();
+
   int page = 1;
   int limit = 10;
   bool isLoadingPage = true;
-  bool isLoadingBooking = true;
-  Result bookingList = Result();
+  bool isLoadingTransaction = true;
+  Result transactionList = Result();
   Timer? timer;
 
   @override
   FutureOr<void> afterFirstLayout(BuildContext context) async {
     try {
-      await listOfBookings(page, limit, status: "PENDING");
+      await listOfTransaction(page, limit);
       setState(() {
         isLoadingPage = false;
       });
@@ -49,23 +50,17 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
     }
   }
 
-  listOfBookings(page, limit, {String? query, String? status}) async {
-    bookingList = await ProductApi().getBookingList(
-      ResultArguments(
-        page: page,
-        limit: limit,
-        query: query,
-        status: status != null ? status : null,
-      ),
+  listOfTransaction(page, limit, {String? query, List<String>? types}) async {
+    transactionList = await ProductApi().getTransactionList(
+      ResultArguments(page: page, limit: limit, query: query, types: types),
     );
     setState(() {
-      isLoadingBooking = false;
+      isLoadingTransaction = false;
     });
   }
 
   final RefreshController refreshController = RefreshController(
     initialRefresh: false,
-    
   );
 
   onRefresh() async {
@@ -74,16 +69,7 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
     setState(() {
       limit = 10;
     });
-    await listOfBookings(
-      page,
-      limit,
-      query: searchController.text,
-      status: filterIndex == 0
-          ? "PENDING"
-          : filterIndex == 1
-          ? "PAID"
-          : "CANCELED",
-    );
+    await listOfTransaction(page, limit);
     refreshController.refreshCompleted();
   }
 
@@ -92,23 +78,14 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
     setState(() {
       limit += 10;
     });
-    await listOfBookings(
-      page,
-      limit,
-      query: searchController.text,
-      status: filterIndex == 0
-          ? "PENDING"
-          : filterIndex == 1
-          ? "PAID"
-          : "CANCELED",
-    );
+    await listOfTransaction(page, limit);
     refreshController.loadComplete();
   }
 
   onChange(String query) {
     if (timer != null) timer!.cancel();
     timer = Timer(const Duration(milliseconds: 500), () async {
-      listOfBookings(page, limit, query: query);
+      listOfTransaction(page, limit, query: query);
       // setState(() {
       //   isLoadingStays = false;
       // });
@@ -122,14 +99,18 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
     // '${translateKey.translate('booking_status_label.${widget.data.status}')}',
 
     final List<String> tabs = [
-      '${translateKey.translate('booking_status_label.PENDING')}',
-      '${translateKey.translate('booking_status_label.PAID')}',
-      '${translateKey.translate('booking_status_label.CANCELED')}',
+      '${translateKey.translate('all')}',
+      '${translateKey.translate('transaction_type_booking')}',
+      '${translateKey.translate('transaction_type_refund')}',
+      '${translateKey.translate('transaction_type_fee')}',
+      '${translateKey.translate('transaction_type_profit')}',
     ];
     final Map<String, String> tabFilters = {
-      '${translateKey.translate('booking_status_label.PENDING')}': "PENDING",
-      '${translateKey.translate('booking_status_label.PAID')}': "PAID",
-      '${translateKey.translate('booking_status_label.CANCELED')}': "CANCELED",
+      '${translateKey.translate('all')}': "ALL",
+      '${translateKey.translate('transaction_type_booking')}': "BOOKING",
+      '${translateKey.translate('transaction_type_refund')}': "REFUND",
+      '${translateKey.translate('transaction_type_fee')}': "FEE",
+      '${translateKey.translate('transaction_type_profit')}': "PROFIT",
     };
     return GestureDetector(
       onTap: () {
@@ -142,8 +123,17 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
           centerTitle: false,
           backgroundColor: white,
           automaticallyImplyLeading: false,
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: Center(
+              child: SvgPicture.asset('assets/svg/chevron_left.svg'),
+            ),
+          ),
+          titleSpacing: 0,
           title: Text(
-            '${translateKey.translate('order')[0].toUpperCase()}${translateKey.translate('order').substring(1)}',
+            '${translateKey.translate('transaction_history')}',
             style: TextStyle(
               color: gray800,
               fontSize: 18,
@@ -170,16 +160,29 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
                             });
                             final selectedTab = tabs[filterIndex];
                             final filter = tabFilters[selectedTab];
+
+                            List<String>? types;
+
+                            if (filter == "ALL") {
+                              // Бүх статусыг list болгоно (ALL-ээс бусдыг)
+                              types = tabFilters.values
+                                  .where((value) => value != "ALL")
+                                  .toList();
+                            } else {
+                              // Зөвхөн ганц сонгогдсон статус
+                              types = [filter!];
+                            }
+
                             scrollController.animateTo(
                               scrollController.position.minScrollExtent,
                               duration: Duration(milliseconds: 500),
                               curve: Curves.easeOut,
                             );
-                            await listOfBookings(
+                            await listOfTransaction(
                               page,
                               limit,
                               query: searchController.text,
-                              status: filter,
+                              types: types,
                             );
                           },
                           child: Container(
@@ -225,7 +228,7 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
                       inputType: TextInputType.text,
                       controller: searchController,
                       colortext: black,
-                      name: 'userName',
+                      name: 'code',
                       color: white,
                       isDense: true,
                       contentPadding: EdgeInsets.symmetric(
@@ -243,27 +246,8 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
                           SizedBox(width: 8),
                         ],
                       ),
-                      hintText:
-                          "${translateKey.translate('ger')}, ${translateKey.translate('search').toLowerCase()}",
+                      hintText: "${translateKey.translate('search_by_code')}",
                       hintTextColor: gray500,
-                    ),
-                  ),
-                  SizedBox(width: 12),
-
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: white,
-                      border: Border.all(color: gray300),
-                    ),
-                    child: Stack(
-                      children: [
-                        Center(
-                          child: SvgPicture.asset('assets/svg/calendar.svg'),
-                        ),
-                      ],
                     ),
                   ),
                 ],
@@ -277,9 +261,9 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
                   color: primary,
                   child: SingleChildScrollView(
                     controller: scrollController,
-                    child: isLoadingBooking == true
+                    child: isLoadingTransaction == true
                         ? CustomLoader()
-                        : bookingList.rows?.isEmpty == true
+                        : transactionList.rows?.isEmpty == true
                         ? Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -325,16 +309,23 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
                           )
                         : Column(
                             children: [
-                              ...bookingList.rows!
-                                  .map(
-                                    (data) => Column(
-                                      children: [
-                                        OrderCard(data: data),
-                                        SizedBox(height: 14),
-                                      ],
-                                    ),
-                                  )
-                                  .toList(),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: white,
+                                    border: Border.all(color: gray100),
+                                  ),
+                                  child: Column(
+                                    children: transactionList.rows!
+                                        .map(
+                                          (data) => TransactionCard(data: data),
+                                        )
+                                        .toList(),
+                                  ),
+                                ),
+                              ),
                               SizedBox(height: mediaQuery.padding.bottom + 24),
                             ],
                           ),

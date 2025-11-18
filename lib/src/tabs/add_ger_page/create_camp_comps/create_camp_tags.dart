@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:after_layout/after_layout.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/svg.dart';
@@ -11,6 +12,7 @@ import 'package:merchant_gerbook_flutter/api/product_api.dart';
 import 'package:merchant_gerbook_flutter/components/custom_loader/custom_loader.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
+import 'package:merchant_gerbook_flutter/provider/camp_create_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -95,6 +97,53 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
     });
   }
 
+  bool isLoadingButton = false;
+  TimeOfDay? checkInTime;
+  TimeOfDay? checkOutTime;
+
+  onSubmit() async {
+    try {
+      setState(() {
+        isLoadingButton = true;
+      });
+      print(isLoadingButton);
+      print('=====am in ?? =====');
+      await Provider.of<CampCreateProvider>(
+        context,
+        listen: false,
+      ).updateOffers(newOffers: filterOffer);
+
+      await Provider.of<CampCreateProvider>(
+        context,
+        listen: false,
+      ).updateTags(newTags: filterTag);
+      await Provider.of<CampCreateProvider>(
+        context,
+        listen: false,
+      ).updateCheckIn(newCheckIn: checkInTime.toString());
+      await Provider.of<CampCreateProvider>(
+        context,
+        listen: false,
+      ).updateCheckOut(newCheckOut: checkOutTime.toString());
+      await Provider.of<CampCreateProvider>(
+        context,
+        listen: false,
+      ).updateFourSeasong(newFourSeason: is4Season);
+
+      widget.pageController.nextPage(
+        duration: Duration(microseconds: 1000),
+        curve: Curves.ease,
+      );
+      setState(() {
+        isLoadingButton = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoadingButton = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -114,32 +163,6 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
                 children: [
                   Column(
                     children: [
-                      Padding(
-                        padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SvgPicture.asset('assets/svg/completed_step.svg'),
-                            Expanded(
-                              child: Container(height: 2, color: gray200),
-                            ),
-                            SvgPicture.asset('assets/svg/completed_step.svg'),
-                            Expanded(
-                              child: Container(height: 2, color: gray200),
-                            ),
-                            SvgPicture.asset('assets/svg/completed_step.svg'),
-                            Expanded(
-                              child: Container(height: 2, color: gray200),
-                            ),
-                            SvgPicture.asset('assets/svg/selected_step.svg'),
-                            Expanded(
-                              child: Container(height: 2, color: gray200),
-                            ),
-                            SvgPicture.asset('assets/svg/unselected_step.svg'),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 8),
                       Container(
                         decoration: BoxDecoration(
                           border: Border(bottom: BorderSide(color: gray100)),
@@ -174,10 +197,29 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
                                 ],
                               ),
                             ),
+                            SizedBox(width: 8),
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: white,
+                                border: Border.all(color: gray300),
+                              ),
+                              padding: EdgeInsets.all(10),
+                              child: Text(
+                                '4/6',
+                                style: TextStyle(
+                                  color: gray800,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
                             SizedBox(width: 16),
                           ],
                         ),
                       ),
+                      SizedBox(height: 8),
+
                       Expanded(
                         child: SingleChildScrollView(
                           child: Padding(
@@ -361,52 +403,6 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      translateKey.translate('is_smoking'),
-                                      style: TextStyle(
-                                        color: gray700,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    Transform.scale(
-                                      scale: 24 / 32,
-                                      child: Switch.adaptive(
-                                        value: isSmoke,
-                                        onChanged: (value) =>
-                                            setState(() => isSmoke = value),
-                                        activeColor: primary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      translateKey.translate('is_pets'),
-                                      style: TextStyle(
-                                        color: gray700,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    Transform.scale(
-                                      scale: 24 / 32,
-                                      child: Switch.adaptive(
-                                        value: isPets,
-                                        onChanged: (value) =>
-                                            setState(() => isPets = value),
-                                        activeColor: primary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
                                     Expanded(
                                       child: Text(
                                         '${translateKey.translate('whether_the_property_all_seasons')}',
@@ -448,37 +444,55 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
                                             ),
                                           ),
                                           SizedBox(height: 6),
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 14,
-                                              vertical: 10,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              color: white,
-                                              border: Border.all(
-                                                color: gray300,
+                                          GestureDetector(
+                                            onTap: () {
+                                              showIOSBottomTimePicker(
+                                                context: context,
+                                                title: translateKey.translate(
+                                                  'yes',
+                                                ),
+                                                onSelected: (time) {
+                                                  setState(() {
+                                                    checkOutTime = time;
+                                                  });
+                                                },
+                                              );
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 14,
+                                                vertical: 10,
                                               ),
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  '--:--',
-                                                  style: TextStyle(
-                                                    color: gray700,
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w500,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                color: white,
+                                                border: Border.all(
+                                                  color: gray300,
+                                                ),
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    checkOutTime == null
+                                                        ? '--:--'
+                                                        : '${checkOutTime!.hour.toString().padLeft(2, '0')}:${checkOutTime!.minute.toString().padLeft(2, '0')}',
+                                                    style: TextStyle(
+                                                      color: gray700,
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
                                                   ),
-                                                ),
-                                                SizedBox(width: 6),
-                                                SvgPicture.asset(
-                                                  'assets/svg/clock.svg',
-                                                ),
-                                              ],
+                                                  SizedBox(width: 6),
+                                                  SvgPicture.asset(
+                                                    'assets/svg/clock.svg',
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -501,199 +515,61 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
                                             ),
                                           ),
                                           SizedBox(height: 6),
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 14,
-                                              vertical: 10,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              color: white,
-                                              border: Border.all(
-                                                color: gray300,
+                                          GestureDetector(
+                                            onTap: () {
+                                              showIOSBottomTimePicker(
+                                                context: context,
+                                                title: translateKey.translate(
+                                                  'yes',
+                                                ),
+                                                onSelected: (time) {
+                                                  setState(() {
+                                                    checkInTime = time;
+                                                  });
+                                                },
+                                              );
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 14,
+                                                vertical: 10,
                                               ),
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  '--:--',
-                                                  style: TextStyle(
-                                                    color: gray700,
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                color: white,
+                                                border: Border.all(
+                                                  color: gray300,
                                                 ),
-                                                SizedBox(width: 6),
-                                                SvgPicture.asset(
-                                                  'assets/svg/clock.svg',
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 16),
-
-                                Text(
-                                  translateKey.translate('discount'),
-                                  style: TextStyle(
-                                    color: gray800,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                SizedBox(height: 14),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: white,
-                                    border: Border.all(color: gray300),
-                                  ),
-                                  padding: EdgeInsets.all(12),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      discountDatas.isEmpty == true
-                                          ? Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                SizedBox(height: 4),
-
-                                                Center(
-                                                  child: Text(
-                                                    '${translateKey.translate('no_discount')}',
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    checkInTime == null
+                                                        ? '--:--'
+                                                        : '${checkInTime!.hour.toString().padLeft(2, '0')}:${checkInTime!.minute.toString().padLeft(2, '0')}',
                                                     style: TextStyle(
                                                       color: gray700,
                                                       fontSize: 14,
                                                       fontWeight:
                                                           FontWeight.w500,
                                                     ),
-                                                    textAlign: TextAlign.center,
                                                   ),
-                                                ),
-                                              ],
-                                            )
-                                          : Column(
-                                              children: [1, 2, 3]
-                                                  .map(
-                                                    (data) => Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          translateKey
-                                                              .translate(
-                                                                'add_discount',
-                                                              ),
-                                                          style: TextStyle(
-                                                            color: gray700,
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 6),
-                                                        Container(
-                                                          decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  8,
-                                                                ),
-                                                            color: white,
-                                                            border: Border.all(
-                                                              color: gray300,
-                                                            ),
-                                                          ),
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 16,
-                                                                vertical: 10,
-                                                              ),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                '-',
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      gray700,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                ),
-                                                              ),
-                                                              Text(
-                                                                '%',
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      primary,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )
-                                                  .toList(),
-                                            ),
-                                      SizedBox(height: 16),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: GestureDetector(
-                                              onTap: () {},
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  color: primary,
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                ),
-                                                padding: EdgeInsets.symmetric(
-                                                  horizontal: 24,
-                                                  vertical: 10,
-                                                ),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      translateKey.translate(
-                                                        'add_discount',
-                                                      ),
-                                                      style: TextStyle(
-                                                        color: white,
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                  SizedBox(width: 6),
+                                                  SvgPicture.asset(
+                                                    'assets/svg/clock.svg',
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ),
                                         ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                                 SizedBox(
                                   height: mediaQuery.padding.bottom + 150,
@@ -773,14 +649,11 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
                                     SizedBox(width: 16),
                                     Expanded(
                                       child: GestureDetector(
-                                        onTap: () {
-                                          widget.pageController.nextPage(
-                                            duration: Duration(
-                                              microseconds: 1000,
-                                            ),
-                                            curve: Curves.ease,
-                                          );
-                                        },
+                                        onTap: isLoadingButton == true
+                                            ? () {}
+                                            : () {
+                                                onSubmit();
+                                              },
                                         child: Container(
                                           decoration: BoxDecoration(
                                             color: primary,
@@ -821,6 +694,69 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
                 ],
               ),
             ),
+    );
+  }
+
+  Future<void> showIOSBottomTimePicker({
+    required BuildContext context,
+    required Function(TimeOfDay) onSelected,
+    required String title,
+  }) async {
+    TimeOfDay selectedTime = TimeOfDay.now();
+
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) {
+        return SizedBox(
+          height: 250,
+          child: Column(
+            children: [
+              // Тийм товчийг баруун талд гаргасан хэсэг
+              Padding(
+                padding: const EdgeInsets.only(right: 16, top: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        onSelected(selectedTime);
+                      },
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Time picker
+              Expanded(
+                child: CupertinoDatePicker(
+                  mode: CupertinoDatePickerMode.time,
+                  use24hFormat: true,
+                  onDateTimeChanged: (DateTime newTime) {
+                    selectedTime = TimeOfDay(
+                      hour: newTime.hour,
+                      minute: newTime.minute,
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 50),
+            ],
+          ),
+        );
+      },
     );
   }
 }
