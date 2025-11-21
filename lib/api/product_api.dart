@@ -1,8 +1,10 @@
 import 'package:merchant_gerbook_flutter/models/address.dart';
 import 'package:merchant_gerbook_flutter/models/booking_list.dart';
 import 'package:merchant_gerbook_flutter/models/camp_list_data.dart';
+import 'package:merchant_gerbook_flutter/models/cancel_policy.dart';
 import 'package:merchant_gerbook_flutter/models/chart_data.dart';
 import 'package:merchant_gerbook_flutter/models/dashboard.dart';
+import 'package:merchant_gerbook_flutter/models/discount_types.dart';
 import 'package:merchant_gerbook_flutter/models/notify_list.dart';
 import 'package:merchant_gerbook_flutter/models/place_offers.dart';
 import 'package:merchant_gerbook_flutter/models/properties.dart';
@@ -102,6 +104,16 @@ class ProductApi extends HttpRequest {
   getTravelOffers(ResultArguments resultArguments) async {
     var res = await get('/travel-offers', data: resultArguments.toJson());
     return Result.fromJson(res, TravelOffers.fromJson);
+  }
+
+  getDiscounts(ResultArguments resultArguments) async {
+    var res = await get('/discount-types', data: resultArguments.toJson());
+    return Result.fromJson(res, DiscountTypes.fromJson);
+  }
+
+  getCancelPolicies(ResultArguments resultArguments) async {
+    var res = await get('/cancel-policies', data: resultArguments.toJson());
+    return Result.fromJson(res, CancelPolicy.fromJson);
   }
 
   // getOrderData(String id) async {

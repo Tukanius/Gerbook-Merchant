@@ -9,32 +9,33 @@ import 'package:flutter_svg/svg.dart';
 import 'package:merchant_gerbook_flutter/api/product_api.dart';
 import 'package:merchant_gerbook_flutter/components/custom_loader/custom_loader.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
+import 'package:merchant_gerbook_flutter/models/cancel_policy.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
-import 'package:merchant_gerbook_flutter/models/travel_offers.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:provider/provider.dart';
 
-class AddService extends StatefulWidget {
-  final List<TravelOffers>? initialSelected;
-  final Function(List<TravelOffers>) onSelectionChange;
+class AddCancelPolicy extends StatefulWidget {
+  final List<CancelPolicy>? initialSelected;
+  final Function(List<CancelPolicy>) onSelectionChange;
 
-  const AddService({
+  const AddCancelPolicy({
     super.key,
     this.initialSelected,
     required this.onSelectionChange,
   });
 
   @override
-  State<AddService> createState() => _AddServiceState();
+  State<AddCancelPolicy> createState() => _AddCancelPolicyState();
 }
 
-class _AddServiceState extends State<AddService> with AfterLayoutMixin {
+class _AddCancelPolicyState extends State<AddCancelPolicy>
+    with AfterLayoutMixin {
   int page = 1;
   int limit = 30;
-  Result travelOffers = Result();
-  bool isLoadingTravelOffer = true;
+  Result cancelPolicy = Result();
+  bool isLoadingCancelPolicy = true;
 
-  List<TravelOffers> selectedOffers = [];
+  List<CancelPolicy> selectedOffers = [];
 
   @override
   void initState() {
@@ -46,15 +47,15 @@ class _AddServiceState extends State<AddService> with AfterLayoutMixin {
 
   @override
   FutureOr<void> afterFirstLayout(BuildContext context) async {
-    await listOfTravelOffers(page, limit);
+    await listOfCancelPolicy(page, limit);
   }
 
-  listOfTravelOffers(page, limit) async {
-    travelOffers = await ProductApi().getTravelOffers(
+  listOfCancelPolicy(page, limit) async {
+    cancelPolicy = await ProductApi().getCancelPolicies(
       ResultArguments(page: page, limit: limit),
     );
     setState(() {
-      isLoadingTravelOffer = false;
+      isLoadingCancelPolicy = false;
     });
   }
 
@@ -75,7 +76,7 @@ class _AddServiceState extends State<AddService> with AfterLayoutMixin {
       ),
       child: Stack(
         children: [
-          isLoadingTravelOffer == true
+          isLoadingCancelPolicy == true
               ? CustomLoader()
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +96,7 @@ class _AddServiceState extends State<AddService> with AfterLayoutMixin {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
-                        translateKey.translate('additional_services'),
+                        translateKey.translate('add_discount'),
                         style: TextStyle(
                           color: gray900,
                           fontSize: 18,
@@ -104,14 +105,68 @@ class _AddServiceState extends State<AddService> with AfterLayoutMixin {
                       ),
                     ),
                     SizedBox(height: 12),
+                    SizedBox(width: 16),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          // if (isSelected) {
+                          //   // Remove using ID to ensure we remove the correct object
+                          //   selectedOffers.removeWhere(
+                          //     (element) => element.id == data.id,
+                          //   );
+                          // } else {
+                          //   selectedOffers.add(data);
+                          // }
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: white,
+                          border: Border(bottom: BorderSide(color: gray100)),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                '${translateKey.translate('no_refund')}',
+                              ),
+                            ),
+                            Container(
+                              width: 20,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(6),
+                                color: white,
+                                border: Border.all(color: gray300),
+                              ),
+                              child: SizedBox(),
+                              //  isSelected
+                              //     ? Padding(
+                              //         padding: const EdgeInsets.all(
+                              //           3.0,
+                              //         ),
+                              //         child: SvgPicture.asset(
+                              //           'assets/svg/check.svg',
+                              //           color: white,
+                              //         ),
+                              //       )
+                              //     : SizedBox(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 16),
                     Expanded(
                       child:
-                          travelOffers.rows != null &&
-                              travelOffers.rows!.isNotEmpty
+                          cancelPolicy.rows != null &&
+                              cancelPolicy.rows!.isNotEmpty
                           ? ListView.builder(
-                              itemCount: travelOffers.rows!.length,
+                              itemCount: cancelPolicy.rows!.length,
                               itemBuilder: (context, index) {
-                                final data = travelOffers.rows![index];
+                                final data = cancelPolicy.rows![index];
 
                                 // Check if this specific item is in our selected list
                                 // We compare by ID (assuming _id exists) to be safe
@@ -179,7 +234,7 @@ class _AddServiceState extends State<AddService> with AfterLayoutMixin {
                             )
                           : SizedBox(),
                     ),
-                    // Add extra padding at bottom so list doesn't hide behind button
+
                     SizedBox(height: 80),
                   ],
                 ),

@@ -7,12 +7,16 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:merchant_gerbook_flutter/api/product_api.dart';
+
 import 'package:merchant_gerbook_flutter/components/custom_loader/custom_loader.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
+import 'package:merchant_gerbook_flutter/models/cancel_policy.dart';
+import 'package:merchant_gerbook_flutter/models/discount_types.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
 import 'package:merchant_gerbook_flutter/models/travel_offers.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/tools/add_cancel_policy.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/tools/add_discount.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/tools/add_service.dart';
 import 'package:provider/provider.dart';
 
@@ -27,18 +31,26 @@ class CreateCampDiscount extends StatefulWidget {
 
 class _CreateCampDiscountState extends State<CreateCampDiscount>
     with AfterLayoutMixin {
-  List<String> discountDatas = [];
-
   int page = 1;
   int limit = 30;
   bool isLoadingPage = true;
-  bool isLoadingTravelOffer = true;
   Result travelOffers = Result();
+  Result cancelPolicy = Result();
+  Result discounts = Result();
+  bool isLoadingTravelOffer = true;
+  bool isLoadingDiscount = true;
+  bool isLoadingCancelPolicy = true;
+
+  List<TravelOffers> selectedServices = [];
+  List<DiscountTypes> selectedDiscount = [];
+  List<CancelPolicy> selectedCancelPolicy = [];
 
   @override
   FutureOr<void> afterFirstLayout(BuildContext context) async {
     try {
-      await listOfTravelOffers(page, limit);
+      // await listOfTravelOffers(page, limit);
+      // await listOfDiscounts(page, limit);
+      // await listOfCancelPolicy(page, limit);
       // await listOfTags(page, limit);
       setState(() {
         isLoadingPage = false;
@@ -48,51 +60,23 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
         isLoadingPage = true;
       });
     }
-    // print('======test========');
-    // print(widget.priceMinText);
-    // print(widget.priceMaxText);
-    // print(widget.priceMinText == null);
-    // print(widget.priceMaxText == null);
-
-    // print('======test========');
-
-    // setState(() {
-    //   min.text = widget.priceMinText != null
-    //       ? widget.priceMinText.toString()
-    //       : '';
-    //   max.text = widget.priceMaxText != null
-    //       ? widget.priceMaxText.toString()
-    //       : '';
-
-    //   filterTag = widget.filterTagSelected ?? [];
-    //   filterOffer = widget.filterOfferSelected ?? [];
-    // });
   }
 
-  listOfTravelOffers(page, limit) async {
-    travelOffers = await ProductApi().getPlaceOffersList(
-      ResultArguments(page: page, limit: limit),
-    );
-    setState(() {
-      isLoadingTravelOffer = false;
-    });
-  }
-
-  // listOfTags(page, limit, {String? query}) async {
-  //   placeTags = await ProductApi().getPlaceTags(
+  // listOfDiscounts(page, limit) async {
+  //   discounts = await ProductApi().getDiscounts(
   //     ResultArguments(page: page, limit: limit),
   //   );
   //   setState(() {
-  //     isLoadingTags = false;
+  //     isLoadingDiscount = false;
   //   });
   // }
 
-  // listOfPlaceOffers(page, limit, {String? query}) async {
-  //   placeOffers = await ProductApi().getPlaceOffersList(
-  //     ResultArguments(page: page, limit: limit, query: query),
+  // listOfCancelPolicy(page, limit) async {
+  //   cancelPolicy = await ProductApi().getCancelPolicies(
+  //     ResultArguments(page: page, limit: limit),
   //   );
   //   setState(() {
-  //     isLoadingOffers = false;
+  //     isLoadingCancelPolicy = false;
   //   });
   // }
 
@@ -199,7 +183,7 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      discountDatas.isEmpty == true
+                                      selectedServices.isEmpty == true
                                           ? Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
@@ -215,7 +199,7 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                                         BorderRadius.circular(
                                                           6,
                                                         ),
-                                                    color: gray200,
+                                                    color: gray50,
                                                   ),
                                                   child: Row(
                                                     mainAxisAlignment:
@@ -225,7 +209,7 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                                       Text(
                                                         '${translateKey.translate('no_additional_services')}',
                                                         style: TextStyle(
-                                                          color: gray700,
+                                                          color: gray400,
                                                           fontSize: 14,
                                                           fontWeight:
                                                               FontWeight.w500,
@@ -239,76 +223,165 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                               ],
                                             )
                                           : Column(
-                                              children: [1, 2, 3]
-                                                  .map(
-                                                    (data) => Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          translateKey
-                                                              .translate(
-                                                                'add_discount',
+                                              children: selectedServices.map((
+                                                service,
+                                              ) {
+                                                // Initialize defaults if null (Optional logic)
+                                                // service.quantity = service.quantity ?? 1;
+                                                // service.price = service.price ?? 0;
+
+                                                return Container(
+                                                  margin: EdgeInsets.only(
+                                                    bottom: 10,
+                                                  ),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              service.name ??
+                                                                  '',
+                                                              style: TextStyle(
+                                                                color: gray700,
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
                                                               ),
-                                                          style: TextStyle(
-                                                            color: gray700,
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 6),
-                                                        Container(
-                                                          decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  8,
-                                                                ),
-                                                            color: white,
-                                                            border: Border.all(
-                                                              color: gray300,
                                                             ),
                                                           ),
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 16,
-                                                                vertical: 10,
+                                                        ],
+                                                      ),
+                                                      SizedBox(height: 6),
+                                                      Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Container(
+                                                              height: 36,
+
+                                                              decoration: BoxDecoration(
+                                                                border:
+                                                                    Border.all(
+                                                                      color:
+                                                                          gray300,
+                                                                    ),
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      8,
+                                                                    ),
                                                               ),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                '-',
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      gray700,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
+                                                              child: TextField(
+                                                                keyboardType:
+                                                                    TextInputType
+                                                                        .number,
+                                                                decoration: InputDecoration(
+                                                                  isDense: true,
+                                                                  suffix: Text(
+                                                                    '${translateKey.translate('price')}',
+                                                                    style: TextStyle(
+                                                                      color:
+                                                                          gray700,
+                                                                      fontSize:
+                                                                          12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                    ),
+                                                                  ),
+                                                                  border:
+                                                                      InputBorder
+                                                                          .none,
+                                                                  hintText:
+                                                                      '0₮',
+                                                                  contentPadding:
+                                                                      EdgeInsets.all(
+                                                                        8,
+                                                                      ),
                                                                 ),
+                                                                onChanged: (value) {
+                                                                  // Save quantity to your model
+                                                                  service.count =
+                                                                      int.tryParse(
+                                                                        value,
+                                                                      );
+                                                                },
                                                               ),
-                                                              Text(
-                                                                '%',
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      primary,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                ),
-                                                              ),
-                                                            ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )
-                                                  .toList(),
+                                                          SizedBox(width: 6),
+
+                                                          Expanded(
+                                                            child: Container(
+                                                              height: 36,
+
+                                                              decoration: BoxDecoration(
+                                                                border:
+                                                                    Border.all(
+                                                                      color:
+                                                                          gray300,
+                                                                    ),
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      8,
+                                                                    ),
+                                                              ),
+                                                              child: TextField(
+                                                                keyboardType:
+                                                                    TextInputType
+                                                                        .number,
+                                                                decoration: InputDecoration(
+                                                                  isDense: true,
+                                                                  suffix: Text(
+                                                                    'Ш',
+                                                                    style: TextStyle(
+                                                                      color:
+                                                                          gray700,
+                                                                      fontSize:
+                                                                          12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                    ),
+                                                                  ),
+                                                                  border:
+                                                                      InputBorder
+                                                                          .none,
+                                                                  hintText:
+                                                                      '0ш',
+                                                                  contentPadding:
+                                                                      EdgeInsets.all(
+                                                                        8,
+                                                                      ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+
+                                                          SizedBox(width: 6),
+
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              setState(() {
+                                                                selectedServices
+                                                                    .remove(
+                                                                      service,
+                                                                    );
+                                                              });
+                                                            },
+                                                            child: SvgPicture.asset(
+                                                              'assets/svg/trash.svg',
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }).toList(),
                                             ),
                                       SizedBox(height: 14),
                                       GestureDetector(
@@ -326,7 +399,18 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                             backgroundColor: transparent,
                                             builder: (context) {
                                               return AddService(
-                                                data: travelOffers.rows!,
+                                                initialSelected:
+                                                    selectedServices,
+                                                onSelectionChange: (datas) {
+                                                  setState(() {
+                                                    selectedServices = datas;
+                                                  });
+                                                },
+                                                // onSelected: (item) {
+                                                //   setState(() {
+                                                //     selectedServices.add(item);
+                                                //   });
+                                                // },
                                               );
                                             },
                                           );
@@ -388,7 +472,7 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      discountDatas.isEmpty == true
+                                      selectedDiscount.isEmpty == true
                                           ? Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
@@ -412,7 +496,7 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                                             .center,
                                                     children: [
                                                       Text(
-                                                        '${translateKey.translate('no_additional_services')}',
+                                                        '${translateKey.translate('no_discount')}',
                                                         style: TextStyle(
                                                           color: gray700,
                                                           fontSize: 14,
@@ -428,76 +512,103 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                               ],
                                             )
                                           : Column(
-                                              children: [1, 2, 3]
-                                                  .map(
-                                                    (data) => Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          translateKey
-                                                              .translate(
-                                                                'add_discount',
+                                              children: selectedDiscount.map((
+                                                service,
+                                              ) {
+                                                // Initialize defaults if null (Optional logic)
+                                                // service.quantity = service.quantity ?? 1;
+                                                // service.price = service.price ?? 0;
+
+                                                return Container(
+                                                  margin: EdgeInsets.only(
+                                                    bottom: 10,
+                                                  ),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              service.type ??
+                                                                  '',
+                                                              style: TextStyle(
+                                                                color: gray700,
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
                                                               ),
-                                                          style: TextStyle(
-                                                            color: gray700,
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 6),
-                                                        Container(
-                                                          decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  8,
-                                                                ),
-                                                            color: white,
-                                                            border: Border.all(
-                                                              color: gray300,
                                                             ),
                                                           ),
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 16,
-                                                                vertical: 10,
+                                                        ],
+                                                      ),
+                                                      SizedBox(height: 6),
+                                                      Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Container(
+                                                              height: 36,
+
+                                                              decoration: BoxDecoration(
+                                                                border:
+                                                                    Border.all(
+                                                                      color:
+                                                                          gray300,
+                                                                    ),
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      8,
+                                                                    ),
                                                               ),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                '-',
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      gray700,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
+                                                              child: TextField(
+                                                                keyboardType:
+                                                                    TextInputType
+                                                                        .number,
+                                                                decoration: InputDecoration(
+                                                                  isDense: true,
+                                                                  border:
+                                                                      InputBorder
+                                                                          .none,
+                                                                  hintText:
+                                                                      '0%',
+                                                                  contentPadding:
+                                                                      EdgeInsets.all(
+                                                                        8,
+                                                                      ),
                                                                 ),
+                                                                onChanged: (value) {
+                                                                  // Save quantity to your model
+                                                                  service.procent =
+                                                                      int.tryParse(
+                                                                        value,
+                                                                      );
+                                                                },
                                                               ),
-                                                              Text(
-                                                                '%',
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      primary,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                ),
-                                                              ),
-                                                            ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )
-                                                  .toList(),
+                                                          SizedBox(width: 6),
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              setState(() {
+                                                                selectedDiscount
+                                                                    .remove(
+                                                                      service,
+                                                                    );
+                                                              });
+                                                            },
+                                                            child: SvgPicture.asset(
+                                                              'assets/svg/trash.svg',
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }).toList(),
                                             ),
                                       SizedBox(height: 14),
                                       GestureDetector(
@@ -514,8 +625,19 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                             isDismissible: true,
                                             backgroundColor: transparent,
                                             builder: (context) {
-                                              return AddService(
-                                                data: travelOffers.rows!,
+                                              return AddDiscount(
+                                                initialSelected:
+                                                    selectedDiscount,
+                                                onSelectionChange: (datas) {
+                                                  setState(() {
+                                                    selectedDiscount = datas;
+                                                  });
+                                                },
+                                                // onSelected: (item) {
+                                                //   setState(() {
+                                                //     selectedServices.add(item);
+                                                //   });
+                                                // },
                                               );
                                             },
                                           );
@@ -541,7 +663,7 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                               SizedBox(width: 8),
                                               Text(
                                                 translateKey.translate(
-                                                  'additional_services',
+                                                  'add_discount',
                                                 ),
                                                 style: TextStyle(
                                                   color: gray700,
@@ -556,6 +678,7 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                     ],
                                   ),
                                 ),
+
                                 SizedBox(height: 16),
                                 Text(
                                   translateKey.translate('cancelation_policy'),
@@ -577,7 +700,7 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      discountDatas.isEmpty == true
+                                      selectedCancelPolicy.isEmpty == true
                                           ? Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
@@ -587,106 +710,132 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                                 Container(
                                                   padding: EdgeInsets.symmetric(
                                                     vertical: 12,
+                                                    horizontal: 16,
                                                   ),
                                                   decoration: BoxDecoration(
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                           6,
                                                         ),
-                                                    color: gray200,
+                                                    border: Border.all(
+                                                      color: errorColor,
+                                                    ),
+                                                    color: errorColor
+                                                        .withOpacity(0.1),
                                                   ),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text(
-                                                        '${translateKey.translate('no_additional_services')}',
-                                                        style: TextStyle(
-                                                          color: gray700,
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                      ),
-                                                    ],
+                                                  child: Text(
+                                                    '${translateKey.translate('no_cancel_policy_tips')}',
+                                                    style: TextStyle(
+                                                      color: errorColor
+                                                          .withOpacity(0.7),
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                    textAlign:
+                                                        TextAlign.justify,
                                                   ),
                                                 ),
                                               ],
                                             )
                                           : Column(
-                                              children: [1, 2, 3]
-                                                  .map(
-                                                    (data) => Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          translateKey
-                                                              .translate(
-                                                                'add_discount',
+                                              children: selectedCancelPolicy.map((
+                                                service,
+                                              ) {
+                                                // Initialize defaults if null (Optional logic)
+                                                // service.quantity = service.quantity ?? 1;
+                                                // service.price = service.price ?? 0;
+
+                                                return Container(
+                                                  margin: EdgeInsets.only(
+                                                    bottom: 10,
+                                                  ),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              service.name ??
+                                                                  '',
+                                                              style: TextStyle(
+                                                                color: gray700,
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
                                                               ),
-                                                          style: TextStyle(
-                                                            color: gray700,
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 6),
-                                                        Container(
-                                                          decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  8,
-                                                                ),
-                                                            color: white,
-                                                            border: Border.all(
-                                                              color: gray300,
                                                             ),
                                                           ),
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 16,
-                                                                vertical: 10,
+                                                        ],
+                                                      ),
+                                                      SizedBox(height: 6),
+                                                      Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Container(
+                                                              height: 36,
+
+                                                              decoration: BoxDecoration(
+                                                                border:
+                                                                    Border.all(
+                                                                      color:
+                                                                          gray300,
+                                                                    ),
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      8,
+                                                                    ),
                                                               ),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                '-',
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      gray700,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
+                                                              child: TextField(
+                                                                keyboardType:
+                                                                    TextInputType
+                                                                        .number,
+                                                                decoration: InputDecoration(
+                                                                  isDense: true,
+                                                                  border:
+                                                                      InputBorder
+                                                                          .none,
+                                                                  hintText:
+                                                                      '0%',
+                                                                  contentPadding:
+                                                                      EdgeInsets.all(
+                                                                        8,
+                                                                      ),
                                                                 ),
+                                                                onChanged: (value) {
+                                                                  // Save quantity to your model
+                                                                  service.procent =
+                                                                      int.tryParse(
+                                                                        value,
+                                                                      );
+                                                                },
                                                               ),
-                                                              Text(
-                                                                '%',
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      primary,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                ),
-                                                              ),
-                                                            ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )
-                                                  .toList(),
+                                                          SizedBox(width: 6),
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              setState(() {
+                                                                selectedCancelPolicy
+                                                                    .remove(
+                                                                      service,
+                                                                    );
+                                                              });
+                                                            },
+                                                            child: SvgPicture.asset(
+                                                              'assets/svg/trash.svg',
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }).toList(),
                                             ),
                                       SizedBox(height: 14),
                                       GestureDetector(
@@ -703,8 +852,15 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                             isDismissible: true,
                                             backgroundColor: transparent,
                                             builder: (context) {
-                                              return AddService(
-                                                data: travelOffers.rows!,
+                                              return AddCancelPolicy(
+                                                initialSelected:
+                                                    selectedCancelPolicy,
+                                                onSelectionChange: (datas) {
+                                                  setState(() {
+                                                    selectedCancelPolicy =
+                                                        datas;
+                                                  });
+                                                },
                                               );
                                             },
                                           );

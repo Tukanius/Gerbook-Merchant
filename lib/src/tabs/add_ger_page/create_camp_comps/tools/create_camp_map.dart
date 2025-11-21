@@ -184,9 +184,11 @@ class _CreateCampMapState extends State<CreateCampMap> {
                       SizedBox(width: 16),
                       Expanded(
                         child: GestureDetector(
-                          onTap: () {
-                            widget.saveLatLng(selectedLocation!);
-                          },
+                          onTap: selectedLocation == null
+                              ? () {}
+                              : () {
+                                  widget.saveLatLng(selectedLocation!);
+                                },
                           child: Container(
                             decoration: BoxDecoration(
                               color: primary,

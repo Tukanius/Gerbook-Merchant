@@ -9,32 +9,32 @@ import 'package:flutter_svg/svg.dart';
 import 'package:merchant_gerbook_flutter/api/product_api.dart';
 import 'package:merchant_gerbook_flutter/components/custom_loader/custom_loader.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
+import 'package:merchant_gerbook_flutter/models/discount_types.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
-import 'package:merchant_gerbook_flutter/models/travel_offers.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:provider/provider.dart';
 
-class AddService extends StatefulWidget {
-  final List<TravelOffers>? initialSelected;
-  final Function(List<TravelOffers>) onSelectionChange;
+class AddDiscount extends StatefulWidget {
+  final List<DiscountTypes>? initialSelected;
+  final Function(List<DiscountTypes>) onSelectionChange;
 
-  const AddService({
+  const AddDiscount({
     super.key,
     this.initialSelected,
     required this.onSelectionChange,
   });
 
   @override
-  State<AddService> createState() => _AddServiceState();
+  State<AddDiscount> createState() => _AddDiscountState();
 }
 
-class _AddServiceState extends State<AddService> with AfterLayoutMixin {
+class _AddDiscountState extends State<AddDiscount> with AfterLayoutMixin {
   int page = 1;
   int limit = 30;
-  Result travelOffers = Result();
-  bool isLoadingTravelOffer = true;
+  Result discounts = Result();
+  bool isLoadingDiscount = true;
 
-  List<TravelOffers> selectedOffers = [];
+  List<DiscountTypes> selectedOffers = [];
 
   @override
   void initState() {
@@ -46,15 +46,15 @@ class _AddServiceState extends State<AddService> with AfterLayoutMixin {
 
   @override
   FutureOr<void> afterFirstLayout(BuildContext context) async {
-    await listOfTravelOffers(page, limit);
+    await listOfDiscounts(page, limit);
   }
 
-  listOfTravelOffers(page, limit) async {
-    travelOffers = await ProductApi().getTravelOffers(
+  listOfDiscounts(page, limit) async {
+    discounts = await ProductApi().getDiscounts(
       ResultArguments(page: page, limit: limit),
     );
     setState(() {
-      isLoadingTravelOffer = false;
+      isLoadingDiscount = false;
     });
   }
 
@@ -75,7 +75,7 @@ class _AddServiceState extends State<AddService> with AfterLayoutMixin {
       ),
       child: Stack(
         children: [
-          isLoadingTravelOffer == true
+          isLoadingDiscount == true
               ? CustomLoader()
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +95,7 @@ class _AddServiceState extends State<AddService> with AfterLayoutMixin {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
-                        translateKey.translate('additional_services'),
+                        translateKey.translate('add_discount'),
                         style: TextStyle(
                           color: gray900,
                           fontSize: 18,
@@ -106,12 +106,11 @@ class _AddServiceState extends State<AddService> with AfterLayoutMixin {
                     SizedBox(height: 12),
                     Expanded(
                       child:
-                          travelOffers.rows != null &&
-                              travelOffers.rows!.isNotEmpty
+                          discounts.rows != null && discounts.rows!.isNotEmpty
                           ? ListView.builder(
-                              itemCount: travelOffers.rows!.length,
+                              itemCount: discounts.rows!.length,
                               itemBuilder: (context, index) {
-                                final data = travelOffers.rows![index];
+                                final data = discounts.rows![index];
 
                                 // Check if this specific item is in our selected list
                                 // We compare by ID (assuming _id exists) to be safe
@@ -144,7 +143,7 @@ class _AddServiceState extends State<AddService> with AfterLayoutMixin {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Expanded(child: Text('${data.name}')),
+                                        Expanded(child: Text('${data.type}')),
                                         Container(
                                           width: 20,
                                           height: 20,
