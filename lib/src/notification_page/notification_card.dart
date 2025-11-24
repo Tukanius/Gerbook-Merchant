@@ -18,18 +18,20 @@ class _NotifyCardState extends State<NotifyCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: widget.onClick,
-      child: Container(
-        decoration: BoxDecoration(
-          color: widget.data.hasGetItem == true ? white : gray50,
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: widget.data.hasGetItem == true ? white : primary50,
+          ),
+          padding: EdgeInsets.all(10),
           child: Row(
             children: [
               SvgPicture.asset(
                 widget.data.hasGetItem == true
                     ? 'assets/svg/check_not.svg'
-                    : 'assets/svg/check.svg',
+                    : 'assets/svg/checked_not.svg',
               ),
               SizedBox(width: 12),
               Expanded(
@@ -51,7 +53,7 @@ class _NotifyCardState extends State<NotifyCard> {
                         ),
                         widget.data.object != null
                             ? Text(
-                                '${widget.data.object?.code}',
+                                '${widget.data.object?.code ?? ''}',
                                 style: TextStyle(
                                   color: widget.data.hasGetItem == true
                                       ? gray600

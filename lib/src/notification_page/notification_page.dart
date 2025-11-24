@@ -11,6 +11,7 @@ import 'package:merchant_gerbook_flutter/models/notify_list.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/user_provider.dart';
+import 'package:merchant_gerbook_flutter/src/notification_page/notification_card.dart';
 // import 'package:merchant_gerbook_flutter/src/notification_page/notification_card.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -235,16 +236,16 @@ class _NotificationPageState extends State<NotificationPage>
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
+                      SizedBox(height: 16),
                       Column(
                         children: data.rows!
                             .map(
-                              (item) => Text('data'),
-                              // NotifyCard(
-                              //   data: item,
-                              //   onClick: () async {
-                              //     await clickNotification(item);
-                              //   },
-                              // ),
+                              (item) => NotifyCard(
+                                data: item,
+                                onClick: () async {
+                                  // await clickNotification(item);
+                                },
+                              ),
                             )
                             .toList(),
                       ),

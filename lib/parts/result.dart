@@ -75,10 +75,10 @@ Map<String, dynamic> _$ResultArgumentToJson(ResultArguments? instance) {
     if (instance.property != null) {
       params['property'] = instance.property;
     }
-    if (instance.startDate != null) {
+    if (instance.startDate != null && instance.startDate != '') {
       params['startDate'] = instance.startDate;
     }
-    if (instance.endDate != null) {
+    if (instance.endDate != null && instance.endDate != '') {
       params['endDate'] = instance.endDate;
     }
     if (instance.personCountMax != null) {

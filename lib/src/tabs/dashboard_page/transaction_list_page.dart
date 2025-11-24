@@ -82,16 +82,6 @@ class _TransactionListPageState extends State<TransactionListPage>
     refreshController.loadComplete();
   }
 
-  onChange(String query) {
-    if (timer != null) timer!.cancel();
-    timer = Timer(const Duration(milliseconds: 500), () async {
-      listOfTransaction(page, limit, query: query);
-      // setState(() {
-      //   isLoadingStays = false;
-      // });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final translateKey = Provider.of<LocalizationProvider>(context);
@@ -112,6 +102,27 @@ class _TransactionListPageState extends State<TransactionListPage>
       '${translateKey.translate('transaction_type_fee')}': "FEE",
       '${translateKey.translate('transaction_type_profit')}': "PROFIT",
     };
+    onChange(String query) {
+      if (timer != null) timer!.cancel();
+      timer = Timer(const Duration(milliseconds: 500), () async {
+        final selectedTab = tabs[filterIndex];
+        final filter = tabFilters[selectedTab];
+        List<String>? types;
+
+        if (filter == "ALL") {
+          // Бүх статусыг list болгоно (ALL-ээс бусдыг)
+          types = tabFilters.values.where((value) => value != "ALL").toList();
+        } else {
+          // Зөвхөн ганц сонгогдсон статус
+          types = [filter!];
+        }
+        listOfTransaction(page, limit, query: query, types: types);
+        // setState(() {
+        //   isLoadingStays = false;
+        // });
+      });
+    }
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -158,6 +169,7 @@ class _TransactionListPageState extends State<TransactionListPage>
                             setState(() {
                               filterIndex = index;
                             });
+                            FocusScope.of(context).unfocus();
                             final selectedTab = tabs[filterIndex];
                             final filter = tabFilters[selectedTab];
 

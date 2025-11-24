@@ -20,6 +20,8 @@ import 'package:merchant_gerbook_flutter/src/localization/change_language.dart';
 import 'package:merchant_gerbook_flutter/src/localization/localization_local.dart';
 import 'package:merchant_gerbook_flutter/src/main_page.dart';
 import 'package:merchant_gerbook_flutter/src/notification_page/notification_page.dart';
+import 'package:merchant_gerbook_flutter/src/profile_page/profile_page/profile.dart';
+import 'package:merchant_gerbook_flutter/src/profile_page/settings_page/settings_page.dart';
 import 'package:merchant_gerbook_flutter/src/splash_page/splash_page.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_camp_pages.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_ger_comps/create_ger_pages.dart';
@@ -285,6 +287,18 @@ class _MyAppState extends State<MyApp> with AfterLayoutMixin {
               return MaterialPageRoute(
                 builder: (context) {
                   return TransactionListPage();
+                },
+              );
+            case SettingsPage.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return SettingsPage();
+                },
+              );
+            case ProfilePage.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return ProfilePage();
                 },
               );
             default:

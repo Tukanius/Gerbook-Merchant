@@ -7,6 +7,7 @@ import 'package:merchant_gerbook_flutter/api/product_api.dart';
 import 'package:merchant_gerbook_flutter/components/controller/refresher.dart';
 import 'package:merchant_gerbook_flutter/components/custom_comps/order_card.dart';
 import 'package:merchant_gerbook_flutter/components/custom_loader/custom_loader.dart';
+import 'package:merchant_gerbook_flutter/components/table_calendar/table_calendar.dart';
 // import 'package:merchant_gerbook_flutter/components/custom_comps/order_card.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
@@ -49,13 +50,24 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
     }
   }
 
-  listOfBookings(page, limit, {String? query, String? status}) async {
+  listOfBookings(
+    page,
+    limit, {
+    String? query,
+    String? status,
+    String? startDate,
+    String? endDate,
+  }) async {
     bookingList = await ProductApi().getBookingList(
       ResultArguments(
         page: page,
         limit: limit,
         query: query,
         status: status != null ? status : null,
+        startDate: startDate != '' && startDate != null
+            ? startDate.toString()
+            : '',
+        endDate: endDate != '' && endDate != null ? endDate.toString() : '',
       ),
     );
     setState(() {
@@ -65,7 +77,6 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
 
   final RefreshController refreshController = RefreshController(
     initialRefresh: false,
-    
   );
 
   onRefresh() async {
@@ -105,15 +116,8 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
     refreshController.loadComplete();
   }
 
-  onChange(String query) {
-    if (timer != null) timer!.cancel();
-    timer = Timer(const Duration(milliseconds: 500), () async {
-      listOfBookings(page, limit, query: query);
-      // setState(() {
-      //   isLoadingStays = false;
-      // });
-    });
-  }
+  DateTime? startDate;
+  DateTime? endDate;
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +135,27 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
       '${translateKey.translate('booking_status_label.PAID')}': "PAID",
       '${translateKey.translate('booking_status_label.CANCELED')}': "CANCELED",
     };
+    onChange(String query) {
+      if (timer != null) timer!.cancel();
+      timer = Timer(const Duration(milliseconds: 500), () async {
+        final selectedTab = tabs[filterIndex];
+        final filter = tabFilters[selectedTab];
+        listOfBookings(
+          page,
+          limit,
+          query: query,
+          status: filter,
+          startDate: startDate != null && startDate != ''
+              ? startDate.toString()
+              : '',
+          endDate: endDate != null && endDate != '' ? endDate.toString() : '',
+        );
+        // setState(() {
+        //   isLoadingStays = false;
+        // });
+      });
+    }
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -180,6 +205,12 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
                               limit,
                               query: searchController.text,
                               status: filter,
+                              startDate: startDate != null && startDate != ''
+                                  ? startDate.toString()
+                                  : '',
+                              endDate: endDate != null && endDate != ''
+                                  ? endDate.toString()
+                                  : '',
                             );
                           },
                           child: Container(
@@ -249,21 +280,71 @@ class _OrderPageState extends State<OrderPage> with AfterLayoutMixin {
                     ),
                   ),
                   SizedBox(width: 12),
-
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: white,
-                      border: Border.all(color: gray300),
-                    ),
-                    child: Stack(
-                      children: [
-                        Center(
-                          child: SvgPicture.asset('assets/svg/calendar.svg'),
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(8),
+                          ),
                         ),
-                      ],
+                        builder: (context) {
+                          return CustomTableCalendar(
+                            onDateSelected: (start, end) async {
+                              setState(() {
+                                startDate = start;
+                                endDate = end;
+                              });
+                              Navigator.pop(context);
+                              final selectedTab = tabs[filterIndex];
+                              final filter = tabFilters[selectedTab];
+                              scrollController.animateTo(
+                                scrollController.position.minScrollExtent,
+                                duration: Duration(milliseconds: 500),
+                                curve: Curves.easeOut,
+                              );
+                              await listOfBookings(
+                                page,
+                                limit,
+                                query: searchController.text,
+                                status: filter,
+                                startDate: startDate != null && startDate != ''
+                                    ? startDate.toString()
+                                    : '',
+                                endDate: endDate != null && endDate != ''
+                                    ? endDate.toString()
+                                    : '',
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: white,
+                        border: Border.all(color: gray300),
+                      ),
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: SvgPicture.asset('assets/svg/calendar.svg'),
+                          ),
+                          startDate != null || endDate != null
+                              ? Positioned(
+                                  top: 6,
+                                  right: 6,
+                                  child: SvgPicture.asset(
+                                    'assets/svg/red_dot.svg',
+                                  ),
+                                )
+                              : SizedBox(),
+                        ],
+                      ),
                     ),
                   ),
                 ],

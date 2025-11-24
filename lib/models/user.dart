@@ -50,6 +50,14 @@ class User {
   String? bankAccountName;
   String? signature;
 
+  String? facebookLink;
+  String? viberLink;
+  String? telegramLink;
+  String? lineLink;
+  String? whatsAppLink;
+
+  String? newPhone;
+
   User({
     this.otpMethod,
     this.otpCode,
@@ -96,6 +104,14 @@ class User {
     this.bankAccount,
     this.bankAccountName,
     this.signature,
+
+    this.facebookLink,
+    this.viberLink,
+    this.telegramLink,
+    this.lineLink,
+    this.whatsAppLink,
+
+    this.newPhone,
   });
 
   static $fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

@@ -198,4 +198,11 @@ class AuthApi extends HttpRequest {
     var res = await put('/merchants/profile', data: data.toJson());
     return User.fromJson(res as Map<String, dynamic>);
   }
+
+  otpVerifyMerchant(User data) async {
+    Map<String, dynamic> json = {};
+    json['otpCode'] = data.otpCode;
+    var res = await post('/merchants/email/verify', data: json, handler: true);
+    return User.fromJson(res as Map<String, dynamic>);
+  }
 }

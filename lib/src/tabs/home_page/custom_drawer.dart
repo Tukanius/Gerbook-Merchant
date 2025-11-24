@@ -16,10 +16,10 @@ import 'package:merchant_gerbook_flutter/provider/user_provider.dart';
 import 'package:merchant_gerbook_flutter/src/localization/change_language.dart';
 import 'package:merchant_gerbook_flutter/src/localization/localization_local.dart';
 import 'package:merchant_gerbook_flutter/src/splash_page/splash_page.dart';
-import 'package:merchant_gerbook_flutter/src/splash_page/profile_page/profile.dart';
-import 'package:merchant_gerbook_flutter/src/splash_page/transiction_page/transiction_page.dart';
+import 'package:merchant_gerbook_flutter/src/profile_page/profile_page/profile.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/dashboard_page/transaction_list_page.dart';
 import 'package:provider/provider.dart';
-import 'package:merchant_gerbook_flutter/src/splash_page/settings_page/settings_page.dart';
+import 'package:merchant_gerbook_flutter/src/profile_page/settings_page/settings_page.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
@@ -136,12 +136,7 @@ class _CustomDrawerState extends State<CustomDrawer> with AfterLayoutMixin {
             children: [
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProfilePage(id: ''),
-                    ),
-                  );
+                  Navigator.of(context).popAndPushNamed(ProfilePage.routeName);
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -175,10 +170,20 @@ class _CustomDrawerState extends State<CustomDrawer> with AfterLayoutMixin {
                                       ),
                                     ),
                                   )
-                                : SvgPicture.asset(
-                                    'assets/svg/add_profile.svg',
+                                : Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(100),
+                                      color: gray100,
+                                    ),
                                     height: 40,
                                     width: 40,
+                                    child: Center(
+                                      child: SvgPicture.asset(
+                                        'assets/svg/user_photo.svg',
+                                        height: 24,
+                                        width: 24,
+                                      ),
+                                    ),
                                   ),
                           ),
                           SizedBox(width: 8),
@@ -235,12 +240,9 @@ class _CustomDrawerState extends State<CustomDrawer> with AfterLayoutMixin {
               ),
               InkWell(
                 onTap: () {
-                  Navigator.push(
+                  Navigator.of(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => TransictionPage(id: ''),
-                    ),
-                  );
+                  ).popAndPushNamed(TransactionListPage.routeName);
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -281,12 +283,7 @@ class _CustomDrawerState extends State<CustomDrawer> with AfterLayoutMixin {
               ),
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SettingsPage(id: ''),
-                    ),
-                  );
+                  Navigator.of(context).popAndPushNamed(SettingsPage.routeName);
                 },
                 child: Container(
                   decoration: BoxDecoration(

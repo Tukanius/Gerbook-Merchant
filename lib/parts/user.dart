@@ -88,6 +88,19 @@ User _$UserFromJson(Map<String, dynamic> json) {
     bankAccountName: json['bankAccountName'] != null
         ? json['bankAccountName'] as String
         : null,
+    facebookLink: json['facebookLink'] != null
+        ? json['facebookLink'] as String
+        : null,
+    viberLink: json['viberLink'] != null ? json['viberLink'] as String : null,
+    telegramLink: json['telegramLink'] != null
+        ? json['telegramLink'] as String
+        : null,
+    lineLink: json['lineLink'] != null ? json['lineLink'] as String : null,
+    whatsAppLink: json['whatsAppLink'] != null
+        ? json['whatsAppLink'] as String
+        : null,
+
+    newPhone: json['newPhone'] != null ? json['newPhone'] as String : null,
   );
 }
 
@@ -161,6 +174,16 @@ Map<String, dynamic> _$UserToJson(User instance) {
   if (instance.bankAccount != null) json['bankAccount'] = instance.bankAccount;
   if (instance.bankAccountName != null)
     json['bankAccountName'] = instance.bankAccountName;
+  if (instance.facebookLink != null)
+    json['facebookLink'] = instance.facebookLink;
+  if (instance.viberLink != null) json['viberLink'] = instance.viberLink;
+  if (instance.telegramLink != null)
+    json['telegramLink'] = instance.telegramLink;
+  if (instance.lineLink != null) json['lineLink'] = instance.lineLink;
+  if (instance.whatsAppLink != null)
+    json['whatsAppLink'] = instance.whatsAppLink;
+
+  if (instance.newPhone != null) json['newPhone'] = instance.newPhone;
 
   return json;
 }

@@ -1,4 +1,5 @@
 import 'package:merchant_gerbook_flutter/models/address.dart';
+import 'package:merchant_gerbook_flutter/models/booked_data.dart';
 import 'package:merchant_gerbook_flutter/models/booking_list.dart';
 import 'package:merchant_gerbook_flutter/models/camp_list_data.dart';
 import 'package:merchant_gerbook_flutter/models/cancel_policy.dart';
@@ -9,10 +10,12 @@ import 'package:merchant_gerbook_flutter/models/notify_list.dart';
 import 'package:merchant_gerbook_flutter/models/place_offers.dart';
 import 'package:merchant_gerbook_flutter/models/properties.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
+import 'package:merchant_gerbook_flutter/models/social_links.dart';
 import 'package:merchant_gerbook_flutter/models/tags.dart';
 import 'package:merchant_gerbook_flutter/models/terms_of_condition.dart';
 import 'package:merchant_gerbook_flutter/models/transaction.dart';
 import 'package:merchant_gerbook_flutter/models/travel_offers.dart';
+import 'package:merchant_gerbook_flutter/models/user.dart';
 import 'package:merchant_gerbook_flutter/models/zones.dart';
 import 'package:merchant_gerbook_flutter/utils/http_request.dart';
 
@@ -114,6 +117,31 @@ class ProductApi extends HttpRequest {
   getCancelPolicies(ResultArguments resultArguments) async {
     var res = await get('/cancel-policies', data: resultArguments.toJson());
     return Result.fromJson(res, CancelPolicy.fromJson);
+  }
+
+  getBookingData(String id) async {
+    var res = await get('/merchants/bookings/$id');
+    return BookedData.fromJson(res as Map<String, dynamic>);
+  }
+
+  putSocials(SocialLinks data) async {
+    var res = await put('/merchants/socials', data: data.toJson());
+    return res;
+  }
+
+  putNames(User data) async {
+    var res = await put('/merchants/profile', data: data.toJson());
+    return res;
+  }
+
+  putEmail(User data) async {
+    var res = await put('/merchants/email', data: data.toJson());
+    return User.fromJson(res as Map<String, dynamic>);
+  }
+
+  putPhone(User data) async {
+    var res = await put('/merchants/phone', data: data.toJson());
+    return User.fromJson(res as Map<String, dynamic>);
   }
 
   // getOrderData(String id) async {

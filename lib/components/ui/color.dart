@@ -31,7 +31,6 @@ const Color warning700 = Color(0xFFB54708);
 
 const Color error100 = Color(0xFFFEE4E2);
 const Color error700 = Color(0xFFB42318);
-
 const Color green = Color(0xFF008000);
 const Color greenSuccess = Color(0xFF039855);
 const Color success100 = Color(0xFFD1FADF);
@@ -58,8 +57,9 @@ const Color borderColor = Color(0xffDCDCE5);
 
 const Color textBlue = Color(0xff1570EF);
 const Color primary = Color(0xff326144);
+const Color primaryRange = Color(0xffF9FAFB);
 const Color primaryDrawer = Color(0xff67C78C);
-// const Color primary50 = Color(0xffF2F7F3);
+const Color primary50 = Color(0xffF2F7F3);
 const Color primary200 = Color(0xffC2D8C7);
 const Color primary100 = Color(0xffE0EBE2);
 // const Color blue50 = Color(0xffF0F8FF);
