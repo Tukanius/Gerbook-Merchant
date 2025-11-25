@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
   }
 
   listOfMyGers(page, limit) async {
-    myGers = await ProductApi().getmyGers(
+    myGers = await ProductApi().getCampList(
       ResultArguments(page: page, limit: limit),
     );
     setState(() {
@@ -479,7 +479,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                translateKey.translate('my_ger'),
+                                translateKey.translate('resort'),
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   fontSize: 16,
@@ -610,10 +610,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
                                       itemCount: myGers.rows!.length,
                                       itemBuilder: (context, index) {
                                         final stayData = myGers.rows![index];
-                                        return GerCard(
-                                          data: stayData,
-                                          onTap: () {},
-                                        );
+                                        return GerCard(data: stayData);
                                       },
                                     ),
                                   ],

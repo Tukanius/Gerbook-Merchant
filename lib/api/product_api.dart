@@ -1,6 +1,7 @@
 import 'package:merchant_gerbook_flutter/models/address.dart';
 import 'package:merchant_gerbook_flutter/models/booked_data.dart';
 import 'package:merchant_gerbook_flutter/models/booking_list.dart';
+import 'package:merchant_gerbook_flutter/models/camp_data.dart';
 import 'package:merchant_gerbook_flutter/models/camp_list_data.dart';
 import 'package:merchant_gerbook_flutter/models/cancel_policy.dart';
 import 'package:merchant_gerbook_flutter/models/chart_data.dart';
@@ -8,7 +9,7 @@ import 'package:merchant_gerbook_flutter/models/dashboard.dart';
 import 'package:merchant_gerbook_flutter/models/discount_types.dart';
 import 'package:merchant_gerbook_flutter/models/notify_list.dart';
 import 'package:merchant_gerbook_flutter/models/place_offers.dart';
-import 'package:merchant_gerbook_flutter/models/properties.dart';
+// import 'package:merchant_gerbook_flutter/models/properties.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
 import 'package:merchant_gerbook_flutter/models/social_links.dart';
 import 'package:merchant_gerbook_flutter/models/tags.dart';
@@ -45,13 +46,13 @@ class ProductApi extends HttpRequest {
     return Result.fromJson(res, BookingList.fromJson);
   }
 
-  getmyGers(ResultArguments resultArguments) async {
-    var res = await get(
-      '/merchants/properties',
-      data: resultArguments.toJson(),
-    );
-    return Result.fromJson(res, Properties.fromJson);
-  }
+  // getmyGers(ResultArguments resultArguments) async {
+  //   var res = await get(
+  //     '/merchants/properties',
+  //     data: resultArguments.toJson(),
+  //   );
+  //   return Result.fromJson(res, Properties.fromJson);
+  // }
 
   getOrderChart() async {
     var res = await get('/merchants/orders/chart');
@@ -74,6 +75,11 @@ class ProductApi extends HttpRequest {
   getCampList(ResultArguments resultArguments) async {
     var res = await get('/merchants/camps', data: resultArguments.toJson());
     return Result.fromJson(res, CampListData.fromJson);
+  }
+
+  getCampData(String id) async {
+    var res = await get('/merchants/camps/$id');
+    return CampData.fromJson(res as Map<String, dynamic>);
   }
 
   getPlaceOffersList(ResultArguments resultArguments) async {

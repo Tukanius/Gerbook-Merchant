@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
-import 'package:merchant_gerbook_flutter/models/properties.dart';
+import 'package:merchant_gerbook_flutter/models/camp_list_data.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/ger_page/ger_detail_page.dart';
 import 'package:merchant_gerbook_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 
 class GerCardList extends StatefulWidget {
-  final Properties data;
+  final CampListData data;
   const GerCardList({super.key, required this.data});
 
   @override

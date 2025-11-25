@@ -2,22 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
-import 'package:merchant_gerbook_flutter/models/properties.dart';
+import 'package:merchant_gerbook_flutter/models/camp_list_data.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/ger_page/ger_detail_page.dart';
 import 'package:merchant_gerbook_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 
 class GerCard extends StatefulWidget {
-  final Function() onTap;
-  final Properties data;
-  const GerCard({super.key, required this.onTap, required this.data});
+  final CampListData data;
+  const GerCard({super.key, required this.data});
 
   @override
   State<GerCard> createState() => _GerCardState();
 }
 
 class _GerCardState extends State<GerCard> {
-  bool status = true;
   @override
   Widget build(BuildContext context) {
     final translateKey = Provider.of<LocalizationProvider>(context);
@@ -25,7 +24,10 @@ class _GerCardState extends State<GerCard> {
 
     return GestureDetector(
       onTap: () {
-        widget.onTap();
+        Navigator.of(context).pushNamed(
+          GerDetailPage.routeName,
+          arguments: GerDetailPageArguments(id: widget.data.id!),
+        );
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,25 +143,25 @@ class _GerCardState extends State<GerCard> {
             ],
           ),
           SizedBox(height: 2),
-          Row(
-            children: [
-              SvgPicture.asset(
-                'assets/svg/star_filled.svg',
-                width: 14,
-                height: 14,
-              ),
-              SizedBox(width: 2),
-              Text(
-                '${widget.data.avgRate?.toStringAsFixed(1) ?? '0'}',
-                style: TextStyle(
-                  color: gray600,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 2),
+          // Row(
+          //   children: [
+          //     SvgPicture.asset(
+          //       'assets/svg/star_filled.svg',
+          //       width: 14,
+          //       height: 14,
+          //     ),
+          //     SizedBox(width: 2),
+          //     Text(
+          //       '${widget.data.avgRate?.toStringAsFixed(1) ?? '0'}',
+          //       style: TextStyle(
+          //         color: gray600,
+          //         fontSize: 12,
+          //         fontWeight: FontWeight.w400,
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          // SizedBox(height: 2),
           IntrinsicHeight(
             child: Row(
               children: <Widget>[

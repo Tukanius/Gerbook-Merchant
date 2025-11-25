@@ -1,20 +1,20 @@
 import 'package:merchant_gerbook_flutter/models/images.dart';
+import 'package:merchant_gerbook_flutter/models/properties.dart';
 
-part '../parts/camp_list_data.dart';
+part '../parts/camp_data.dart';
 
-class CampListData {
+class CampData {
   String? id;
   String? code;
-  String? merchant;
+  // Merchant? merchant;
   String? name;
   String? description;
-  num? price;
-  // List<Images>? images;
+  List<Images>? images;
   Images? mainImage;
   // Level0? level0;
   // Level1? level1;
-  // Level1? level2;
-  // Level3? level3;
+  // Null? level2;
+  // Null? level3;
   String? additionalInformation;
   String? addressString;
   String? addressStringEng;
@@ -27,7 +27,7 @@ class CampListData {
   String? checkInTime;
   String? checkOutTime;
   String? status;
-  // List<String>? tags;
+  // List<Tags>? tags;
   bool? isAdminActive;
   bool? isActive;
   String? link;
@@ -36,21 +36,40 @@ class CampListData {
   // Zone? zone;
   // List<TravelOffers>? travelOffers;
   // List<String>? rawTravelOffers;
+  num? price;
+  bool? isDiscounted;
+  bool? isSponsored;
+  num? avgRate;
+  num? totalRates;
+  num? savesCount;
+  num? capacity;
+  String? createdBy;
   String? createdAt;
   String? updatedAt;
+  // CampRequest? campRequest;
+  List<Properties>? properties;
 
-  CampListData({
+  CampData({
     this.id,
     this.code,
-    this.merchant,
+    // this.merchant,
     this.name,
     this.description,
+    this.images,
     this.mainImage,
+    // this.level0,
+    // this.level1,
+    // this.level2,
+    // this.level3,
     this.additionalInformation,
     this.addressString,
     this.addressStringEng,
     this.longitude,
     this.latitude,
+    // this.location,
+    // this.placeOffers,
+    // this.discounts,
+    // this.cancelPolicies,
     this.checkInTime,
     this.checkOutTime,
     this.status,
@@ -60,12 +79,23 @@ class CampListData {
     this.link,
     this.isOpenYearRound,
     this.isClosed,
+    // this.zone,
+    // this.travelOffers,
     // this.rawTravelOffers,
+    this.price,
+    this.isDiscounted,
+    this.isSponsored,
+    this.avgRate,
+    this.totalRates,
+    this.savesCount,
+    this.capacity,
+    this.createdBy,
     this.createdAt,
     this.updatedAt,
-    this.price,
+    // this.campRequest,
+    this.properties,
   });
-  factory CampListData.fromJson(Map<String, dynamic> json) =>
-      _$CampListDataFromJson(json);
-  Map<String, dynamic> toJson() => _$CampListDataToJson(this);
+  factory CampData.fromJson(Map<String, dynamic> json) =>
+      _$CampDataFromJson(json);
+  Map<String, dynamic> toJson() => _$CampDataToJson(this);
 }

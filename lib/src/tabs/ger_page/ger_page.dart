@@ -48,7 +48,7 @@ class _GerPageState extends State<GerPage> with AfterLayoutMixin {
   }
 
   listOfMyGers(page, limit, {String? query}) async {
-    myGers = await ProductApi().getmyGers(
+    myGers = await ProductApi().getCampList(
       ResultArguments(page: page, limit: limit, query: query),
     );
     setState(() {

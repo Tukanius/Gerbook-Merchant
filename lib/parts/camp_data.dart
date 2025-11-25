@@ -1,21 +1,21 @@
-part of '../models/camp_list_data.dart';
+part of '../models/camp_data.dart';
 
-CampListData _$CampListDataFromJson(Map<String, dynamic> json) {
-  return CampListData(
+CampData _$CampDataFromJson(Map<String, dynamic> json) {
+  return CampData(
     id: json['_id'] != null ? json['_id'] as String : null,
     code: json['code'] != null ? json['code'] as String : null,
-    merchant: json['merchant'] != null ? json['merchant'] as String : null,
+    // merchant: json['merchant'] != null ? json['merchant'] as String : null,
     name: json['name'] != null ? json['name'] as String : null,
     description: json['description'] != null
         ? json['description'] as String
         : null,
-
-    // property: json['property'] != null
-    //     ? Properties.fromJson(json['property'])
-    //     : null,
+    images: json['images'] != null
+        ? (json['images'] as List).map((e) => Images.fromJson(e)).toList()
+        : null,
     mainImage: json['mainImage'] != null
         ? Images.fromJson(json['mainImage'])
         : null,
+
     additionalInformation: json['additionalInformation'] != null
         ? json['additionalInformation'] as String
         : null,
@@ -27,6 +27,7 @@ CampListData _$CampListDataFromJson(Map<String, dynamic> json) {
         : null,
     longitude: json['longitude'] != null ? json['longitude'] as num : null,
     latitude: json['latitude'] != null ? json['latitude'] as num : null,
+
     checkInTime: json['checkInTime'] != null
         ? json['checkInTime'] as String
         : null,
@@ -44,22 +45,37 @@ CampListData _$CampListDataFromJson(Map<String, dynamic> json) {
         : null,
     isClosed: json['isClosed'] != null ? json['isClosed'] as bool : null,
 
-    createdAt: json['createdAt'] != null ? json['createdAt'] as String : null,
-    updatedAt: json['updatedAt'] != null ? json['updatedAt'] as String : null,
     // payment: json['payment'] != null ? Payment.fromJson(json['payment']) : null,
     price: json['price'] != null ? json['price'] as num : null,
+    isDiscounted: json['isDiscounted'] != null
+        ? json['isDiscounted'] as bool
+        : null,
+    isSponsored: json['isSponsored'] != null
+        ? json['isSponsored'] as bool
+        : null,
+    avgRate: json['avgRate'] != null ? json['avgRate'] as num : null,
+    totalRates: json['totalRates'] != null ? json['totalRates'] as num : null,
+    savesCount: json['savesCount'] != null ? json['savesCount'] as num : null,
+    capacity: json['capacity'] != null ? json['capacity'] as num : null,
+    createdBy: json['createdBy'] != null ? json['createdBy'] as String : null,
+    createdAt: json['createdAt'] != null ? json['createdAt'] as String : null,
+    updatedAt: json['updatedAt'] != null ? json['updatedAt'] as String : null,
+
+    properties: json['properties'] != null
+        ? (json['properties'] as List)
+              .map((e) => Properties.fromJson(e))
+              .toList()
+        : null,
   );
 }
 
-Map<String, dynamic> _$CampListDataToJson(CampListData instance) {
+Map<String, dynamic> _$CampDataToJson(CampData instance) {
   Map<String, dynamic> json = {};
   if (instance.id != null) json['_id'] = instance.id;
-  // if (instance.property != null) json['property'] = instance.property;
-  // if (instance.user != null) json['user'] = instance.user;
   if (instance.code != null) json['code'] = instance.code;
-  if (instance.merchant != null) json['merchant'] = instance.merchant;
   if (instance.name != null) json['name'] = instance.name;
   if (instance.description != null) json['description'] = instance.description;
+  if (instance.images != null) json['images'] = instance.images;
   if (instance.mainImage != null) json['mainImage'] = instance.mainImage;
   if (instance.additionalInformation != null)
     json['additionalInformation'] = instance.additionalInformation;
@@ -69,7 +85,6 @@ Map<String, dynamic> _$CampListDataToJson(CampListData instance) {
     json['addressStringEng'] = instance.addressStringEng;
   if (instance.longitude != null) json['longitude'] = instance.longitude;
   if (instance.latitude != null) json['latitude'] = instance.latitude;
-  if (instance.merchant != null) json['merchant'] = instance.merchant;
   if (instance.checkInTime != null) json['checkInTime'] = instance.checkInTime;
   if (instance.checkOutTime != null)
     json['checkOutTime'] = instance.checkOutTime;
@@ -81,10 +96,18 @@ Map<String, dynamic> _$CampListDataToJson(CampListData instance) {
   if (instance.isOpenYearRound != null)
     json['isOpenYearRound'] = instance.isOpenYearRound;
   if (instance.isClosed != null) json['isClosed'] = instance.isClosed;
+  if (instance.price != null) json['price'] = instance.price;
+  if (instance.isDiscounted != null)
+    json['isDiscounted'] = instance.isDiscounted;
+  if (instance.isSponsored != null) json['isSponsored'] = instance.isSponsored;
+  if (instance.avgRate != null) json['avgRate'] = instance.avgRate;
+  if (instance.totalRates != null) json['totalRates'] = instance.totalRates;
+  if (instance.savesCount != null) json['savesCount'] = instance.savesCount;
+  if (instance.capacity != null) json['capacity'] = instance.capacity;
+  if (instance.createdBy != null) json['createdBy'] = instance.createdBy;
   if (instance.createdAt != null) json['createdAt'] = instance.createdAt;
   if (instance.updatedAt != null) json['updatedAt'] = instance.updatedAt;
-  if (instance.price != null) json['price'] = instance.price;
-  // if (instance.payment != null) json['payment'] = instance.payment;
+  if (instance.properties != null) json['properties'] = instance.properties;
 
   return json;
 }
