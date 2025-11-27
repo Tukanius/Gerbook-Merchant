@@ -5,9 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:merchant_gerbook_flutter/api/auth_api.dart';
 import 'package:merchant_gerbook_flutter/components/controller/listen.dart';
 import 'package:merchant_gerbook_flutter/components/custom_loader/custom_loader.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
+import 'package:merchant_gerbook_flutter/models/upload_image.dart';
 import 'package:merchant_gerbook_flutter/provider/camp_create_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_stepper.dart/camera_page.dart';
@@ -23,58 +25,54 @@ class CreateGerPhoto extends StatefulWidget {
 }
 
 class _CreateGerPhotoState extends State<CreateGerPhoto> {
-  List<File>? images = [];
-  bool isLoadingButton = false;
+  List<File> images = [];
   File? mainImage;
+
+  bool isLoadingButton = false;
   XFile? file;
   final picker = ImagePicker();
   ListenController listenController = ListenController();
 
-  Future showOptions(BuildContext context, bool multiplePhoto) async {
+  Future showOptions(BuildContext context) async {
     final local = Provider.of<LocalizationProvider>(context, listen: false);
-
     if (mounted) {
       FocusScope.of(context).unfocus();
     }
-    multiplePhoto == true
-        ? pickImagesFromGallery()
-        : showCupertinoModalPopup(
-            context: context,
-            builder: (context) => CupertinoActionSheet(
-              actions: [
-                CupertinoActionSheetAction(
-                  child: Text(
-                    local.translate('in_gallery'),
-                    style: TextStyle(
-                      color: black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    multiplePhoto == true
-                        ? pickImagesFromGallery()
-                        : getImage(ImageSource.gallery);
-                  },
-                ),
-                CupertinoActionSheetAction(
-                  child: Text(
-                    local.translate('take_photo'),
-                    style: TextStyle(
-                      color: black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    camera();
-                  },
-                ),
-              ],
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) => CupertinoActionSheet(
+        actions: [
+          CupertinoActionSheetAction(
+            child: Text(
+              local.translate('in_gallery'),
+              style: TextStyle(
+                color: black,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
             ),
-          );
+            onPressed: () {
+              Navigator.of(context).pop();
+              getImage(ImageSource.gallery);
+            },
+          ),
+          CupertinoActionSheetAction(
+            child: Text(
+              local.translate('take_photo'),
+              style: TextStyle(
+                color: black,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+              camera();
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> pickImagesFromGallery() async {
@@ -86,7 +84,7 @@ class _CreateGerPhotoState extends State<CreateGerPhoto> {
 
       if (selectedImages != null && selectedImages.isNotEmpty) {
         setState(() {
-          images!.addAll(selectedImages.map((e) => File(e.path)));
+          images.addAll(selectedImages.map((e) => File(e.path)));
         });
       }
     } catch (e) {
@@ -129,26 +127,44 @@ class _CreateGerPhotoState extends State<CreateGerPhoto> {
   }
 
   onSubmit() async {
-    widget.pageController.nextPage(
-      duration: Duration(microseconds: 1000),
-      curve: Curves.ease,
-    );
-    try {
-      setState(() {
-        isLoadingButton = true;
-      });
-      Provider.of<CampCreateProvider>(context, listen: false);
-      widget.pageController.nextPage(
-        duration: Duration(microseconds: 1000),
-        curve: Curves.ease,
-      );
-      setState(() {
-        isLoadingButton = false;
-      });
-    } catch (e) {
-      setState(() {
-        isLoadingButton = false;
-      });
+    if (mainImage != null && images.isNotEmpty) {
+      try {
+        UploadImage upload = UploadImage();
+        UploadImage uploadImages = UploadImage();
+        setState(() {
+          isLoadingButton = true;
+        });
+        if (mainImage != null) {
+          upload = await AuthApi().upload(mainImage!.path);
+          await Provider.of<CampCreateProvider>(
+            context,
+            listen: false,
+          ).updateMainImage(newMainImage: upload);
+        }
+        if (images.isNotEmpty) {
+          List<UploadImage> uploadedUrls = [];
+
+          for (var img in images) {
+            uploadImages = await AuthApi().upload(img.path);
+            uploadedUrls.add(uploadImages);
+          }
+          await Provider.of<CampCreateProvider>(
+            context,
+            listen: false,
+          ).updateImages(newImages: uploadedUrls);
+        }
+        widget.pageController.nextPage(
+          duration: Duration(microseconds: 1000),
+          curve: Curves.ease,
+        );
+        setState(() {
+          isLoadingButton = false;
+        });
+      } catch (e) {
+        setState(() {
+          isLoadingButton = false;
+        });
+      }
     }
   }
 
@@ -156,31 +172,13 @@ class _CreateGerPhotoState extends State<CreateGerPhoto> {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final translateKey = Provider.of<LocalizationProvider>(context);
-    // final tool = Provider.of<CampCreateProvider>(context, listen: false);
+    // final imageTool = Provider.of<CampCreateProvider>(context);
     return Scaffold(
       backgroundColor: white,
       body: Stack(
         children: [
           Column(
             children: [
-              Padding(
-                padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SvgPicture.asset('assets/svg/selected_step.svg'),
-                    Expanded(child: Container(height: 2, color: gray200)),
-                    SvgPicture.asset('assets/svg/unselected_step.svg'),
-                    Expanded(child: Container(height: 2, color: gray200)),
-                    SvgPicture.asset('assets/svg/unselected_step.svg'),
-                    Expanded(child: Container(height: 2, color: gray200)),
-                    SvgPicture.asset('assets/svg/unselected_step.svg'),
-                    Expanded(child: Container(height: 2, color: gray200)),
-                    SvgPicture.asset('assets/svg/unselected_step.svg'),
-                  ],
-                ),
-              ),
-              SizedBox(height: 8),
               Container(
                 decoration: BoxDecoration(
                   border: Border(bottom: BorderSide(color: gray100)),
@@ -211,6 +209,23 @@ class _CreateGerPhotoState extends State<CreateGerPhoto> {
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: white,
+                        border: Border.all(color: gray300),
+                      ),
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                        '1/2',
+                        style: TextStyle(
+                          color: gray800,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                     SizedBox(width: 16),
@@ -277,7 +292,7 @@ class _CreateGerPhotoState extends State<CreateGerPhoto> {
                                         SizedBox(height: 16),
                                         GestureDetector(
                                           onTap: () {
-                                            showOptions(context, false);
+                                            showOptions(context);
                                           },
                                           child: Container(
                                             decoration: BoxDecoration(
@@ -323,11 +338,13 @@ class _CreateGerPhotoState extends State<CreateGerPhoto> {
                                       top: 12,
                                       right: 12,
                                       child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            mainImage = null;
-                                          });
-                                        },
+                                        onTap: isLoadingButton == true
+                                            ? () {}
+                                            : () {
+                                                setState(() {
+                                                  mainImage = null;
+                                                });
+                                              },
                                         child: SvgPicture.asset(
                                           'assets/svg/close_image.svg',
                                         ),
@@ -337,7 +354,7 @@ class _CreateGerPhotoState extends State<CreateGerPhoto> {
                                 ),
                               ),
                         SizedBox(height: 16),
-                        images!.isEmpty
+                        images.isEmpty
                             ? DottedBorder(
                                 options: RoundedRectDottedBorderOptions(
                                   dashPattern: [10, 5],
@@ -387,7 +404,7 @@ class _CreateGerPhotoState extends State<CreateGerPhoto> {
                                       SizedBox(height: 16),
                                       GestureDetector(
                                         onTap: () {
-                                          showOptions(context, true);
+                                          pickImagesFromGallery();
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -425,7 +442,7 @@ class _CreateGerPhotoState extends State<CreateGerPhoto> {
                                         shrinkWrap: true,
                                         physics:
                                             const NeverScrollableScrollPhysics(),
-                                        itemCount: images!.length,
+                                        itemCount: images.length,
                                         gridDelegate:
                                             const SliverGridDelegateWithFixedCrossAxisCount(
                                               crossAxisCount: 2,
@@ -440,7 +457,7 @@ class _CreateGerPhotoState extends State<CreateGerPhoto> {
                                                 borderRadius:
                                                     BorderRadius.circular(8),
                                                 child: Image.file(
-                                                  images![index],
+                                                  images[index],
                                                   fit: BoxFit.cover,
                                                   width: mediaQuery.size.width,
                                                   height:
@@ -451,11 +468,15 @@ class _CreateGerPhotoState extends State<CreateGerPhoto> {
                                                 top: 8,
                                                 right: 8,
                                                 child: GestureDetector(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      images!.removeAt(index);
-                                                    });
-                                                  },
+                                                  onTap: isLoadingButton == true
+                                                      ? () {}
+                                                      : () {
+                                                          setState(() {
+                                                            images.removeAt(
+                                                              index,
+                                                            );
+                                                          });
+                                                        },
                                                   child: SvgPicture.asset(
                                                     'assets/svg/close_image.svg',
                                                     height: 32,
@@ -477,8 +498,10 @@ class _CreateGerPhotoState extends State<CreateGerPhoto> {
                                               MainAxisAlignment.center,
                                           children: [
                                             GestureDetector(
-                                              onTap: () =>
-                                                  showOptions(context, true),
+                                              onTap: isLoadingButton == true
+                                                  ? () {}
+                                                  : () =>
+                                                        pickImagesFromGallery(),
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                   color: white,
@@ -555,19 +578,14 @@ class _CreateGerPhotoState extends State<CreateGerPhoto> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   GestureDetector(
-                    onTap: mainImage == null || images?.length == 0
-                        ? () {
-                            widget.pageController.nextPage(
-                              duration: Duration(microseconds: 1000),
-                              curve: Curves.ease,
-                            );
-                          }
+                    onTap: mainImage == null && images.isEmpty
+                        ? () {}
                         : () {
                             onSubmit();
                           },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: mainImage == null || images?.length == 0
+                        color: mainImage == null || images.isEmpty
                             ? primary200
                             : primary,
                         borderRadius: BorderRadius.circular(8),
@@ -579,7 +597,7 @@ class _CreateGerPhotoState extends State<CreateGerPhoto> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          isLoadingButton == false
+                          isLoadingButton == true
                               ? CustomLoader(loadColor: white)
                               : Text(
                                   translateKey.translate('continue'),

@@ -142,7 +142,7 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                               ),
                               padding: EdgeInsets.all(10),
                               child: Text(
-                                '4/6',
+                                '5/6',
                                 style: TextStyle(
                                   color: gray800,
                                   fontSize: 14,
@@ -478,7 +478,6 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                                   CrossAxisAlignment.center,
                                               children: [
                                                 SizedBox(height: 4),
-
                                                 Container(
                                                   padding: EdgeInsets.symmetric(
                                                     vertical: 12,
@@ -488,7 +487,7 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                                         BorderRadius.circular(
                                                           6,
                                                         ),
-                                                    color: gray200,
+                                                    color: gray50,
                                                   ),
                                                   child: Row(
                                                     mainAxisAlignment:
@@ -498,7 +497,7 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                                       Text(
                                                         '${translateKey.translate('no_discount')}',
                                                         style: TextStyle(
-                                                          color: gray700,
+                                                          color: gray400,
                                                           fontSize: 14,
                                                           fontWeight:
                                                               FontWeight.w500,

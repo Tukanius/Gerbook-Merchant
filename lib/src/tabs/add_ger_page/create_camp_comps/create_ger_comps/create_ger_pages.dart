@@ -52,7 +52,7 @@ class _CreateGerPagesState extends State<CreateGerPages>
         ),
         centerTitle: false,
         title: Text(
-          translateKey.translate('create_camp'),
+          translateKey.translate('create_listing'),
           style: TextStyle(
             color: gray800,
             fontSize: 18,

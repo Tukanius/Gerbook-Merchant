@@ -1,12 +1,20 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:after_layout/after_layout.dart';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/svg.dart';
+// import 'package:flutter_svg/svg.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
+import 'package:merchant_gerbook_flutter/models/images.dart';
+import 'package:merchant_gerbook_flutter/models/upload_image.dart';
+import 'package:merchant_gerbook_flutter/provider/camp_create_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_ger_comps/create_ger_pages.dart';
 import 'package:provider/provider.dart';
 
 class CreateCampConfirm extends StatefulWidget {
@@ -18,13 +26,41 @@ class CreateCampConfirm extends StatefulWidget {
   State<CreateCampConfirm> createState() => _CreateCampConfirmState();
 }
 
-class _CreateCampConfirmState extends State<CreateCampConfirm> {
+class _CreateCampConfirmState extends State<CreateCampConfirm>
+    with AfterLayoutMixin {
   CarouselSliderController carouselController = CarouselSliderController();
+  final List<UploadImage> allImages = [];
+
+  @override
+  FutureOr<void> afterFirstLayout(BuildContext context) {
+    final campProvider = Provider.of<CampCreateProvider>(
+      context,
+      listen: false,
+    );
+    final uniqueUrls = <String>{};
+
+    if (campProvider.mainImage != []) {
+      if (uniqueUrls.add(campProvider.mainImage.url!)) {
+        setState(() {
+          allImages.add(campProvider.mainImage);
+        });
+      }
+    }
+
+    for (final image in campProvider.images) {
+      if (image.url != null && uniqueUrls.add(image.url!)) {
+        setState(() {
+          allImages.add(image);
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final translateKey = Provider.of<LocalizationProvider>(context);
+    final campProvider = Provider.of<CampCreateProvider>(context);
     final bool isKeyboardVisible = KeyboardVisibilityProvider.isKeyboardVisible(
       context,
     );
@@ -38,24 +74,6 @@ class _CreateCampConfirmState extends State<CreateCampConfirm> {
           children: [
             Column(
               children: [
-                Padding(
-                  padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SvgPicture.asset('assets/svg/completed_step.svg'),
-                      Expanded(child: Container(height: 2, color: gray200)),
-                      SvgPicture.asset('assets/svg/completed_step.svg'),
-                      Expanded(child: Container(height: 2, color: gray200)),
-                      SvgPicture.asset('assets/svg/completed_step.svg'),
-                      Expanded(child: Container(height: 2, color: gray200)),
-                      SvgPicture.asset('assets/svg/completed_step.svg'),
-                      Expanded(child: Container(height: 2, color: gray200)),
-                      SvgPicture.asset('assets/svg/selected_step.svg'),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 8),
                 Container(
                   decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(color: gray100)),
@@ -88,6 +106,23 @@ class _CreateCampConfirmState extends State<CreateCampConfirm> {
                           ],
                         ),
                       ),
+                      SizedBox(width: 8),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: white,
+                          border: Border.all(color: gray300),
+                        ),
+                        padding: EdgeInsets.all(10),
+                        child: Text(
+                          '6/6',
+                          style: TextStyle(
+                            color: gray800,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
                       SizedBox(width: 16),
                     ],
                   ),
@@ -99,18 +134,31 @@ class _CreateCampConfirmState extends State<CreateCampConfirm> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: 14),
+                          SizedBox(height: 8),
                           ClipRRect(
                             borderRadius: BorderRadiusGeometry.circular(12),
-                            child: Container(
+                            child: SizedBox(
                               width: mediaQuery.size.width,
                               height: 245,
-                              child: Image.asset(
-                                'assets/images/zurag.png',
-                                fit: BoxFit.cover,
+                              child: BlurHash(
+                                color: gray100,
+                                hash: '${campProvider.mainImage.blurhash}',
+                                image: '${campProvider.mainImage.url}',
+                                imageFit: BoxFit.cover,
                               ),
                             ),
                           ),
+                          // ClipRRect(
+                          //   borderRadius: BorderRadiusGeometry.circular(12),
+                          //   child: Container(
+                          //     width: mediaQuery.size.width,
+                          //     height: 245,
+                          //     child: Image.asset(
+                          //       'assets/images/zurag.png',
+                          //       fit: BoxFit.cover,
+                          //     ),
+                          //   ),
+                          // ),
                           // ClipRRect(
                           //   borderRadius: BorderRadius.only(
                           //     bottomLeft: Radius.circular(24),
@@ -171,7 +219,7 @@ class _CreateCampConfirmState extends State<CreateCampConfirm> {
                           // ),
                           SizedBox(height: 16),
                           Text(
-                            'NAME',
+                            campProvider.name,
                             style: TextStyle(
                               color: gray800,
                               fontSize: 24,
@@ -182,9 +230,9 @@ class _CreateCampConfirmState extends State<CreateCampConfirm> {
                           Wrap(
                             spacing: 6,
                             runSpacing: 6,
-                            children: [1, 2, 3]
+                            children: campProvider.tags
                                 .map(
-                                  (qwe) => GestureDetector(
+                                  (item) => GestureDetector(
                                     onTap: () {
                                       // setState(() {
                                       //   if (isSelected) {
@@ -202,25 +250,16 @@ class _CreateCampConfirmState extends State<CreateCampConfirm> {
                                         vertical: 6,
                                       ),
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                          100,
-                                        ),
+                                        borderRadius: BorderRadius.circular(4),
                                         // border: Border.all(
                                         //   color: isSelected ? primary : gray200,
                                         // ),
-                                        border: Border.all(color: gray200),
-                                        color: white,
+                                        color: pinColor,
                                         // color: isSelected ? primary : white,
                                       ),
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Image.asset(
-                                            height: 20,
-                                            width: 20,
-                                            'assets/images/zurag.png',
-                                            fit: BoxFit.contain,
-                                          ),
                                           // isSelected
                                           //     ? Image.network(
                                           //         height: 20,
@@ -234,20 +273,14 @@ class _CreateCampConfirmState extends State<CreateCampConfirm> {
                                           //         'assets/images/zurag.png',
                                           //         fit: BoxFit.contain,
                                           //       ),
-                                          SizedBox(width: 5),
                                           Text(
-                                            '123',
-                                            // translateKey.translate(
-                                            //   '${item.name}',
-                                            // ),
-                                            // '${item.name}',
+                                            translateKey.translate(
+                                              '${item.name}',
+                                            ),
                                             style: TextStyle(
-                                              // color: isSelected
-                                              //     ? white
-                                              //     : gray800,
                                               color: gray800,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
                                             ),
                                           ),
                                         ],
@@ -256,69 +289,6 @@ class _CreateCampConfirmState extends State<CreateCampConfirm> {
                                   ),
                                 )
                                 .toList(),
-                            //  placeTags.rows!.map((item) {
-                            //   bool isSelected = filterTag.contains(item.id);
-                            //   return GestureDetector(
-                            //     onTap: () {
-                            //       setState(() {
-                            //         if (isSelected) {
-                            //           filterTag.remove(item.id);
-                            //           filterTagName.remove(item.name!);
-                            //         } else {
-                            //           filterTag.add(item.id!);
-                            //           filterTagName.add(item.name!);
-                            //         }
-                            //       });
-                            //     },
-                            //     child: Container(
-                            //       padding: EdgeInsets.symmetric(
-                            //         horizontal: 12,
-                            //         vertical: 6,
-                            //       ),
-                            //       decoration: BoxDecoration(
-                            //         borderRadius: BorderRadius.circular(
-                            //           100,
-                            //         ),
-                            //         border: Border.all(
-                            //           color: isSelected ? primary : gray200,
-                            //         ),
-                            //         color: isSelected ? primary : white,
-                            //       ),
-                            //       child: Row(
-                            //         mainAxisSize: MainAxisSize.min,
-                            //         children: [
-                            //           isSelected
-                            //               ? Image.network(
-                            //                   height: 20,
-                            //                   width: 20,
-                            //                   '${item.selectedIcon}',
-                            //                   fit: BoxFit.contain,
-                            //                 )
-                            //               : Image.network(
-                            //                   height: 20,
-                            //                   width: 20,
-                            //                   '${item.icon}',
-                            //                   fit: BoxFit.contain,
-                            //                 ),
-                            //           SizedBox(width: 5),
-                            //           Text(
-                            //             translateKey.translate(
-                            //               '${item.name}',
-                            //             ),
-                            //             // '${item.name}',
-                            //             style: TextStyle(
-                            //               color: isSelected
-                            //                   ? white
-                            //                   : gray800,
-                            //               fontSize: 14,
-                            //               fontWeight: FontWeight.w400,
-                            //             ),
-                            //           ),
-                            //         ],
-                            //       ),
-                            //     ),
-                            //   );
-                            // }).toList(),
                           ),
                           SizedBox(height: 16),
                           Text(
@@ -331,7 +301,7 @@ class _CreateCampConfirmState extends State<CreateCampConfirm> {
                           ),
                           SizedBox(height: 4),
                           Text(
-                            'Terelj Star Resort is located in Gorkhi-Terelj Natural Park. It works 4 seasons a year and can accommodate 150 people at a time.',
+                            campProvider.description,
                             style: TextStyle(
                               color: gray400,
                               fontSize: 14,
@@ -355,63 +325,41 @@ class _CreateCampConfirmState extends State<CreateCampConfirm> {
                               Wrap(
                                 spacing: 6,
                                 runSpacing: 6,
-                                children: [1, 2, 3]
+                                children: campProvider.placeOffers
                                     .map(
-                                      (qwe) => GestureDetector(
-                                        onTap: () {
-                                          // setState(() {
-                                          //   if (isSelected) {
-                                          //     filterOffer.remove(item.id);
-                                          //     filterOfferName.remove(item.name);
-                                          //   } else {
-                                          //     filterOffer.add(item.id!);
-                                          //     filterOfferName.add(item.name!);
-                                          //   }
-                                          // });
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 6,
+                                      (item) => Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 6,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
                                           ),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              100,
+                                          color: pinColor,
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Image.network(
+                                              '${item.image?.url}',
+                                              height: 20,
+                                              width: 20,
+                                              fit: BoxFit.cover,
                                             ),
-                                            border: Border.all(
-                                              // color: isSelected ? primary : gray200,
-                                              color: gray200,
+
+                                            SizedBox(width: 8),
+                                            Text(
+                                              translateKey.translate(
+                                                '${item.name}',
+                                              ),
+                                              style: TextStyle(
+                                                color: gray800,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                              ),
                                             ),
-                                            // color: isSelected ? primary : white,
-                                            color: white,
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Image.asset(
-                                                height: 22,
-                                                width: 22,
-                                                'assets/images/zurag.png',
-                                                fit: BoxFit.contain,
-                                              ),
-                                              SizedBox(width: 8),
-                                              Text(
-                                                translateKey.translate(
-                                                  // '${item.name}',
-                                                  '1234',
-                                                ),
-                                                // '${item.name}',
-                                                style: TextStyle(
-                                                  // color: isSelected
-                                                  //     ? white
-                                                  //     : gray800,
-                                                  color: gray800,
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                          ],
                                         ),
                                       ),
                                     )
@@ -477,36 +425,36 @@ class _CreateCampConfirmState extends State<CreateCampConfirm> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 16),
-                          Text(
-                            '${translateKey.translate('bed_numbers')}:',
-                            style: TextStyle(
-                              color: gray900,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  '2 ${translateKey.translate('beds')}',
-                                  style: TextStyle(
-                                    color: gray600,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 16),
-                          Container(
-                            width: mediaQuery.size.width,
-                            height: 1,
-                            color: gray200,
-                          ),
+                          // SizedBox(height: 16),
+                          // Text(
+                          //   '${translateKey.translate('bed_numbers')}:',
+                          //   style: TextStyle(
+                          //     color: gray900,
+                          //     fontSize: 16,
+                          //     fontWeight: FontWeight.w400,
+                          //   ),
+                          // ),
+                          // SizedBox(height: 4),
+                          // Row(
+                          //   children: [
+                          //     Expanded(
+                          //       child: Text(
+                          //         '2 ${translateKey.translate('beds')}',
+                          //         style: TextStyle(
+                          //           color: gray600,
+                          //           fontSize: 14,
+                          //           fontWeight: FontWeight.w400,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                          // SizedBox(height: 16),
+                          // Container(
+                          //   width: mediaQuery.size.width,
+                          //   height: 1,
+                          //   color: gray200,
+                          // ),
                           SizedBox(height: 16),
                           Text(
                             '${translateKey.translate('address_title')}:',
@@ -521,14 +469,12 @@ class _CreateCampConfirmState extends State<CreateCampConfirm> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  'БЗД, 21-р хороо',
+                                  '${campProvider.addressDetail}',
                                   style: TextStyle(
                                     color: gray600,
                                     fontSize: 14,
                                     fontWeight: FontWeight.w400,
-                                    
                                   ),
-                                  
                                 ),
                               ),
                             ],
@@ -538,6 +484,94 @@ class _CreateCampConfirmState extends State<CreateCampConfirm> {
                             width: mediaQuery.size.width,
                             height: 1,
                             color: gray200,
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            '${translateKey.translate('ger')}',
+                            style: TextStyle(
+                              color: gray800,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(height: 16),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: primaryRange,
+                              border: Border.all(color: gray200),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Column(
+                                  children: [
+                                    SizedBox(height: 32),
+                                    SvgPicture.asset(
+                                      'assets/svg/empty_box.svg',
+                                      width: 141,
+                                    ),
+                                    SizedBox(height: 12),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          translateKey.translate('no_ger'),
+                                          style: TextStyle(
+                                            fontFamily: 'Lato',
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: gray900,
+                                          ),
+                                        ),
+                                        SizedBox(height: 2),
+                                        Text(
+                                          translateKey.translate(
+                                            'required_one_ger',
+                                          ),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontFamily: 'Lato',
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
+                                            color: gray600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 12),
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(
+                                          context,
+                                        ).pushNamed(CreateGerPages.routeName);
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          color: white,
+                                          border: Border.all(color: gray300),
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 10,
+                                          horizontal: 16,
+                                        ),
+                                        child: Text(
+                                          '${translateKey.translate('create_listing')}',
+                                          style: TextStyle(
+                                            color: gray700,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 32),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                           SizedBox(height: mediaQuery.padding.bottom + 150),
                         ],

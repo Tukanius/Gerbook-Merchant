@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class _AddCancelPolicyState extends State<AddCancelPolicy>
   int limit = 30;
   Result cancelPolicy = Result();
   bool isLoadingCancelPolicy = true;
-
+  bool isNoRefundSelected = false;
   List<CancelPolicy> selectedOffers = [];
 
   @override
@@ -109,14 +110,25 @@ class _AddCancelPolicyState extends State<AddCancelPolicy>
                     GestureDetector(
                       onTap: () {
                         setState(() {
-                          // if (isSelected) {
-                          //   // Remove using ID to ensure we remove the correct object
-                          //   selectedOffers.removeWhere(
-                          //     (element) => element.id == data.id,
-                          //   );
-                          // } else {
-                          //   selectedOffers.add(data);
-                          // }
+                          isNoRefundSelected = !isNoRefundSelected;
+
+                          if (cancelPolicy.rows != null) {
+                            if (isNoRefundSelected) {
+                              for (var item in cancelPolicy.rows!) {
+                                if (!selectedOffers.any(
+                                  (element) => element.id == item.id,
+                                )) {
+                                  selectedOffers.add(item);
+                                }
+                              }
+                            } else {
+                              for (var item in cancelPolicy.rows!) {
+                                selectedOffers.removeWhere(
+                                  (element) => element.id == item.id,
+                                );
+                              }
+                            }
+                          }
                         });
                       },
                       child: Container(
@@ -138,21 +150,20 @@ class _AddCancelPolicyState extends State<AddCancelPolicy>
                               height: 20,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(6),
-                                color: white,
-                                border: Border.all(color: gray300),
+                                color: isNoRefundSelected ? primary : white,
+                                border: Border.all(
+                                  color: isNoRefundSelected ? primary : gray300,
+                                ),
                               ),
-                              child: SizedBox(),
-                              //  isSelected
-                              //     ? Padding(
-                              //         padding: const EdgeInsets.all(
-                              //           3.0,
-                              //         ),
-                              //         child: SvgPicture.asset(
-                              //           'assets/svg/check.svg',
-                              //           color: white,
-                              //         ),
-                              //       )
-                              //     : SizedBox(),
+                              child: isNoRefundSelected == true
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: SvgPicture.asset(
+                                        'assets/svg/check.svg',
+                                        color: white,
+                                      ),
+                                    )
+                                  : SizedBox(),
                             ),
                           ],
                         ),

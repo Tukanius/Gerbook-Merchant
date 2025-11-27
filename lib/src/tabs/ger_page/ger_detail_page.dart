@@ -1,16 +1,16 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:async';
-import 'dart:io';
+// import 'dart:io';
 import 'dart:ui';
-import 'dart:ui' as ui;
+// import 'dart:ui' as ui;
 
 import 'package:after_layout/after_layout.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:intl/intl.dart';
-import 'package:maplibre_gl/maplibre_gl.dart';
+// import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:merchant_gerbook_flutter/api/product_api.dart';
 import 'package:merchant_gerbook_flutter/components/custom_loader/custom_loader.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
@@ -700,88 +700,6 @@ class _GerDetailPageState extends State<GerDetailPage> with AfterLayoutMixin {
                                             SizedBox(height: 20),
                                             Text(
                                               translateKey.translate(
-                                                'payment_methods',
-                                              ),
-                                              style: TextStyle(
-                                                color: blackText,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            SizedBox(height: 10),
-                                            Container(
-                                              width: MediaQuery.of(
-                                                context,
-                                              ).size.width,
-                                              child: Wrap(
-                                                spacing: 8,
-                                                runSpacing: 8,
-                                                alignment:
-                                                    WrapAlignment.spaceBetween,
-                                                children: [
-                                                  Container(
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              12,
-                                                            ),
-                                                        color: white,
-                                                        border: Border.all(
-                                                          color: gray300,
-                                                        ),
-                                                      ),
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                            horizontal: 12,
-                                                            vertical: 9,
-                                                          ),
-                                                      child: Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          SvgPicture.asset(
-                                                            'assets/svg/card.svg',
-                                                            height: 18,
-                                                            width: 18,
-                                                          ),
-                                                          SizedBox(width: 6),
-                                                          Text(
-                                                            '${translateKey.translate('card')}',
-                                                            style: TextStyle(
-                                                              color: gray800,
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Image.asset(
-                                                    'assets/images/2xqpay.png',
-                                                    height: 36,
-                                                  ),
-                                                  Image.asset(
-                                                    'assets/images/2xwechat.png',
-                                                    height: 36,
-                                                  ),
-                                                  Image.asset(
-                                                    'assets/images/2xapple_pay.png',
-                                                    height: 36,
-                                                  ),
-                                                  Image.asset(
-                                                    'assets/images/2xpocket.png',
-                                                    height: 36,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(height: 10),
-                                            Text(
-                                              translateKey.translate(
                                                 'check_in_out',
                                               ),
                                               style: TextStyle(
@@ -805,9 +723,9 @@ class _GerDetailPageState extends State<GerDetailPage> with AfterLayoutMixin {
                                                     mainAxisSize:
                                                         MainAxisSize.min,
                                                     children: [
-                                                      SvgPicture.asset(
-                                                        'assets/svg/time.svg',
-                                                      ),
+                                                      // SvgPicture.asset(
+                                                      //   'assets/svg/time.svg',
+                                                      // ),
                                                       SizedBox(width: 10),
                                                       Text(
                                                         '${translateKey.translate('check_in')} ${DateFormat('HH:mm').format(DateTime.parse(data.checkInTime!).toLocal())}',
@@ -1648,9 +1566,9 @@ class _GerDetailPageState extends State<GerDetailPage> with AfterLayoutMixin {
                                                                       ),
                                                                   child: Row(
                                                                     children: [
-                                                                      SvgPicture.asset(
-                                                                        'assets/svg/bed_icon.svg',
-                                                                      ),
+                                                                      // SvgPicture.asset(
+                                                                      //   'assets/svg/bed_icon.svg',
+                                                                      // ),
                                                                       SizedBox(
                                                                         width:
                                                                             6,
@@ -1694,9 +1612,9 @@ class _GerDetailPageState extends State<GerDetailPage> with AfterLayoutMixin {
                                                                       ),
                                                                   child: Row(
                                                                     children: [
-                                                                      SvgPicture.asset(
-                                                                        'assets/svg/person_icon.svg',
-                                                                      ),
+                                                                      // SvgPicture.asset(
+                                                                      //   'assets/svg/person_icon.svg',
+                                                                      // ),
                                                                       SizedBox(
                                                                         width:
                                                                             6,
@@ -1841,113 +1759,113 @@ class _GerDetailPageState extends State<GerDetailPage> with AfterLayoutMixin {
                           ],
                         ),
                       ),
-                      tabIndex == 0
-                          ? SizedBox()
-                          : Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(
-                                  color: white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Black10,
-                                      blurRadius: 12,
-                                      offset: ui.Offset(0, -1),
-                                    ),
-                                  ],
-                                ),
-                                padding: EdgeInsets.only(
-                                  bottom: Platform.isIOS
-                                      ? MediaQuery.of(context).padding.bottom
-                                      : 16,
-                                  left: 16,
-                                  right: 16,
-                                  top: 16,
-                                ),
-                                child: isLoadingPage == true
-                                    ? SizedBox()
-                                    : Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    isLoadingPage == true
-                                                        ? '-'
-                                                        : '-',
-                                                    // : '${selectedProperty != null ? translateKey.formatCurrency(selectedProperty?.price?.toDouble() ?? 0) : translateKey.formatCurrency(0)}',
-                                                    // '₮${Utils().formatCurrencyCustom(data.price)}',
-                                                    style: TextStyle(
-                                                      color: primary,
-                                                      fontSize: 24,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    translateKey.translate(
-                                                      'per_day',
-                                                    ),
-                                                    style: TextStyle(
-                                                      color: gray103,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              GestureDetector(
-                                                onTap: isLoadingPage == true
-                                                    ? () {}
-                                                    : selectedProperty == null
-                                                    ? () {}
-                                                    : () {},
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color:
-                                                        tabIndex == 0 ||
-                                                            selectedProperty ==
-                                                                null
-                                                        ? primary200
-                                                        : primary,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          8,
-                                                        ),
-                                                  ),
-                                                  padding: EdgeInsets.symmetric(
-                                                    horizontal: 24,
-                                                    vertical: 12,
-                                                  ),
-                                                  child: Text(
-                                                    translateKey.translate(
-                                                      'book_now',
-                                                    ),
-                                                    style: TextStyle(
-                                                      color: white,
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                              ),
-                            ),
+                      // tabIndex == 0
+                      //     ? SizedBox()
+                      //     : Align(
+                      //         alignment: Alignment.bottomCenter,
+                      //         child: Container(
+                      //           width: MediaQuery.of(context).size.width,
+                      //           decoration: BoxDecoration(
+                      //             color: white,
+                      //             boxShadow: [
+                      //               BoxShadow(
+                      //                 color: Black10,
+                      //                 blurRadius: 12,
+                      //                 offset: ui.Offset(0, -1),
+                      //               ),
+                      //             ],
+                      //           ),
+                      //           padding: EdgeInsets.only(
+                      //             bottom: Platform.isIOS
+                      //                 ? MediaQuery.of(context).padding.bottom
+                      //                 : 16,
+                      //             left: 16,
+                      //             right: 16,
+                      //             top: 16,
+                      //           ),
+                      //           child: isLoadingPage == true
+                      //               ? SizedBox()
+                      //               : Column(
+                      //                   mainAxisSize: MainAxisSize.min,
+                      //                   children: [
+                      //                     Row(
+                      //                       mainAxisAlignment:
+                      //                           MainAxisAlignment.spaceBetween,
+                      //                       children: [
+                      //                         Column(
+                      //                           mainAxisAlignment:
+                      //                               MainAxisAlignment.center,
+                      //                           crossAxisAlignment:
+                      //                               CrossAxisAlignment.start,
+                      //                           children: [
+                      //                             Text(
+                      //                               isLoadingPage == true
+                      //                                   ? '-'
+                      //                                   : '-',
+                      //                               // : '${selectedProperty != null ? translateKey.formatCurrency(selectedProperty?.price?.toDouble() ?? 0) : translateKey.formatCurrency(0)}',
+                      //                               // '₮${Utils().formatCurrencyCustom(data.price)}',
+                      //                               style: TextStyle(
+                      //                                 color: primary,
+                      //                                 fontSize: 24,
+                      //                                 fontWeight:
+                      //                                     FontWeight.w600,
+                      //                               ),
+                      //                             ),
+                      //                             Text(
+                      //                               translateKey.translate(
+                      //                                 'per_day',
+                      //                               ),
+                      //                               style: TextStyle(
+                      //                                 color: gray103,
+                      //                                 fontSize: 12,
+                      //                                 fontWeight:
+                      //                                     FontWeight.w400,
+                      //                               ),
+                      //                             ),
+                      //                           ],
+                      //                         ),
+                      //                         GestureDetector(
+                      //                           onTap: isLoadingPage == true
+                      //                               ? () {}
+                      //                               : selectedProperty == null
+                      //                               ? () {}
+                      //                               : () {},
+                      //                           child: Container(
+                      //                             decoration: BoxDecoration(
+                      //                               color:
+                      //                                   tabIndex == 0 ||
+                      //                                       selectedProperty ==
+                      //                                           null
+                      //                                   ? primary200
+                      //                                   : primary,
+                      //                               borderRadius:
+                      //                                   BorderRadius.circular(
+                      //                                     8,
+                      //                                   ),
+                      //                             ),
+                      //                             padding: EdgeInsets.symmetric(
+                      //                               horizontal: 24,
+                      //                               vertical: 12,
+                      //                             ),
+                      //                             child: Text(
+                      //                               translateKey.translate(
+                      //                                 'book_now',
+                      //                               ),
+                      //                               style: TextStyle(
+                      //                                 color: white,
+                      //                                 fontSize: 14,
+                      //                                 fontWeight:
+                      //                                     FontWeight.w500,
+                      //                               ),
+                      //                             ),
+                      //                           ),
+                      //                         ),
+                      //                       ],
+                      //                     ),
+                      //                   ],
+                      //                 ),
+                      //         ),
+                      //       ),
                     ],
                   ),
                 ),

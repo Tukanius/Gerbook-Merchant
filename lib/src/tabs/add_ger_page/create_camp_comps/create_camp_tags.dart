@@ -11,7 +11,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:merchant_gerbook_flutter/api/product_api.dart';
 import 'package:merchant_gerbook_flutter/components/custom_loader/custom_loader.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
+import 'package:merchant_gerbook_flutter/models/place_offers.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
+import 'package:merchant_gerbook_flutter/models/tags.dart';
 import 'package:merchant_gerbook_flutter/provider/camp_create_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:provider/provider.dart';
@@ -28,10 +30,13 @@ class CreateCampTags extends StatefulWidget {
 class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
   bool isLoadingPage = true;
 
-  List<String> filterTag = [];
-  List<String> filterOffer = [];
-  List<String> filterTagName = [];
-  List<String> filterOfferName = [];
+  // List<String> filterTag = [];
+  // List<String> filterOffer = [];
+  // List<String> filterTagName = [];
+  // List<String> filterOfferName = [];
+
+  List<PlaceOffers> filterOffers = [];
+  List<Tags> filterTags = [];
 
   List<String> discountDatas = [];
 
@@ -111,12 +116,12 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
       await Provider.of<CampCreateProvider>(
         context,
         listen: false,
-      ).updateOffers(newOffers: filterOffer);
+      ).updateOffers(newOffers: filterOffers);
 
       await Provider.of<CampCreateProvider>(
         context,
         listen: false,
-      ).updateTags(newTags: filterTag);
+      ).updateTags(newTags: filterTags);
       await Provider.of<CampCreateProvider>(
         context,
         listen: false,
@@ -244,20 +249,20 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
                                       spacing: 6,
                                       runSpacing: 6,
                                       children: placeOffers.rows!.map((item) {
-                                        bool isSelected = filterOffer.contains(
-                                          item.id,
+                                        bool isSelected = filterOffers.contains(
+                                          item,
                                         );
                                         return GestureDetector(
                                           onTap: () {
                                             setState(() {
                                               if (isSelected) {
-                                                filterOffer.remove(item.id);
-                                                filterOfferName.remove(
-                                                  item.name,
-                                                );
+                                                filterOffers.remove(item);
+                                                // filterOfferName.remove(
+                                                //   item.name,
+                                                // );
                                               } else {
-                                                filterOffer.add(item.id!);
-                                                filterOfferName.add(item.name!);
+                                                filterOffers.add(item);
+                                                // filterOfferName.add(item.name!);
                                               }
                                             });
                                           },
@@ -326,20 +331,20 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
                                       spacing: 6,
                                       runSpacing: 6,
                                       children: placeTags.rows!.map((item) {
-                                        bool isSelected = filterTag.contains(
-                                          item.id,
+                                        bool isSelected = filterTags.contains(
+                                          item,
                                         );
                                         return GestureDetector(
                                           onTap: () {
                                             setState(() {
                                               if (isSelected) {
-                                                filterTag.remove(item.id);
-                                                filterTagName.remove(
-                                                  item.name!,
-                                                );
+                                                filterTags.remove(item);
+                                                // filterTagName.remove(
+                                                //   item.name!,
+                                                // );
                                               } else {
-                                                filterTag.add(item.id!);
-                                                filterTagName.add(item.name!);
+                                                filterTags.add(item);
+                                                // filterTagName.add(item.name!);
                                               }
                                             });
                                           },

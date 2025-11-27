@@ -37,7 +37,7 @@ class _CreateCampLocationState extends State<CreateCampLocation>
   GlobalKey<FormBuilderState> fbkey = GlobalKey<FormBuilderState>();
   GlobalKey<FormBuilderState> fbkeyLocation = GlobalKey<FormBuilderState>();
   TextEditingController campCountry = TextEditingController();
-  TextEditingController campCity = TextEditingController();
+  TextEditingController campInfo = TextEditingController();
 
   Result locationCountryData = Result();
   bool isLoadingPage = true;
@@ -220,9 +220,7 @@ class _CreateCampLocationState extends State<CreateCampLocation>
         await Provider.of<CampCreateProvider>(
           context,
           listen: false,
-        ).updateAddressDetail(
-          newAddressDetail: fbkey.currentState!.fields['campInfo'].toString(),
-        );
+        ).updateAddressDetail(newAddressDetail: campInfo.text);
         await Provider.of<CampCreateProvider>(
           context,
           listen: false,
@@ -713,7 +711,7 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                                     children: [
                                       FormTextField(
                                         inputType: TextInputType.text,
-                                        controller: campCity,
+                                        controller: campInfo,
                                         colortext: black,
                                         name: 'campInfo',
                                         color: white,

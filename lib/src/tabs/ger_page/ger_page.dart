@@ -11,6 +11,7 @@ import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -117,7 +118,21 @@ class _GerPageState extends State<GerPage> with AfterLayoutMixin {
           actions: [
             GestureDetector(
               onTap: () {
-                print('==testset==');
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
+                  ),
+                  isDismissible: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (context) {
+                    return CreateCamp();
+                  },
+                );
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,

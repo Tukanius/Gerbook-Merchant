@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:merchant_gerbook_flutter/models/place_offers.dart';
+import 'package:merchant_gerbook_flutter/models/tags.dart';
 import 'package:merchant_gerbook_flutter/models/upload_image.dart';
 
 class CampCreateProvider extends ChangeNotifier {
@@ -18,8 +20,10 @@ class CampCreateProvider extends ChangeNotifier {
   String latitude = '';
   String longitude = '';
 
-  List<String> placeOffers = [];
-  List<String> tags = [];
+  // List<String> placeOffers = [];
+  // List<String> tags = [];
+  List<PlaceOffers> placeOffers = [];
+  List<Tags> tags = [];
 
   bool fourSeason = false;
   String checkInTime = '';
@@ -77,12 +81,12 @@ class CampCreateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  updateOffers({required List<String> newOffers}) {
+  updateOffers({required List<PlaceOffers> newOffers}) {
     placeOffers = newOffers;
     notifyListeners();
   }
 
-  updateTags({required List<String> newTags}) {
+  updateTags({required List<Tags> newTags}) {
     tags = newTags;
     notifyListeners();
   }
