@@ -143,6 +143,11 @@ class _AddCancelPolicyState extends State<AddCancelPolicy>
                             Expanded(
                               child: Text(
                                 '${translateKey.translate('no_refund')}',
+                                style: TextStyle(
+                                  color: gray900,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                             Container(
@@ -210,7 +215,16 @@ class _AddCancelPolicyState extends State<AddCancelPolicy>
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Expanded(child: Text('${data.name}')),
+                                        Expanded(
+                                          child: Text(
+                                            '${data.name}',
+                                            style: TextStyle(
+                                              color: gray900,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
                                         Container(
                                           width: 20,
                                           height: 20,

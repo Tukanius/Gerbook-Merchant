@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:merchant_gerbook_flutter/models/cancel_policy.dart';
+import 'package:merchant_gerbook_flutter/models/discount_types.dart';
 import 'package:merchant_gerbook_flutter/models/place_offers.dart';
 import 'package:merchant_gerbook_flutter/models/tags.dart';
+import 'package:merchant_gerbook_flutter/models/travel_offers.dart';
 import 'package:merchant_gerbook_flutter/models/upload_image.dart';
 
 class CampCreateProvider extends ChangeNotifier {
@@ -28,6 +31,10 @@ class CampCreateProvider extends ChangeNotifier {
   bool fourSeason = false;
   String checkInTime = '';
   String checkOutTime = '';
+
+  List<DiscountTypes> discount = [];
+  List<CancelPolicy> cancelPolicy = [];
+  List<TravelOffers> travelOffers = [];
 
   updateMainImage({required UploadImage newMainImage}) {
     mainImage = newMainImage;
@@ -103,6 +110,76 @@ class CampCreateProvider extends ChangeNotifier {
 
   updateFourSeasong({required bool newFourSeason}) {
     fourSeason = newFourSeason;
+    notifyListeners();
+  }
+
+  updateTravelOffers({required List<TravelOffers> newTravelOffers}) {
+    travelOffers = newTravelOffers;
+    notifyListeners();
+  }
+
+  updateDiscounts({required List<DiscountTypes> newDiscounts}) {
+    discount = newDiscounts;
+    notifyListeners();
+  }
+
+  updateCancelPolicy({required List<CancelPolicy> newCancelPolicy}) {
+    cancelPolicy = newCancelPolicy;
+    notifyListeners();
+  }
+
+  UploadImage gerMainImage = UploadImage();
+  List<UploadImage> gerImages = [];
+  String gerName = '';
+  String gerDescription = '';
+  String gerPrice = '';
+  String gerOriginalPrice = '';
+  String gerBedCount = '';
+  String gerMaxPerson = '';
+  String gerQuantity = '';
+
+  updateGerMainPhoto({required UploadImage newGerMainImage}) {
+    gerMainImage = newGerMainImage;
+    notifyListeners();
+  }
+
+  updateGerImages({required List<UploadImage> newGerImages}) {
+    gerImages = newGerImages;
+    notifyListeners();
+  }
+
+  updateGerName({required String newGerName}) {
+    gerName = newGerName;
+    notifyListeners();
+  }
+
+  updateGerDescription({required String newGerDescription}) {
+    gerDescription = newGerDescription;
+    notifyListeners();
+  }
+
+  updateGerPrice({required String newGerPrice}) {
+    gerPrice = newGerPrice;
+    notifyListeners();
+  }
+
+  updateOriginalPrice({required String newGerOriginalPrice}) {
+    gerOriginalPrice = newGerOriginalPrice;
+    notifyListeners();
+  }
+
+  updateGerBed({required String newGerBed}) {
+    gerBedCount = newGerBed;
+    notifyListeners();
+  }
+
+  updateGerMaxPerson({required String newGerMaxPerson}) {
+    gerMaxPerson = newGerMaxPerson;
+    notifyListeners();
+  }
+
+  updateGerQuantity({required String newGerQuantity}) {
+    gerQuantity = newGerQuantity;
     notifyListeners();
   }
 }

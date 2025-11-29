@@ -144,7 +144,16 @@ class _AddServiceState extends State<AddService> with AfterLayoutMixin {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Expanded(child: Text('${data.name}')),
+                                        Expanded(
+                                          child: Text(
+                                            '${data.name}',
+                                            style: TextStyle(
+                                              color: gray900,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
                                         Container(
                                           width: 20,
                                           height: 20,

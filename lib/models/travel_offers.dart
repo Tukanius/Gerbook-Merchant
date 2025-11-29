@@ -4,9 +4,9 @@ class TravelOffers {
   String? id;
   String? name;
   num? price;
-  num? count;
+  num? maxQuantity;
 
-  TravelOffers({this.id, this.name, this.price, this.count});
+  TravelOffers({this.id, this.name, this.price, this.maxQuantity});
   static $fromJson(Map<String, dynamic> json) => _$TravelOffersFromJson(json);
 
   factory TravelOffers.fromJson(Map<String, dynamic> json) =>

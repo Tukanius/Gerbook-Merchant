@@ -8,7 +8,8 @@ class CancelPolicy {
   String? startType;
   List<int>? variants;
   int? defaultVariant;
-  num? procent;
+  num? rate;
+  String? cancelPolicy;
 
   CancelPolicy({
     this.id,
@@ -18,7 +19,8 @@ class CancelPolicy {
     this.startType,
     this.variants,
     this.defaultVariant,
-    this.procent,
+    this.rate,
+    this.cancelPolicy,
   });
   factory CancelPolicy.fromJson(Map<String, dynamic> json) =>
       _$CancelPolicyFromJson(json);

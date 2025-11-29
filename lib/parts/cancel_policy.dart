@@ -12,7 +12,10 @@ CancelPolicy _$CancelPolicyFromJson(Map<String, dynamic> json) {
     defaultVariant: json['defaultVariant'] != null
         ? json['defaultVariant'] as int
         : null,
-    procent: json['procent'] != null ? json['procent'] as num : null,
+    rate: json['rate'] != null ? json['rate'] as num : null,
+    cancelPolicy: json['cancelPolicy'] != null
+        ? json['cancelPolicy'] as String
+        : null,
   );
 }
 
@@ -25,7 +28,9 @@ Map<String, dynamic> _$CancelPolicyToJson(CancelPolicy instance) {
   if (instance.variants != null) json['variants'] = instance.variants;
   if (instance.defaultVariant != null)
     json['defaultVariant'] = instance.defaultVariant;
-  if (instance.procent != null) json['procent'] = instance.procent;
+  if (instance.rate != null) json['rate'] = instance.rate;
+  if (instance.cancelPolicy != null)
+    json['cancelPolicy'] = instance.cancelPolicy;
 
   return json;
 }

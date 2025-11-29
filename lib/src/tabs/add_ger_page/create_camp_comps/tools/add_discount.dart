@@ -143,7 +143,19 @@ class _AddDiscountState extends State<AddDiscount> with AfterLayoutMixin {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Expanded(child: Text('${data.type}')),
+                                        Expanded(
+                                          child: Text(
+                                            data.type == "ORDER"
+                                                ? '${translateKey.translate('Эхний')} ${data.value} ${translateKey.translate('захиалгад')}'
+                                                : '${data.value} ${translateKey.translate('ба түүнээс дээш хоногоор')}',
+                                            style: TextStyle(
+                                              color: gray900,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+
                                         Container(
                                           width: 20,
                                           height: 20,

@@ -139,7 +139,7 @@ class _CreateGerPhotoState extends State<CreateGerPhoto> {
           await Provider.of<CampCreateProvider>(
             context,
             listen: false,
-          ).updateMainImage(newMainImage: upload);
+          ).updateGerMainPhoto(newGerMainImage: upload);
         }
         if (images.isNotEmpty) {
           List<UploadImage> uploadedUrls = [];
@@ -151,7 +151,7 @@ class _CreateGerPhotoState extends State<CreateGerPhoto> {
           await Provider.of<CampCreateProvider>(
             context,
             listen: false,
-          ).updateImages(newImages: uploadedUrls);
+          ).updateGerImages(newGerImages: uploadedUrls);
         }
         widget.pageController.nextPage(
           duration: Duration(microseconds: 1000),

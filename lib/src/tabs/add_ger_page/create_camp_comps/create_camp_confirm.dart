@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:after_layout/after_layout.dart';
-import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
@@ -10,7 +10,6 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/svg.dart';
 // import 'package:flutter_svg/svg.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
-import 'package:merchant_gerbook_flutter/models/images.dart';
 import 'package:merchant_gerbook_flutter/models/upload_image.dart';
 import 'package:merchant_gerbook_flutter/provider/camp_create_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
@@ -30,7 +29,7 @@ class _CreateCampConfirmState extends State<CreateCampConfirm>
     with AfterLayoutMixin {
   CarouselSliderController carouselController = CarouselSliderController();
   final List<UploadImage> allImages = [];
-
+  int _currentIndex = 0;
   @override
   FutureOr<void> afterFirstLayout(BuildContext context) {
     final campProvider = Provider.of<CampCreateProvider>(
@@ -54,6 +53,9 @@ class _CreateCampConfirmState extends State<CreateCampConfirm>
         });
       }
     }
+    print('====test====');
+    print(allImages.length);
+    print('====test====');
   }
 
   @override
@@ -135,88 +137,95 @@ class _CreateCampConfirmState extends State<CreateCampConfirm>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(height: 8),
-                          ClipRRect(
-                            borderRadius: BorderRadiusGeometry.circular(12),
-                            child: SizedBox(
-                              width: mediaQuery.size.width,
-                              height: 245,
-                              child: BlurHash(
-                                color: gray100,
-                                hash: '${campProvider.mainImage.blurhash}',
-                                image: '${campProvider.mainImage.url}',
-                                imageFit: BoxFit.cover,
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: CarouselSlider(
+                                  carouselController: carouselController,
+                                  items: allImages.map((data) {
+                                    return Container(
+                                      width: mediaQuery.size.width,
+                                      height: 245,
+                                      child: BlurHash(
+                                        color: gray100,
+                                        hash: '${data.blurhash}',
+                                        image: '${data.url}',
+                                        imageFit: BoxFit.cover,
+                                      ),
+                                    );
+                                    // Container(
+                                    //   width: MediaQuery.of(context).size.width,
+                                    //   height: MediaQuery.of(context).size.height * 0.45,
+                                    //   decoration: BoxDecoration(
+                                    //     image: DecorationImage(
+                                    //       image: NetworkImage(data.url!),
+                                    //       fit: BoxFit.cover,
+                                    //     ),
+                                    //   ),
+                                    //   // child: Container(
+                                    //   //   color: Colors.transparent,
+                                    //   // ),
+                                    // );
+                                  }).toList(),
+                                  options: CarouselOptions(
+                                    height: 245,
+                                    viewportFraction: 1,
+                                    onPageChanged: (index, reason) {
+                                      setState(() {
+                                        _currentIndex = index;
+                                      });
+                                    },
+                                  ),
+                                ),
                               ),
-                            ),
+                              Positioned(
+                                bottom: 16,
+                                right: 20,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(2),
+                                      child: BackdropFilter(
+                                        filter: ImageFilter.blur(
+                                          sigmaX: 10,
+                                          sigmaY: 10,
+                                        ),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              2,
+                                            ),
+                                            color: Black32.withOpacity(0.5),
+                                          ),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 6,
+                                            vertical: 4,
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                "${_currentIndex + 1}/${(allImages.length)}",
+                                                style: TextStyle(
+                                                  color: white,
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                          // ClipRRect(
-                          //   borderRadius: BorderRadiusGeometry.circular(12),
-                          //   child: Container(
-                          //     width: mediaQuery.size.width,
-                          //     height: 245,
-                          //     child: Image.asset(
-                          //       'assets/images/zurag.png',
-                          //       fit: BoxFit.cover,
-                          //     ),
-                          //   ),
-                          // ),
-                          // ClipRRect(
-                          //   borderRadius: BorderRadius.only(
-                          //     bottomLeft: Radius.circular(24),
-                          //     bottomRight: Radius.circular(24),
-                          //   ),
-                          //   child: GestureDetector(
-                          //     onTap: () {
-                          //       // Navigator.of(context).pushNamed(
-                          //       //   FullScreenImage.routeName,
-                          //       //   arguments: FullScreenImageArguments(
-                          //       //     images: data.images!,
-                          //       //   ),
-                          //       // );
-                          //     },
-                          //     child: CarouselSlider(
-                          //       carouselController: carouselController,
-                          //       items: allImages.map((data) {
-                          //         return Container(
-                          //           width: MediaQuery.of(context).size.width,
-                          //           height: MediaQuery.of(context).size.height *
-                          //               0.45,
-                          //           child: BlurHash(
-                          //             color: gray100,
-                          //             hash: '${data.blurhash}',
-                          //             image: '${data.url}',
-                          //             imageFit: BoxFit.cover,
-                          //           ),
-                          //         );
-                          //         // Container(
-                          //         //   width: MediaQuery.of(context).size.width,
-                          //         //   height: MediaQuery.of(context).size.height * 0.45,
-                          //         //   decoration: BoxDecoration(
-                          //         //     image: DecorationImage(
-                          //         //       image: NetworkImage(data.url!),
-                          //         //       fit: BoxFit.cover,
-                          //         //     ),
-                          //         //   ),
-                          //         //   // child: Container(
-                          //         //   //   color: Colors.transparent,
-                          //         //   // ),
-                          //         // );
-                          //       }).toList(),
-                          //       options: CarouselOptions(
-                          //         height:
-                          //             MediaQuery.of(context).size.height * 0.45,
-                          //         // enlargeCenterPage: true,
-                          //         // autoPlay: true,
-                          //         // aspectRatio: 16 / 9,
-                          //         viewportFraction: 1,
-                          //         onPageChanged: (index, reason) {
-                          //           setState(() {
-                          //             _currentIndex = index;
-                          //           });
-                          //         },
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
                           SizedBox(height: 16),
                           Text(
                             campProvider.name,
@@ -495,84 +504,89 @@ class _CreateCampConfirmState extends State<CreateCampConfirm>
                             ),
                           ),
                           SizedBox(height: 16),
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: primaryRange,
-                              border: Border.all(color: gray200),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Column(
-                                  children: [
-                                    SizedBox(height: 32),
-                                    SvgPicture.asset(
-                                      'assets/svg/empty_box.svg',
-                                      width: 141,
-                                    ),
-                                    SizedBox(height: 12),
-                                    Column(
-                                      children: [
-                                        Text(
-                                          translateKey.translate('no_ger'),
-                                          style: TextStyle(
-                                            fontFamily: 'Lato',
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                            color: gray900,
+                          campProvider.gerName != ''
+                              ? Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: primaryRange,
+                                    border: Border.all(color: gray200),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Column(
+                                        children: [
+                                          SizedBox(height: 32),
+                                          SvgPicture.asset(
+                                            'assets/svg/empty_box.svg',
+                                            width: 141,
                                           ),
-                                        ),
-                                        SizedBox(height: 2),
-                                        Text(
-                                          translateKey.translate(
-                                            'required_one_ger',
+                                          SizedBox(height: 12),
+                                          Column(
+                                            children: [
+                                              Text(
+                                                translateKey.translate(
+                                                  'no_ger',
+                                                ),
+                                                style: TextStyle(
+                                                  fontFamily: 'Lato',
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: gray900,
+                                                ),
+                                              ),
+                                              SizedBox(height: 2),
+                                              Text(
+                                                translateKey.translate(
+                                                  'required_one_ger',
+                                                ),
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontFamily: 'Lato',
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: gray600,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontFamily: 'Lato',
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                            color: gray600,
+                                          SizedBox(height: 12),
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(context).pushNamed(
+                                                CreateGerPages.routeName,
+                                              );
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                color: white,
+                                                border: Border.all(
+                                                  color: gray300,
+                                                ),
+                                              ),
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 10,
+                                                horizontal: 16,
+                                              ),
+                                              child: Text(
+                                                '${translateKey.translate('create_listing')}',
+                                                style: TextStyle(
+                                                  color: gray700,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 12),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.of(
-                                          context,
-                                        ).pushNamed(CreateGerPages.routeName);
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                          color: white,
-                                          border: Border.all(color: gray300),
-                                        ),
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 10,
-                                          horizontal: 16,
-                                        ),
-                                        child: Text(
-                                          '${translateKey.translate('create_listing')}',
-                                          style: TextStyle(
-                                            color: gray700,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
+                                          SizedBox(height: 32),
+                                        ],
                                       ),
-                                    ),
-                                    SizedBox(height: 32),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                                    ],
+                                  ),
+                                )
+                              : Text('end neg ger baih shig bnda'),
                           SizedBox(height: mediaQuery.padding.bottom + 150),
                         ],
                       ),

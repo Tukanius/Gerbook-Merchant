@@ -14,6 +14,7 @@ import 'package:merchant_gerbook_flutter/models/cancel_policy.dart';
 import 'package:merchant_gerbook_flutter/models/discount_types.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
 import 'package:merchant_gerbook_flutter/models/travel_offers.dart';
+import 'package:merchant_gerbook_flutter/provider/camp_create_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/tools/add_cancel_policy.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/tools/add_discount.dart';
@@ -79,6 +80,47 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
   //     isLoadingCancelPolicy = false;
   //   });
   // }
+  bool isLoadingButton = false;
+
+  onSubmit() async {
+    try {
+      setState(() {
+        isLoadingButton = true;
+      });
+      print(isLoadingButton);
+      print('=====am in ?? =====');
+      await Provider.of<CampCreateProvider>(
+        context,
+        listen: false,
+      ).updateTravelOffers(newTravelOffers: selectedServices);
+
+      await Provider.of<CampCreateProvider>(
+        context,
+        listen: false,
+      ).updateDiscounts(newDiscounts: selectedDiscount);
+      await Provider.of<CampCreateProvider>(
+        context,
+        listen: false,
+      ).updateCancelPolicy(newCancelPolicy: selectedCancelPolicy);
+
+      widget.pageController.nextPage(
+        duration: Duration(microseconds: 1000),
+        curve: Curves.ease,
+      );
+      setState(() {
+        isLoadingButton = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoadingButton = false;
+      });
+    }
+  }
+
+  // build функц дотор:
+  bool get allRatesAreZero =>
+      selectedCancelPolicy.isNotEmpty &&
+      selectedCancelPolicy.every((service) => service.rate == 0);
 
   @override
   Widget build(BuildContext context) {
@@ -304,7 +346,7 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                                                 ),
                                                                 onChanged: (value) {
                                                                   // Save quantity to your model
-                                                                  service.count =
+                                                                  service.maxQuantity =
                                                                       int.tryParse(
                                                                         value,
                                                                       );
@@ -531,8 +573,10 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                                         children: [
                                                           Expanded(
                                                             child: Text(
-                                                              service.type ??
-                                                                  '',
+                                                              service.type ==
+                                                                      "ORDER"
+                                                                  ? '${translateKey.translate('Эхний')} ${service.value} ${translateKey.translate('захиалгад')}'
+                                                                  : '${service.value} ${translateKey.translate('ба түүнээс дээш хоногоор')}',
                                                               style: TextStyle(
                                                                 color: gray700,
                                                                 fontSize: 14,
@@ -550,7 +594,6 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                                           Expanded(
                                                             child: Container(
                                                               height: 36,
-
                                                               decoration: BoxDecoration(
                                                                 border:
                                                                     Border.all(
@@ -741,9 +784,35 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                               children: selectedCancelPolicy.map((
                                                 service,
                                               ) {
-                                                // Initialize defaults if null (Optional logic)
-                                                // service.quantity = service.quantity ?? 1;
-                                                // service.price = service.price ?? 0;
+                                                // service.rate нь int төрөлтэй байх ёстой.
+                                                // АНХДАГЧ УТГА: Хэрэв service.rate-д утга оноогдоогүй бол 0-ийг default болгоно.
+                                                if (service.rate == null) {
+                                                  service.rate = 0;
+                                                }
+
+                                                // Сонгох боломжит хувь хэмжээний жагсаалт
+                                                final List<int> refundRates = [
+                                                  0,
+                                                  25,
+                                                  50,
+                                                  75,
+                                                  100,
+                                                ];
+
+                                                // Тухайн item-д санал болгох хувийг тодорхойлох
+                                                // Индексээр нь тооцоолъё: 0 -> 25, 1 -> 50, 2 -> 75 гэх мэт.
+                                                // Энэ нь зөвхөн жишээнд ашиглах логик юм.
+                                                final int serviceIndex =
+                                                    selectedCancelPolicy
+                                                        .indexOf(service);
+                                                final int recommendedRateIndex =
+                                                    serviceIndex + 1;
+                                                final int recommendedRate =
+                                                    recommendedRateIndex <
+                                                        refundRates.length
+                                                    ? refundRates[recommendedRateIndex]
+                                                    : refundRates
+                                                          .last; // Хэрэв жагсаалтаас хэтэрвэл 100-г авна
 
                                                 return Container(
                                                   margin: EdgeInsets.only(
@@ -754,6 +823,7 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
+                                                      // ... service.name-ийг харуулах хэсэг ...
                                                       Row(
                                                         children: [
                                                           Expanded(
@@ -776,8 +846,11 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                                         children: [
                                                           Expanded(
                                                             child: Container(
-                                                              height: 36,
-
+                                                              padding:
+                                                                  EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        8,
+                                                                  ),
                                                               decoration: BoxDecoration(
                                                                 border:
                                                                     Border.all(
@@ -789,29 +862,99 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                                                       8,
                                                                     ),
                                                               ),
-                                                              child: TextField(
-                                                                keyboardType:
-                                                                    TextInputType
-                                                                        .number,
-                                                                decoration: InputDecoration(
+                                                              child: DropdownButtonHideUnderline(
+                                                                child: DropdownButtonFormField<int>(
                                                                   isDense: true,
-                                                                  border:
-                                                                      InputBorder
-                                                                          .none,
-                                                                  hintText:
-                                                                      '0%',
-                                                                  contentPadding:
-                                                                      EdgeInsets.all(
-                                                                        8,
+                                                                  value: service
+                                                                      .rate!
+                                                                      .toInt(),
+                                                                  decoration: InputDecoration(
+                                                                    isDense:
+                                                                        true,
+                                                                    border:
+                                                                        InputBorder
+                                                                            .none,
+                                                                    contentPadding:
+                                                                        EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8,
+                                                                        ),
+                                                                  ),
+                                                                  items: refundRates.map((
+                                                                    int value,
+                                                                  ) {
+                                                                    final bool
+                                                                    isRecommended =
+                                                                        value ==
+                                                                        recommendedRate;
+
+                                                                    return DropdownMenuItem<
+                                                                      int
+                                                                    >(
+                                                                      value:
+                                                                          value,
+                                                                      child: Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child: Text(
+                                                                              '$value%',
+                                                                              style: TextStyle(
+                                                                                fontWeight: FontWeight.w600,
+                                                                                fontSize: 14,
+                                                                                color: gray900,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          if (isRecommended)
+                                                                            Expanded(
+                                                                              child: Text(
+                                                                                '(${translateKey.translate('default')})',
+                                                                                style: TextStyle(
+                                                                                  color: gray900,
+                                                                                  fontSize: 12,
+                                                                                  fontWeight: FontWeight.w600,
+                                                                                ),
+                                                                                maxLines: 1,
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                              ),
+                                                                            ),
+                                                                        ],
                                                                       ),
-                                                                ),
-                                                                onChanged: (value) {
-                                                                  // Save quantity to your model
-                                                                  service.procent =
-                                                                      int.tryParse(
-                                                                        value,
+                                                                    );
+                                                                  }).toList(),
+                                                                  onChanged:
+                                                                      (
+                                                                        int?
+                                                                        newValue,
+                                                                      ) {
+                                                                        if (newValue !=
+                                                                            null) {
+                                                                          setState(
+                                                                            () {
+                                                                              service.rate = newValue;
+                                                                            },
+                                                                          );
+                                                                        }
+                                                                      },
+                                                                  // Сонгогдсон утгыг Dropdown-ийн гадна харуулах хэсэг
+                                                                  selectedItemBuilder: (context) {
+                                                                    return refundRates.map((
+                                                                      int value,
+                                                                    ) {
+                                                                      return Text(
+                                                                        '$value%',
+                                                                        style: TextStyle(
+                                                                          color:
+                                                                              gray900,
+                                                                          fontWeight:
+                                                                              FontWeight.w500,
+                                                                        ),
                                                                       );
-                                                                },
+                                                                    }).toList();
+                                                                  },
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
@@ -836,7 +979,39 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                                 );
                                               }).toList(),
                                             ),
+                                      allRatesAreZero == true
+                                          ? Container(
+                                              margin: EdgeInsets.only(top: 6),
+                                              decoration: BoxDecoration(
+                                                color: primary,
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 14,
+                                                vertical: 8,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    translateKey.translate(
+                                                      'no_refund',
+                                                    ),
+                                                    style: TextStyle(
+                                                      color: white,
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                          : SizedBox(),
                                       SizedBox(height: 14),
+
                                       GestureDetector(
                                         onTap: () {
                                           showModalBottomSheet(
@@ -885,7 +1060,7 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                               SizedBox(width: 8),
                                               Text(
                                                 translateKey.translate(
-                                                  'additional_services',
+                                                  'cancelation_policy',
                                                 ),
                                                 style: TextStyle(
                                                   color: gray700,
@@ -978,14 +1153,11 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                                     SizedBox(width: 16),
                                     Expanded(
                                       child: GestureDetector(
-                                        onTap: () {
-                                          widget.pageController.nextPage(
-                                            duration: Duration(
-                                              microseconds: 1000,
-                                            ),
-                                            curve: Curves.ease,
-                                          );
-                                        },
+                                        onTap: isLoadingButton == true
+                                            ? () {}
+                                            : () {
+                                                onSubmit();
+                                              },
                                         child: Container(
                                           decoration: BoxDecoration(
                                             color: primary,
