@@ -1,7 +1,9 @@
 import 'package:merchant_gerbook_flutter/models/address.dart';
 import 'package:merchant_gerbook_flutter/models/booked_data.dart';
 import 'package:merchant_gerbook_flutter/models/booking_list.dart';
-import 'package:merchant_gerbook_flutter/models/camp_data.dart';
+import 'package:merchant_gerbook_flutter/models/camp_create_model.dart';
+// import 'package:merchant_gerbook_flutter/models/camp_data.dart';
+import 'package:merchant_gerbook_flutter/models/camp_data_edit.dart';
 import 'package:merchant_gerbook_flutter/models/camp_list_data.dart';
 import 'package:merchant_gerbook_flutter/models/cancel_policy.dart';
 import 'package:merchant_gerbook_flutter/models/chart_data.dart';
@@ -79,7 +81,7 @@ class ProductApi extends HttpRequest {
 
   getCampData(String id) async {
     var res = await get('/merchants/camps/$id');
-    return CampData.fromJson(res as Map<String, dynamic>);
+    return CampDataEdit.fromJson(res as Map<String, dynamic>);
   }
 
   getPlaceOffersList(ResultArguments resultArguments) async {
@@ -148,6 +150,22 @@ class ProductApi extends HttpRequest {
   putPhone(User data) async {
     var res = await put('/merchants/phone', data: data.toJson());
     return User.fromJson(res as Map<String, dynamic>);
+  }
+
+  createCampApi(CampCreateModel data) async {
+    var res = await post('/camps', data: data.toJson());
+    return res;
+    // return User.fromJson(res as Map<String, dynamic>);
+  }
+
+  putProperty(CampCreateModel data, String id) async {
+    var res = await put('/camps/$id/properties', data: data.toJson());
+    return res;
+  }
+
+  getCampProperty(String id) async {
+    var res = await get('/app/camps/$id/properties');
+    return res;
   }
 
   // getOrderData(String id) async {

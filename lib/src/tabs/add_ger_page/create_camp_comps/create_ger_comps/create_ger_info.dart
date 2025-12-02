@@ -1,26 +1,61 @@
+// ignore_for_file: deprecated_member_use
+
+import 'dart:async';
 import 'dart:io';
 
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:merchant_gerbook_flutter/api/product_api.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
+import 'package:merchant_gerbook_flutter/models/camp_create_model.dart';
+import 'package:merchant_gerbook_flutter/models/camp_data.dart';
+import 'package:merchant_gerbook_flutter/models/create_camp_property.dart';
 import 'package:merchant_gerbook_flutter/provider/camp_create_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:provider/provider.dart';
 
 class CreateGerInfo extends StatefulWidget {
+  final bool updateCamp;
+  final String campId;
+
   final PageController pageController;
 
-  const CreateGerInfo({super.key, required this.pageController});
+  const CreateGerInfo({
+    super.key,
+    required this.pageController,
+    required this.updateCamp,
+    required this.campId,
+  });
 
   @override
   State<CreateGerInfo> createState() => _CreateGerInfoState();
 }
 
-class _CreateGerInfoState extends State<CreateGerInfo> {
+class _CreateGerInfoState extends State<CreateGerInfo> with AfterLayoutMixin {
+  bool isLoadingPage = true;
+  CampData data = CampData();
+  @override
+  FutureOr<void> afterFirstLayout(BuildContext context) async {
+    try {
+      if (widget.campId != '') {
+        data = await ProductApi().getCampData(widget.campId);
+      }
+
+      setState(() {
+        isLoadingPage = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoadingPage = false;
+      });
+    }
+  }
+
   GlobalKey<FormBuilderState> fbkey = GlobalKey<FormBuilderState>();
 
   TextEditingController gerNameController = TextEditingController();
@@ -119,7 +154,6 @@ class _CreateGerInfoState extends State<CreateGerInfo> {
         ).updateGerQuantity(newGerQuantity: quantityController.text);
 
         Navigator.of(context).pop();
-        Navigator.of(context).pop();
         setState(() {
           isLoadingButton = false;
         });
@@ -131,6 +165,228 @@ class _CreateGerInfoState extends State<CreateGerInfo> {
     }
   }
 
+  onSubmitUpdateCamp() async {
+    if (quantity == 0) {
+      setState(() {
+        quantityError = true;
+      });
+    } else {
+      setState(() {
+        quantityError = false;
+      });
+    }
+    if (bedsCount == 0) {
+      setState(() {
+        bedError = true;
+      });
+    } else {
+      setState(() {
+        bedError = false;
+      });
+    }
+    if (maxPersonCount == 0) {
+      setState(() {
+        maxPersonError = true;
+      });
+    } else {
+      setState(() {
+        maxPersonError = false;
+      });
+    }
+
+    if (fbkey.currentState!.saveAndValidate()) {
+      final translateKey = Provider.of<LocalizationProvider>(
+        context,
+        listen: false,
+      );
+      try {
+        setState(() {
+          isLoadingButton = true;
+        });
+        final createCampRoot = Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        );
+        CampCreateModel campData = CampCreateModel();
+
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateGerName(newGerName: gerNameController.text);
+
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateGerDescription(
+          newGerDescription: gerDescriptionController.text,
+        );
+
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateGerPrice(newGerPrice: priceController.text);
+
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateOriginalPrice(
+          newGerOriginalPrice: originalPriceController.text,
+        );
+
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateGerBed(newGerBed: bedController.text);
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateGerMaxPerson(newGerMaxPerson: maxPersonController.text);
+
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateGerQuantity(newGerQuantity: quantityController.text);
+
+        campData.properties = [
+          ...data.properties!.map((p) {
+            return CreateCampProperty(
+              id: p.id,
+              name: p.name,
+              description: p.description,
+              images: p.images != null || p.images != []
+                  ? p.images!
+                        .map((tagObject) => tagObject.url)
+                        .cast<String>()
+                        .toList()
+                  : [],
+              mainImage: p.mainImage?.url ?? null,
+              bedsCount: p.bedsCount?.toInt(),
+              price: p.price,
+              originalPrice: p.originalPrice,
+              maxPersonCount: p.maxPersonCount,
+              quantity: p.quantity,
+            );
+          }),
+          /*
+          {
+      "_id": "692e83a93359a0b08b913652",
+      "name": "ger test update",
+      "description": "gers",
+      "images": [
+        "https://gerbook.s3.ap-southeast-1.amazonaws.com/3195ae77-0c29-490d-a00e-0c3a63d505c3-1024.jpg"
+      ],
+      "mainImage": "https://gerbook.s3.ap-southeast-1.amazonaws.com/3195ae77-0c29-490d-a00e-0c3a63d505c3-1024.jpg",
+      "bedsCount": 1,
+      "price": 133,
+      "originalPrice": 1234,
+      "maxPersonCount": 1,
+      "quantity": 1
+    },
+           */
+          CreateCampProperty(
+            name: createCampRoot.gerName,
+            description: createCampRoot.gerDescription,
+            images: createCampRoot.gerImages
+                .map((tagObject) => tagObject.url)
+                .cast<String>()
+                .toList(),
+            mainImage: createCampRoot.gerMainImage.url,
+            bedsCount: int.tryParse(createCampRoot.gerBedCount),
+            price: num.tryParse(createCampRoot.gerPrice),
+            originalPrice: num.tryParse(createCampRoot.gerOriginalPrice),
+            maxPersonCount: int.tryParse(createCampRoot.gerMaxPerson),
+            quantity: int.tryParse(createCampRoot.gerQuantity),
+          ),
+        ];
+        await ProductApi().putProperty(campData, widget.campId);
+
+        await showCreateSuccess(
+          context,
+          '${translateKey.translate('listing_created_successfully')}',
+        );
+        setState(() {
+          isLoadingButton = false;
+        });
+      } catch (e) {
+        setState(() {
+          isLoadingButton = false;
+        });
+      }
+    }
+  }
+
+  showCreateSuccess(context, String text) async {
+    final local = Provider.of<LocalizationProvider>(context, listen: false);
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return Container(
+          alignment: Alignment.center,
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SvgPicture.asset('assets/svg/success1.svg'),
+                Text(
+                  local.translate('successful'),
+                  style: TextStyle(
+                    color: black,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
+                    decoration: TextDecoration.none,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  '$text',
+                  style: TextStyle(
+                    color: gray600,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.none,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                ButtonBar(
+                  buttonMinWidth: 100,
+                  alignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    TextButton(
+                      style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.all(
+                          Colors.transparent,
+                        ),
+                      ),
+                      child: Text(
+                        local.translate('close'),
+                        style: TextStyle(
+                          color: black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -140,7 +396,7 @@ class _CreateGerInfoState extends State<CreateGerInfo> {
     );
     String? discountedPriceValidator(String? discountedPrice) {
       // 1. Үндсэн үнийн контроллероос утгыг авна.
-      final originalPriceText = priceController.text;
+      final originalPriceText = originalPriceController.text;
 
       // 2. Утгуудыг тоонд хөрвүүлнэ (null эсвэл хоосон бол 0 гэж үзье).
       final double originalPrice = double.tryParse(originalPriceText) ?? 0.0;
@@ -285,16 +541,17 @@ class _CreateGerInfoState extends State<CreateGerInfo> {
                                 SizedBox(height: 16),
                                 FormTextField(
                                   inputType: TextInputType.number,
-                                  controller: priceController,
+                                  controller: originalPriceController,
                                   colortext: black,
-                                  name: 'price',
+                                  name: 'originalPrice',
                                   color: white,
                                   hintText:
                                       "${translateKey.translate('original_price')}",
                                   hintTextColor: gray500,
                                   labelColor: gray700,
                                   labelText:
-                                      "${translateKey.translate('original_price')}",
+                                      "${translateKey.translate('original_price')} ",
+
                                   validator: FormBuilderValidators.compose([
                                     FormBuilderValidators.required(
                                       errorText: translateKey.translate(
@@ -303,22 +560,24 @@ class _CreateGerInfoState extends State<CreateGerInfo> {
                                     ),
                                   ]),
                                 ),
+
                                 SizedBox(height: 16),
                               ],
                             ),
                           ),
+
                           FormTextField(
                             inputType: TextInputType.number,
-                            controller: originalPriceController,
+                            controller: priceController,
                             colortext: black,
-                            name: 'originalPrice',
+                            name: 'price',
                             color: white,
                             hintText:
                                 "${translateKey.translate('discounted_price')}",
                             hintTextColor: gray500,
                             labelColor: gray700,
                             labelText:
-                                "${translateKey.translate('discounted_price')} ",
+                                "${translateKey.translate('discounted_price')}",
                             validator: (value) =>
                                 discountedPriceValidator(value),
                           ),
@@ -720,9 +979,13 @@ class _CreateGerInfoState extends State<CreateGerInfo> {
                             children: [
                               Expanded(
                                 child: GestureDetector(
-                                  onTap: () {
-                                    onSubmit();
-                                  },
+                                  onTap: isLoadingButton == true
+                                      ? () {}
+                                      : () {
+                                          widget.updateCamp == true
+                                              ? onSubmitUpdateCamp()
+                                              : onSubmit();
+                                        },
                                   child: Container(
                                     decoration: BoxDecoration(
                                       color: primary,

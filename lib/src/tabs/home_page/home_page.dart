@@ -15,6 +15,7 @@ import 'package:merchant_gerbook_flutter/models/result.dart';
 import 'package:merchant_gerbook_flutter/models/user.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:merchant_gerbook_flutter/src/notification_page/notification_page.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp.dart';
 import 'package:merchant_gerbook_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -367,7 +368,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
                                             SizedBox(height: 2),
                                             Text(
                                               translateKey.translate(
-                                                'no_active_orders_at_home',
+                                                'no_active_orders_at_ger',
                                               ),
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
@@ -551,42 +552,61 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
                                       ],
                                     ),
                                     SizedBox(height: 24),
-                                    Container(
-                                      padding: EdgeInsets.only(
-                                        top: 10,
-                                        bottom: 10,
-                                        left: 12,
-                                        right: 16,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: primary,
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(8),
+                                    GestureDetector(
+                                      onTap: () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          isScrollControlled: true,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(16),
+                                              topRight: Radius.circular(16),
+                                            ),
+                                          ),
+                                          isDismissible: true,
+                                          backgroundColor: Colors.transparent,
+                                          builder: (context) {
+                                            return CreateCamp();
+                                          },
+                                        );
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.only(
+                                          top: 10,
+                                          bottom: 10,
+                                          left: 12,
+                                          right: 16,
                                         ),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.add,
-                                            color: white,
-                                            size: 20,
+                                        decoration: BoxDecoration(
+                                          color: primary,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(8),
                                           ),
-                                          SizedBox(width: 8),
-                                          Text(
-                                            translateKey.translate(
-                                              'create_listing',
-                                            ),
-                                            style: TextStyle(
-                                              fontFamily: 'Lato',
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.add,
                                               color: white,
+                                              size: 20,
                                             ),
-                                          ),
-                                        ],
+                                            SizedBox(width: 8),
+                                            Text(
+                                              translateKey.translate(
+                                                'create_listing',
+                                              ),
+                                              style: TextStyle(
+                                                fontFamily: 'Lato',
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                                color: white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     SizedBox(

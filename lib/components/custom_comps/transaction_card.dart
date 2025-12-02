@@ -27,14 +27,42 @@ class _TransactionCardState extends State<TransactionCard> {
       ),
       child: Row(
         children: [
-          SvgPicture.asset('assets/svg/ashig.svg'),
+          SvgPicture.asset(
+            widget.data.type == "BOOKING"
+                ? 'assets/svg/booking.svg'
+                : widget.data.type == "REFUND"
+                ? 'assets/svg/refund.svg'
+                : widget.data.type == "FEE"
+                ? 'assets/svg/fee.svg'
+                : widget.data.type == "PROFIT"
+                ? 'assets/svg/ashig.svg'
+                : 'assets/svg/default_transaction.svg',
+            height: 38,
+            width: 38,
+            fit: BoxFit.cover,
+          ),
           SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${translateKey.translate('${widget.data.type}')}',
+                  widget.data.type == "BOOKING"
+                      ? '${translateKey.translate('transaction_type_booking')}'
+                      : widget.data.type == "REFUND"
+                      ? '${translateKey.translate('transaction_type_refund')}'
+                      : widget.data.type == "FEE"
+                      ? '${translateKey.translate('transaction_type_fee')}'
+                      : widget.data.type == "PROFIT"
+                      ? '${translateKey.translate('transaction_type_profit')}'
+                      : widget.data.type == "CANCELED"
+                      ? '${translateKey.translate('transaction_status_canceled')}'
+                      : widget.data.type == "PENDING"
+                      ? '${translateKey.translate('transaction_status_pending')}'
+                      : widget.data.type == "CONFIRM"
+                      ? '${translateKey.translate('transaction_status_confirmed')}'
+                      : '-',
+
                   style: TextStyle(
                     color: gray900,
                     fontSize: 14,
@@ -57,9 +85,12 @@ class _TransactionCardState extends State<TransactionCard> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '${Utils().formatCurrencyDouble(widget.data.amount?.toDouble() ?? 0)}',
+                '${widget.data.type == "FEE" || widget.data.type == "REFUND" ? '-' : '+'} ${Utils().formatCurrencyDouble(widget.data.amount?.toDouble() ?? 0)}',
                 style: TextStyle(
-                  color: gray900,
+                  color:
+                      widget.data.type == "FEE" || widget.data.type == "REFUND"
+                      ? redButton
+                      : primary,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),

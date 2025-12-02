@@ -182,4 +182,17 @@ class CampCreateProvider extends ChangeNotifier {
     gerQuantity = newGerQuantity;
     notifyListeners();
   }
+
+  clearGer() {
+    gerMainImage = UploadImage();
+    gerImages = [];
+    gerName = '';
+    gerDescription = '';
+    gerPrice = '';
+    gerOriginalPrice = '';
+    gerBedCount = '';
+    gerMaxPerson = '';
+    gerQuantity = '';
+    notifyListeners();
+  }
 }

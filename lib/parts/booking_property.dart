@@ -7,6 +7,9 @@ BookingProperty _$BookingPropertyFromJson(Map<String, dynamic> json) {
     addressString: json['addressString'] != null
         ? json['addressString'] as String
         : null,
+    // property: json['property'] != null
+    //     ? BookingProperty.fromJson(json['property'])
+    //     : null,
   );
 }
 
@@ -17,6 +20,7 @@ Map<String, dynamic> _$BookingPropertyToJson(BookingProperty instance) {
 
   if (instance.addressString != null)
     json['addressString'] = instance.addressString;
+  // if (instance.property != null) json['property'] = instance.property;
 
   return json;
 }

@@ -7,6 +7,9 @@ DiscountTypes _$DiscountTypesFromJson(Map<String, dynamic> json) {
     value: json['value'] != null ? json['value'] as num : null,
     procent: json['procent'] != null ? json['procent'] as num : null,
     rate: json['rate'] != null ? json['rate'] as num : null,
+    discountType: json['discountType'] != null
+        ? json['discountType'] as String
+        : null,
   );
 }
 
@@ -17,6 +20,8 @@ Map<String, dynamic> _$DiscountTypesToJson(DiscountTypes instance) {
   if (instance.value != null) json['value'] = instance.value;
   if (instance.procent != null) json['procent'] = instance.procent;
   if (instance.rate != null) json['rate'] = instance.rate;
+  if (instance.discountType != null)
+    json['discountType'] = instance.discountType;
 
   return json;
 }

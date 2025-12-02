@@ -303,7 +303,7 @@ class _TransactionListPageState extends State<TransactionListPage>
                                       SizedBox(height: 2),
                                       Text(
                                         translateKey.translate(
-                                          'no_active_orders_at_home',
+                                          'no_active_orders_at_ger',
                                         ),
                                         textAlign: TextAlign.center,
                                         style: TextStyle(

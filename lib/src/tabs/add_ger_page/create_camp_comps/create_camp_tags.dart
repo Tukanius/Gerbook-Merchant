@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:merchant_gerbook_flutter/api/product_api.dart';
 import 'package:merchant_gerbook_flutter/components/custom_loader/custom_loader.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
@@ -103,8 +104,8 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
   }
 
   bool isLoadingButton = false;
-  TimeOfDay? checkInTime;
-  TimeOfDay? checkOutTime;
+  String? checkInTime;
+  String? checkOutTime;
 
   onSubmit() async {
     try {
@@ -160,11 +161,14 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
       onTap: () {
         FocusScope.of(context).unfocus();
       },
-      child: isLoadingPage == true
-          ? CustomLoader()
-          : Scaffold(
-              backgroundColor: white,
-              body: Stack(
+      child: Scaffold(
+        backgroundColor: white,
+        body:
+            isLoadingPage == true ||
+                isLoadingTags == true ||
+                isLoadingOffers == true
+            ? CustomLoader()
+            : Stack(
                 children: [
                   Column(
                     children: [
@@ -484,7 +488,8 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
                                                   Text(
                                                     checkOutTime == null
                                                         ? '--:--'
-                                                        : '${checkOutTime!.hour.toString().padLeft(2, '0')}:${checkOutTime!.minute.toString().padLeft(2, '0')}',
+                                                        : '${DateFormat("HH:mm").format(DateTime.parse(checkOutTime!).toLocal())}',
+                                                    // '${DateFormat checkOutTime!.hour.toString().padLeft(2, '0')}:${checkOutTime!.minute.toString().padLeft(2, '0')}',
                                                     style: TextStyle(
                                                       color: gray700,
                                                       fontSize: 14,
@@ -555,7 +560,8 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
                                                   Text(
                                                     checkInTime == null
                                                         ? '--:--'
-                                                        : '${checkInTime!.hour.toString().padLeft(2, '0')}:${checkInTime!.minute.toString().padLeft(2, '0')}',
+                                                        : '${DateFormat("HH:mm").format(DateTime.parse(checkInTime!).toLocal())}',
+                                                    // '${checkInTime!.hour.toString().padLeft(2, '0')}:${checkInTime!.minute.toString().padLeft(2, '0')}',
                                                     style: TextStyle(
                                                       color: gray700,
                                                       fontSize: 14,
@@ -698,13 +704,13 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
                       : SizedBox(),
                 ],
               ),
-            ),
+      ),
     );
   }
 
   Future<void> showIOSBottomTimePicker({
     required BuildContext context,
-    required Function(TimeOfDay) onSelected,
+    required Function(String) onSelected,
     required String title,
   }) async {
     TimeOfDay selectedTime = TimeOfDay.now();
@@ -729,7 +735,19 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        onSelected(selectedTime);
+
+                        final now = DateTime.now();
+                        final dateTime = DateTime(
+                          now.year,
+                          now.month,
+                          now.day,
+                          selectedTime.hour,
+                          selectedTime.minute,
+                        );
+
+                        final isoString = dateTime.toUtc().toIso8601String();
+
+                        onSelected(isoString);
                       },
                       child: Text(
                         title,

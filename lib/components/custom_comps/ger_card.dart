@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/models/camp_list_data.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/ger_page/ger_detail_page.dart';
@@ -142,7 +141,6 @@ class _GerCardState extends State<GerCard> {
                     ),
             ],
           ),
-          SizedBox(height: 2),
           // Row(
           //   children: [
           //     SvgPicture.asset(
@@ -162,94 +160,94 @@ class _GerCardState extends State<GerCard> {
           //   ],
           // ),
           // SizedBox(height: 2),
-          IntrinsicHeight(
-            child: Row(
-              children: <Widget>[
-                Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/svg/home.svg',
-                      width: 14,
-                      height: 14,
-                    ),
-                    SizedBox(width: 2),
-                    Text(
-                      '0',
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: gray600,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(width: 10),
-                Container(
-                  width: 1,
-                  height: 10,
-                  decoration: ShapeDecoration(
-                    color: gray600,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(320),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10),
-                Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/svg/heart.svg',
-                      width: 14,
-                      height: 14,
-                    ),
-                    SizedBox(width: 2),
-                    Text(
-                      '0',
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: gray600,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(width: 10),
-                Container(
-                  width: 1,
-                  height: 10,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                    color: gray600,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(320),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10),
-                Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/svg/star.svg',
-                      width: 14,
-                      height: 14,
-                    ),
-                    SizedBox(width: 2),
-                    Text(
-                      '0',
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: gray600,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          // IntrinsicHeight(
+          //   child: Row(
+          //     children: <Widget>[
+          //       Row(
+          //         children: [
+          //           SvgPicture.asset(
+          //             'assets/svg/home.svg',
+          //             width: 14,
+          //             height: 14,
+          //           ),
+          //           SizedBox(width: 2),
+          //           Text(
+          //             '0',
+          //             style: TextStyle(
+          //               fontFamily: 'Lato',
+          //               fontSize: 12,
+          //               fontWeight: FontWeight.w400,
+          //               color: gray600,
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //       SizedBox(width: 10),
+          //       Container(
+          //         width: 1,
+          //         height: 10,
+          //         decoration: ShapeDecoration(
+          //           color: gray600,
+          //           shape: RoundedRectangleBorder(
+          //             borderRadius: BorderRadius.circular(320),
+          //           ),
+          //         ),
+          //       ),
+          //       SizedBox(width: 10),
+          //       Row(
+          //         children: [
+          //           SvgPicture.asset(
+          //             'assets/svg/heart.svg',
+          //             width: 14,
+          //             height: 14,
+          //           ),
+          //           SizedBox(width: 2),
+          //           Text(
+          //             '0',
+          //             style: TextStyle(
+          //               fontFamily: 'Lato',
+          //               fontSize: 12,
+          //               fontWeight: FontWeight.w400,
+          //               color: gray600,
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //       SizedBox(width: 10),
+          //       Container(
+          //         width: 1,
+          //         height: 10,
+          //         clipBehavior: Clip.antiAlias,
+          //         decoration: ShapeDecoration(
+          //           color: gray600,
+          //           shape: RoundedRectangleBorder(
+          //             borderRadius: BorderRadius.circular(320),
+          //           ),
+          //         ),
+          //       ),
+          //       SizedBox(width: 10),
+          //       Row(
+          //         children: [
+          //           SvgPicture.asset(
+          //             'assets/svg/star.svg',
+          //             width: 14,
+          //             height: 14,
+          //           ),
+          //           SizedBox(width: 2),
+          //           Text(
+          //             '0',
+          //             style: TextStyle(
+          //               fontFamily: 'Lato',
+          //               fontSize: 12,
+          //               fontWeight: FontWeight.w400,
+          //               color: gray600,
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //     ],
+          //   ),
+          // ),
           SizedBox(height: 4),
           Row(
             children: [

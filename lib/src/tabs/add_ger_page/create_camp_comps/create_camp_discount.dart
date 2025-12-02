@@ -46,6 +46,8 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
   List<DiscountTypes> selectedDiscount = [];
   List<CancelPolicy> selectedCancelPolicy = [];
 
+  List<TextEditingController> discontController = [];
+
   @override
   FutureOr<void> afterFirstLayout(BuildContext context) async {
     try {
@@ -122,6 +124,12 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
       selectedCancelPolicy.isNotEmpty &&
       selectedCancelPolicy.every((service) => service.rate == 0);
 
+  void syncControllers() {
+    discontController = selectedDiscount.map((e) {
+      return TextEditingController(text: (e.procent ?? 0).toString());
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -196,7 +204,6 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                           ],
                         ),
                       ),
-                      SizedBox(height: 8),
                       Expanded(
                         child: SingleChildScrollView(
                           child: Padding(
@@ -204,7 +211,7 @@ class _CreateCampDiscountState extends State<CreateCampDiscount>
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SizedBox(height: 8),
+                                SizedBox(height: 16),
                                 Text(
                                   translateKey.translate('additional_services'),
                                   style: TextStyle(

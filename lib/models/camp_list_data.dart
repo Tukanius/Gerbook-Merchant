@@ -38,6 +38,7 @@ class CampListData {
   // List<String>? rawTravelOffers;
   String? createdAt;
   String? updatedAt;
+  num? capacity;
 
   CampListData({
     this.id,
@@ -64,6 +65,7 @@ class CampListData {
     this.createdAt,
     this.updatedAt,
     this.price,
+    this.capacity,
   });
   factory CampListData.fromJson(Map<String, dynamic> json) =>
       _$CampListDataFromJson(json);

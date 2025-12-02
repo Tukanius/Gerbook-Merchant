@@ -120,19 +120,20 @@ class _ProfilePageState extends State<ProfilePage> with AfterLayoutMixin {
 
           // showImageError = false;
         });
+        setState(() {
+          isLoadingImage = true;
+        });
+        User save = User();
+        if (image != null) {
+          upload = await AuthApi().upload(image!.path);
+          save.avatar = upload.url;
+          save.firstName = user.firstName ?? '';
+          save.lastName = user.lastName ?? '';
+          save.registerNo = user.registerNo ?? '';
+        }
+        await ProductApi().putNames(save);
       }
-      setState(() {
-        isLoadingImage = true;
-      });
-      User save = User();
-      if (image != null) {
-        upload = await AuthApi().upload(image!.path);
-        save.avatar = upload.url;
-        save.firstName = user.firstName ?? '';
-        save.lastName = user.lastName ?? '';
-        save.registerNo = user.registerNo ?? '';
-      }
-      await ProductApi().putNames(save);
+
       setState(() {
         isLoadingImage = false;
       });

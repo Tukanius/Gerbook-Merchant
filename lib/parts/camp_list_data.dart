@@ -48,6 +48,7 @@ CampListData _$CampListDataFromJson(Map<String, dynamic> json) {
     updatedAt: json['updatedAt'] != null ? json['updatedAt'] as String : null,
     // payment: json['payment'] != null ? Payment.fromJson(json['payment']) : null,
     price: json['price'] != null ? json['price'] as num : null,
+    capacity: json['capacity'] != null ? json['capacity'] as num : null,
   );
 }
 
@@ -84,6 +85,7 @@ Map<String, dynamic> _$CampListDataToJson(CampListData instance) {
   if (instance.createdAt != null) json['createdAt'] = instance.createdAt;
   if (instance.updatedAt != null) json['updatedAt'] = instance.updatedAt;
   if (instance.price != null) json['price'] = instance.price;
+  if (instance.capacity != null) json['capacity'] = instance.capacity;
   // if (instance.payment != null) json['payment'] = instance.payment;
 
   return json;

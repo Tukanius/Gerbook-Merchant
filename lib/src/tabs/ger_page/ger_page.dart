@@ -212,50 +212,50 @@ class _GerPageState extends State<GerPage> with AfterLayoutMixin {
                             },
                           ),
                         ),
-                        SizedBox(width: 12),
-                        GestureDetector(
-                          onTap: () {
-                            print('Working');
-                          },
-                          child: Container(
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: white,
-                              border: Border.all(color: gray300),
-                            ),
-                            child: Stack(
-                              children: [
-                                Center(
-                                  child: SvgPicture.asset(
-                                    'assets/svg/calendar.svg',
-                                  ),
-                                ),
-                                filter == true
-                                    ? Positioned(
-                                        top: 3,
-                                        right: 3,
-                                        child: Container(
-                                          height: 12,
-                                          width: 12,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.red,
-                                            border: Border.all(
-                                              color: white,
-                                              width: 2,
-                                              strokeAlign:
-                                                  BorderSide.strokeAlignInside,
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    : SizedBox(),
-                              ],
-                            ),
-                          ),
-                        ),
+                        // SizedBox(width: 12),
+                        // GestureDetector(
+                        //   onTap: () {
+                        //     print('Working');
+                        //   },
+                        //   child: Container(
+                        //     width: 36,
+                        //     height: 36,
+                        //     decoration: BoxDecoration(
+                        //       borderRadius: BorderRadius.circular(8),
+                        //       color: white,
+                        //       border: Border.all(color: gray300),
+                        //     ),
+                        //     child: Stack(
+                        //       children: [
+                        //         Center(
+                        //           child: SvgPicture.asset(
+                        //             'assets/svg/calendar.svg',
+                        //           ),
+                        //         ),
+                        //         filter == true
+                        //             ? Positioned(
+                        //                 top: 3,
+                        //                 right: 3,
+                        //                 child: Container(
+                        //                   height: 12,
+                        //                   width: 12,
+                        //                   decoration: BoxDecoration(
+                        //                     shape: BoxShape.circle,
+                        //                     color: Colors.red,
+                        //                     border: Border.all(
+                        //                       color: white,
+                        //                       width: 2,
+                        //                       strokeAlign:
+                        //                           BorderSide.strokeAlignInside,
+                        //                     ),
+                        //                   ),
+                        //                 ),
+                        //               )
+                        //             : SizedBox(),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
@@ -310,42 +310,70 @@ class _GerPageState extends State<GerPage> with AfterLayoutMixin {
                                           ],
                                         ),
                                         SizedBox(height: 24),
-                                        Container(
-                                          padding: EdgeInsets.only(
-                                            top: 10,
-                                            bottom: 10,
-                                            left: 12,
-                                            right: 16,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: primary,
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(8),
+                                        GestureDetector(
+                                          onTap: () {
+                                            showModalBottomSheet(
+                                              context: context,
+                                              isScrollControlled: true,
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                16,
+                                                              ),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                16,
+                                                              ),
+                                                        ),
+                                                  ),
+                                              isDismissible: true,
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              builder: (context) {
+                                                return CreateCamp();
+                                              },
+                                            );
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.only(
+                                              top: 10,
+                                              bottom: 10,
+                                              left: 12,
+                                              right: 16,
                                             ),
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.add,
-                                                color: white,
-                                                size: 20,
+                                            decoration: BoxDecoration(
+                                              color: primary,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(8),
                                               ),
-                                              SizedBox(width: 8),
-                                              Text(
-                                                translateKey.translate(
-                                                  'create_listing',
-                                                ),
-                                                style: TextStyle(
-                                                  fontFamily: 'Lato',
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.add,
                                                   color: white,
+                                                  size: 20,
                                                 ),
-                                              ),
-                                            ],
+                                                SizedBox(width: 8),
+                                                Text(
+                                                  translateKey.translate(
+                                                    'create_listing',
+                                                  ),
+                                                  style: TextStyle(
+                                                    fontFamily: 'Lato',
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: white,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                         SizedBox(

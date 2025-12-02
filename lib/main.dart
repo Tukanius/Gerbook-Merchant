@@ -26,6 +26,12 @@ import 'package:merchant_gerbook_flutter/src/splash_page/splash_page.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_camp_pages.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_ger_comps/create_ger_pages.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/dashboard_page/transaction_list_page.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/ger_page/edit_camp_details/edit_camp_discount.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/ger_page/edit_camp_details/edit_camp_location.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/ger_page/edit_camp_details/edit_camp_name.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/ger_page/edit_camp_details/edit_camp_photo.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/ger_page/edit_camp_details/edit_camp_tags.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/ger_page/full_screen_image.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/ger_page/ger_detail_page.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/order_page/order_detail_page.dart';
 // import 'package:gerbook_flutter/src/widget/dialog/dialog_manager.dart';
@@ -277,12 +283,19 @@ class _MyAppState extends State<MyApp> with AfterLayoutMixin {
                   return CreateCampPages();
                 },
               );
+
             case CreateGerPages.routeName:
+              CreateGerPagesArguments arguments =
+                  settings.arguments as CreateGerPagesArguments;
               return MaterialPageRoute(
                 builder: (context) {
-                  return CreateGerPages();
+                  return CreateGerPages(
+                    campUpdate: arguments.campUpdate,
+                    campId: arguments.campId,
+                  );
                 },
               );
+
             case TransactionListPage.routeName:
               return MaterialPageRoute(
                 builder: (context) {
@@ -299,6 +312,44 @@ class _MyAppState extends State<MyApp> with AfterLayoutMixin {
               return MaterialPageRoute(
                 builder: (context) {
                   return ProfilePage();
+                },
+              );
+            case FullScreenImage.routeName:
+              FullScreenImageArguments arguments =
+                  settings.arguments as FullScreenImageArguments;
+              return MaterialPageRoute(
+                builder: (context) {
+                  return FullScreenImage(images: arguments.images);
+                },
+              );
+            case EditCampPhoto.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return EditCampPhoto();
+                },
+              );
+            case EditCampName.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return EditCampName();
+                },
+              );
+            case EditCampLocation.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return EditCampLocation();
+                },
+              );
+            case EditCampTags.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return EditCampTags();
+                },
+              );
+            case EditCampDiscount.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return EditCampDiscount();
                 },
               );
             default:

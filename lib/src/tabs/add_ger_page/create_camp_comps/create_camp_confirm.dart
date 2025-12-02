@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
@@ -8,12 +10,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/svg.dart';
-// import 'package:flutter_svg/svg.dart';
+import 'package:merchant_gerbook_flutter/api/product_api.dart';
+import 'package:merchant_gerbook_flutter/components/custom_loader/custom_loader.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
+import 'package:merchant_gerbook_flutter/models/camp_create_model.dart';
+import 'package:merchant_gerbook_flutter/models/cancel_policy.dart';
+import 'package:merchant_gerbook_flutter/models/create_camp_property.dart';
+import 'package:merchant_gerbook_flutter/models/discount_types.dart';
+import 'package:merchant_gerbook_flutter/models/travel_offers.dart';
 import 'package:merchant_gerbook_flutter/models/upload_image.dart';
 import 'package:merchant_gerbook_flutter/provider/camp_create_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_ger_comps/create_ger_pages.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/tools/edit_ger.dart';
 import 'package:provider/provider.dart';
 
 class CreateCampConfirm extends StatefulWidget {
@@ -30,6 +39,8 @@ class _CreateCampConfirmState extends State<CreateCampConfirm>
   CarouselSliderController carouselController = CarouselSliderController();
   final List<UploadImage> allImages = [];
   int _currentIndex = 0;
+  bool isLoadingButton = false;
+
   @override
   FutureOr<void> afterFirstLayout(BuildContext context) {
     final campProvider = Provider.of<CampCreateProvider>(
@@ -58,11 +69,240 @@ class _CreateCampConfirmState extends State<CreateCampConfirm>
     print('====test====');
   }
 
+  onSubmit() async {
+    final translateKey = Provider.of<LocalizationProvider>(
+      context,
+      listen: false,
+    );
+
+    try {
+      final createCampRoot = Provider.of<CampCreateProvider>(
+        context,
+        listen: false,
+      );
+      CampCreateModel campData = CampCreateModel();
+      setState(() {
+        isLoadingButton = true;
+      });
+
+      campData.name = createCampRoot.name;
+
+      campData.description = createCampRoot.description;
+
+      campData.longitude = num.parse(createCampRoot.longitude);
+      campData.latitude = num.parse(createCampRoot.latitude);
+      campData.level0 = createCampRoot.level0;
+      campData.level1 = createCampRoot.level1;
+      if (createCampRoot.level2 != '') {
+        campData.level2 = createCampRoot.level2;
+      }
+      if (createCampRoot.level3 != '') {
+        campData.level3 = createCampRoot.level3;
+      }
+      campData.additionalInformation = createCampRoot.addressDetail;
+      campData.checkInTime = createCampRoot.checkInTime;
+      campData.checkOutTime = createCampRoot.checkOutTime;
+
+      campData.isOpenYearRound = createCampRoot.fourSeason;
+      campData.zone = createCampRoot.zoneId;
+
+      campData.tags = createCampRoot.tags
+          .map((tagObject) => tagObject.id)
+          .cast<String>()
+          .toList();
+
+      campData.placeOffers = createCampRoot.placeOffers
+          .map((tagObject) => tagObject.id)
+          .cast<String>()
+          .toList();
+
+      // campData.tags = createCampRoot.tags;
+      // campData.placeOffers = createCampRoot.placeOffers;
+      // campData.discounts = createCampRoot.discount
+      //     .map((d) {
+      //       return {
+      //         "discountType": d.id,
+      //         "rate": d.procent.toString(), // эсвэл d.rate
+      //       };
+      //     })
+      //     .cast<DiscountTypes>()
+      //     .toList();
+      campData.discounts = createCampRoot.discount.map((d) {
+        return DiscountTypes(discountType: d.id, rate: d.procent);
+      }).toList();
+
+      // campData.discounts = createCampRoot.discount;
+      // campData.cancelPolicies = createCampRoot.cancelPolicy
+      //     .map((d) {
+      //       return {
+      //         "discountType": d.id,
+      //         "rate": d.rate.toString(), // эсвэл d.rate
+      //       };
+      //     })
+      //     .cast<CancelPolicy>()
+      //     .toList();
+      campData.cancelPolicies = createCampRoot.cancelPolicy.map((d) {
+        return CancelPolicy(cancelPolicy: d.id, rate: d.rate);
+      }).toList();
+
+      // campData.cancelPolicies = createCampRoot.cancelPolicy;
+      campData.images = createCampRoot.images
+          .map((tagObject) => tagObject.url)
+          .cast<String>()
+          .toList();
+
+      // campData.images = createCampRoot.images;
+      campData.mainImage = createCampRoot.mainImage.url;
+      // campData.mainImage = createCampRoot.mainImage;
+      // campData.travelOffers = createCampRoot.travelOffers
+      //     .map((d) {
+      //       return {
+      //         "travelOffer": d.id,
+      //         "price": d.price,
+      //         "maxQuantity": d.maxQuantity,
+      //       };
+      //     })
+      //     .cast<TravelOffers>()
+      //     .toList();
+      campData.travelOffers = createCampRoot.travelOffers.map((d) {
+        return TravelOffers(
+          travelOffer: d.id,
+          price: d.price,
+          maxQuantity: d.maxQuantity,
+        );
+      }).toList();
+      print('========ibj=-====');
+      print(isLoadingButton);
+      print(campData.travelOffers);
+      print('=data==');
+      print(
+        createCampRoot.travelOffers.map((d) {
+          return TravelOffers(
+            travelOffer: d.id,
+            price: d.price,
+            maxQuantity: d.maxQuantity,
+          );
+        }).toList(),
+      );
+      print('========ibj=-====');
+
+      // campData.travelOffers = createCampRoot.travelOffers;
+
+      campData.properties = [
+        CreateCampProperty(
+          name: createCampRoot.gerName,
+          description: createCampRoot.gerDescription,
+          images: createCampRoot.gerImages
+              .map((tagObject) => tagObject.url)
+              .cast<String>()
+              .toList(),
+          mainImage: createCampRoot.gerMainImage.url,
+          bedsCount: int.tryParse(createCampRoot.gerBedCount),
+          price: num.tryParse(createCampRoot.gerPrice),
+          originalPrice: num.tryParse(createCampRoot.gerOriginalPrice),
+          maxPersonCount: int.tryParse(createCampRoot.gerMaxPerson),
+          quantity: int.tryParse(createCampRoot.gerQuantity),
+        ),
+      ];
+
+      await ProductApi().createCampApi(campData);
+      await showCreateSuccess(
+        context,
+        '${translateKey.translate('listing_created_successfully')}',
+      );
+      setState(() {
+        isLoadingButton = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoadingButton = false;
+      });
+    }
+  }
+
+  showCreateSuccess(context, String text) async {
+    final local = Provider.of<LocalizationProvider>(context, listen: false);
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return Container(
+          alignment: Alignment.center,
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SvgPicture.asset('assets/svg/success1.svg'),
+                Text(
+                  local.translate('successful'),
+                  style: TextStyle(
+                    color: black,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
+                    decoration: TextDecoration.none,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  '$text',
+                  style: TextStyle(
+                    color: gray600,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.none,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                ButtonBar(
+                  buttonMinWidth: 100,
+                  alignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    TextButton(
+                      style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.all(
+                          Colors.transparent,
+                        ),
+                      ),
+                      child: Text(
+                        local.translate('close'),
+                        style: TextStyle(
+                          color: black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  String timeOfDayToIso(TimeOfDay tod) {
+    final now = DateTime.now(); // Өнөөдрийн огноо
+    final dt = DateTime(now.year, now.month, now.day, tod.hour, tod.minute);
+    return dt.toUtc().toIso8601String();
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final translateKey = Provider.of<LocalizationProvider>(context);
-    final campProvider = Provider.of<CampCreateProvider>(context);
+    final campProvider = Provider.of<CampCreateProvider>(context, listen: true);
     final bool isKeyboardVisible = KeyboardVisibilityProvider.isKeyboardVisible(
       context,
     );
@@ -504,7 +744,7 @@ class _CreateCampConfirmState extends State<CreateCampConfirm>
                             ),
                           ),
                           SizedBox(height: 16),
-                          campProvider.gerName != ''
+                          campProvider.gerName == ''
                               ? Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
@@ -555,6 +795,11 @@ class _CreateCampConfirmState extends State<CreateCampConfirm>
                                             onTap: () {
                                               Navigator.of(context).pushNamed(
                                                 CreateGerPages.routeName,
+                                                arguments:
+                                                    CreateGerPagesArguments(
+                                                      campUpdate: false,
+                                                      campId: '',
+                                                    ),
                                               );
                                             },
                                             child: Container(
@@ -586,7 +831,110 @@ class _CreateCampConfirmState extends State<CreateCampConfirm>
                                     ],
                                   ),
                                 )
-                              : Text('end neg ger baih shig bnda'),
+                              : Row(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(4),
+                                      child: SizedBox(
+                                        height: 72,
+                                        width: 72,
+                                        child: BlurHash(
+                                          color: gray100,
+                                          hash:
+                                              '${campProvider.gerMainImage.blurhash}',
+                                          image:
+                                              '${campProvider.gerMainImage.url}',
+                                          imageFit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${campProvider.gerName}',
+                                            style: TextStyle(
+                                              color: gray900,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(height: 2),
+                                          Row(
+                                            children: [
+                                              SvgPicture.asset(
+                                                'assets/svg/ger_bed.svg',
+                                              ),
+                                              SizedBox(width: 2),
+                                              Text(
+                                                '${campProvider.gerBedCount}',
+                                                style: TextStyle(
+                                                  color: gray600,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                              SizedBox(width: 12),
+                                              SvgPicture.asset(
+                                                'assets/svg/ger_person.svg',
+                                              ),
+                                              SizedBox(width: 2),
+                                              Text(
+                                                '${campProvider.gerMaxPerson}',
+                                                style: TextStyle(
+                                                  color: gray600,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 2),
+                                          Text(
+                                            '₮${campProvider.gerPrice}',
+                                            style: TextStyle(
+                                              color: primary,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    GestureDetector(
+                                      onTap: () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          isScrollControlled: true,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(16),
+                                              topRight: Radius.circular(16),
+                                            ),
+                                          ),
+                                          isDismissible: true,
+                                          backgroundColor: transparent,
+                                          builder: (context) {
+                                            return EditGer();
+                                          },
+                                        );
+                                      },
+                                      child: SvgPicture.asset(
+                                        'assets/svg/more_edit.svg',
+                                      ),
+                                    ),
+                                    // Image.network(
+                                    //   '${campProvider.gerMainImage.url}',
+                                    //   fit: BoxFit.cover,
+                                    // ),
+                                  ],
+                                ),
                           SizedBox(height: mediaQuery.padding.bottom + 150),
                         ],
                       ),
@@ -658,12 +1006,11 @@ class _CreateCampConfirmState extends State<CreateCampConfirm>
                               SizedBox(width: 16),
                               Expanded(
                                 child: GestureDetector(
-                                  onTap: () {
-                                    widget.pageController.nextPage(
-                                      duration: Duration(microseconds: 1000),
-                                      curve: Curves.ease,
-                                    );
-                                  },
+                                  onTap: isLoadingButton == true
+                                      ? () {}
+                                      : () {
+                                          onSubmit();
+                                        },
                                   child: Container(
                                     decoration: BoxDecoration(
                                       color: primary,
@@ -677,14 +1024,18 @@ class _CreateCampConfirmState extends State<CreateCampConfirm>
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        Text(
-                                          translateKey.translate('continue'),
-                                          style: TextStyle(
-                                            color: white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
+                                        isLoadingButton == true
+                                            ? CustomLoader(loadColor: white)
+                                            : Text(
+                                                translateKey.translate(
+                                                  'continue',
+                                                ),
+                                                style: TextStyle(
+                                                  color: white,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
                                       ],
                                     ),
                                   ),

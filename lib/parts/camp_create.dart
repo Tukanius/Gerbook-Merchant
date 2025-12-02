@@ -1,7 +1,7 @@
-part of '../models/camp_create.dart';
+part of '../models/camp_create_model.dart';
 
-CampCreate _$CampCreateFromJson(Map<String, dynamic> json) {
-  return CampCreate(
+CampCreateModel _$CampCreateModelFromJson(Map<String, dynamic> json) {
+  return CampCreateModel(
     name: json['name'] != null ? json['name'] as String : null,
     images: json['images'] != null
         ? (json['images'] as List).map((e) => e as String).toList()
@@ -23,12 +23,15 @@ CampCreate _$CampCreateFromJson(Map<String, dynamic> json) {
         ? (json['placeOffers'] as List).map((e) => e as String).toList()
         : null,
     discounts: json['discounts'] != null
-        ? (json['discounts'] as List).map((e) => e as String).toList()
+        ? (json['discounts'] as List)
+              .map((e) => DiscountTypes.fromJson(e))
+              .toList()
         : null,
     cancelPolicies: json['cancelPolicies'] != null
-        ? (json['cancelPolicies'] as List).map((e) => e as String).toList()
+        ? (json['cancelPolicies'] as List)
+              .map((e) => CancelPolicy.fromJson(e))
+              .toList()
         : null,
-
     checkInTime: json['checkInTime'] != null
         ? json['checkInTime'] as String
         : null,
@@ -43,17 +46,23 @@ CampCreate _$CampCreateFromJson(Map<String, dynamic> json) {
         : null,
     zone: json['zone'] != null ? json['zone'] as String : null,
     travelOffers: json['travelOffers'] != null
-        ? (json['travelOffers'] as List).map((e) => e as String).toList()
+        ? (json['travelOffers'] as List)
+              .map((e) => TravelOffers.fromJson(e))
+              .toList()
         : null,
+
     properties: json['properties'] != null
         ? (json['properties'] as List)
-              .map((e) => Properties.fromJson(e))
+              .map((e) => CreateCampProperty.fromJson(e))
               .toList()
+        : null,
+    description: json['description'] != null
+        ? json['description'] as String
         : null,
   );
 }
 
-Map<String, dynamic> _$CampCreateToJson(CampCreate instance) {
+Map<String, dynamic> _$CampCreateModelToJson(CampCreateModel instance) {
   Map<String, dynamic> json = {};
   if (instance.name != null) json['name'] = instance.name;
   if (instance.images != null) json['images'] = instance.images;
@@ -81,5 +90,6 @@ Map<String, dynamic> _$CampCreateToJson(CampCreate instance) {
   if (instance.travelOffers != null)
     json['travelOffers'] = instance.travelOffers;
   if (instance.properties != null) json['properties'] = instance.properties;
+  if (instance.description != null) json['description'] = instance.description;
   return json;
 }

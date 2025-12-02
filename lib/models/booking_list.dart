@@ -1,10 +1,10 @@
-import 'package:merchant_gerbook_flutter/models/booking_property.dart';
+import 'package:merchant_gerbook_flutter/models/booking_item.dart';
 
 part '../parts/booking_list.dart';
 
 class BookingList {
   String? id;
-  BookingProperty? property;
+  List<BookingItem>? properties;
   // User? user;
   String? code;
   // int? personCount;
@@ -30,7 +30,7 @@ class BookingList {
 
   BookingList({
     this.id,
-    this.property,
+    this.properties,
     // this.user,
     this.code,
     // this.personCount,

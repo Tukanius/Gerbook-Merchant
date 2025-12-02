@@ -8,6 +8,9 @@ TravelOffers _$TravelOffersFromJson(Map<String, dynamic> json) {
     maxQuantity: json['maxQuantity'] != null
         ? json['maxQuantity'] as num
         : null,
+    travelOffer: json['travelOffer'] != null
+        ? json['travelOffer'] as String
+        : null,
   );
 }
 
@@ -17,6 +20,7 @@ Map<String, dynamic> _$TravelOffersToJson(TravelOffers instance) {
   if (instance.name != null) json['name'] = instance.name;
   if (instance.price != null) json['price'] = instance.price;
   if (instance.maxQuantity != null) json['maxQuantity'] = instance.maxQuantity;
+  if (instance.travelOffer != null) json['travelOffer'] = instance.travelOffer;
 
   return json;
 }

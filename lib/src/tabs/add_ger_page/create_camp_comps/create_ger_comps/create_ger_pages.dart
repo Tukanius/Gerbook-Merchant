@@ -6,9 +6,23 @@ import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/create_ger_comps/create_ger_photo.dart';
 import 'package:provider/provider.dart';
 
+class CreateGerPagesArguments {
+  final bool campUpdate;
+  final String campId;
+
+  CreateGerPagesArguments({required this.campUpdate, required this.campId});
+}
+
 class CreateGerPages extends StatefulWidget {
+  final bool campUpdate;
+  final String campId;
+
   static const routeName = "CreateGerPages";
-  const CreateGerPages({super.key});
+  const CreateGerPages({
+    super.key,
+    required this.campUpdate,
+    required this.campId,
+  });
 
   @override
   State<CreateGerPages> createState() => _CreateGerPagesState();
@@ -85,7 +99,11 @@ class _CreateGerPagesState extends State<CreateGerPages>
         },
         children: [
           CreateGerPhoto(pageController: _pageController),
-          CreateGerInfo(pageController: _pageController),
+          CreateGerInfo(
+            pageController: _pageController,
+            updateCamp: widget.campUpdate,
+            campId: widget.campId,
+          ),
         ],
       ),
     );

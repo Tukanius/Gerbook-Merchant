@@ -9,7 +9,7 @@ class Properties {
   bool? isKhonog;
   String? name;
   String? description;
-  // List<Images>? images;
+  List<Images>? images;
   Images? mainImage;
   String? additionalInformation;
   String? addressString;
@@ -20,6 +20,7 @@ class Properties {
   num? bathRoomsCount;
   num? bedsCount;
   num? price;
+  num? originalPrice;
   num? maxPersonCount;
   // List<PlaceOffers>? placeOffers;
   // List<Discount>? discounts;
@@ -63,7 +64,7 @@ class Properties {
     this.isKhonog,
     this.name,
     this.description,
-    // this.images,
+    this.images,
     this.mainImage,
     this.additionalInformation,
     this.addressString,
@@ -75,6 +76,7 @@ class Properties {
     this.bedsCount,
     this.price,
     this.maxPersonCount,
+    this.originalPrice,
     // this.placeOffers,
     // this.discounts,
     // this.cancelPolicies,

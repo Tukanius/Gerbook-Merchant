@@ -263,11 +263,11 @@ class _CreateCampLocationState extends State<CreateCampLocation>
       onTap: () {
         FocusScope.of(context).unfocus();
       },
-      child: isLoadingPage == true
-          ? CustomLoader()
-          : Scaffold(
-              backgroundColor: white,
-              body: Stack(
+      child: Scaffold(
+        backgroundColor: white,
+        body: isLoadingPage == true || isLoadingCountry == true
+            ? CustomLoader()
+            : Stack(
                 children: [
                   Column(
                     children: [
@@ -1257,7 +1257,7 @@ class _CreateCampLocationState extends State<CreateCampLocation>
                       : SizedBox(),
                 ],
               ),
-            ),
+      ),
     );
   }
 }

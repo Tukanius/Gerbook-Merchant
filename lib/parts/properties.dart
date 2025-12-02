@@ -11,9 +11,9 @@ Properties _$PropertiesFromJson(Map<String, dynamic> json) {
     description: json['description'] != null
         ? json['description'] as String
         : null,
-    // images: json['images'] != null
-    //     ? (json['images'] as List).map((e) => Images.fromJson(e)).toList()
-    //     : null,
+    images: json['images'] != null
+        ? (json['images'] as List).map((e) => Images.fromJson(e)).toList()
+        : null,
     mainImage: json['mainImage'] != null
         ? Images.fromJson(json['mainImage'])
         : null,
@@ -35,6 +35,9 @@ Properties _$PropertiesFromJson(Map<String, dynamic> json) {
         : null,
     bedsCount: json['bedsCount'] != null ? json['bedsCount'] as num : null,
     price: json['price'] != null ? json['price'] as num : null,
+    originalPrice: json['originalPrice'] != null
+        ? json['originalPrice'] as num
+        : null,
     maxPersonCount: json['maxPersonCount'] != null
         ? json['maxPersonCount'] as num
         : null,
@@ -141,7 +144,7 @@ Map<String, dynamic> _$PropertiesToJson(Properties instance) {
   if (instance.additionalInformation != null)
     json['additionalInformation'] = instance.additionalInformation;
   if (instance.name != null) json['name'] = instance.name;
-  // if (instance.images != null) json['images'] = instance.images;
+  if (instance.images != null) json['images'] = instance.images;
   if (instance.mainImage != null) json['mainImage'] = instance.mainImage;
   if (instance.addressString != null)
     json['addressString'] = instance.addressString;
@@ -154,6 +157,8 @@ Map<String, dynamic> _$PropertiesToJson(Properties instance) {
     json['bathRoomsCount'] = instance.bathRoomsCount;
   if (instance.bedsCount != null) json['bedsCount'] = instance.bedsCount;
   if (instance.price != null) json['price'] = instance.price;
+  if (instance.originalPrice != null)
+    json['originalPrice'] = instance.originalPrice;
   if (instance.maxPersonCount != null)
     json['maxPersonCount'] = instance.maxPersonCount;
   // if (instance.placeOffers != null) json['placeOffers'] = instance.placeOffers;

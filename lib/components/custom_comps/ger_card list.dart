@@ -99,101 +99,123 @@ class _GerCardListState extends State<GerCardList> {
                                   ),
                                 ),
                                 SizedBox(width: 10),
-                                GestureDetector(
-                                  onTap: () {
-                                    print('==testset==');
-                                  },
-                                  child: SvgPicture.asset(
-                                    'assets/svg/horizontal_menu.svg',
-                                  ),
-                                ),
+                                // GestureDetector(
+                                //   onTap: () {
+                                //     print('==testset==');
+                                //   },
+                                //   child: SvgPicture.asset(
+                                //     'assets/svg/horizontal_menu.svg',
+                                //   ),
+                                // ),
                               ],
                             ),
                             SizedBox(height: 4),
                             Row(
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/svg/home.svg',
-                                      width: 14,
-                                      height: 14,
-                                    ),
-                                    SizedBox(width: 2),
-                                    Text(
-                                      '0',
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400,
-                                        color: gray600,
-                                      ),
-                                    ),
-                                  ],
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/svg/calendar.svg',
+                                  height: 14,
+                                  width: 14,
+                                  fit: BoxFit.cover,
                                 ),
-                                SizedBox(width: 10),
-                                Container(
-                                  width: 1,
-                                  height: 10,
-                                  decoration: ShapeDecoration(
-                                    color: gray600,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(320),
+                                SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    widget.data.isOpenYearRound == true
+                                        ? '${translateKey.translate('open_year_round')}'
+                                        : '${translateKey.translate('seasonal_operation')}',
+                                    style: TextStyle(
+                                      color: widget.data.isOpenYearRound == true
+                                          ? textBlue
+                                          : gray800,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 10),
-                                Row(
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/svg/heart.svg',
-                                      width: 14,
-                                      height: 14,
-                                    ),
-                                    SizedBox(width: 2),
-                                    Text(
-                                      '0',
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400,
-                                        color: gray600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(width: 10),
-                                Container(
-                                  width: 1,
-                                  height: 10,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    color: gray600,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(320),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Row(
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/svg/star_filled.svg',
-                                      width: 14,
-                                      height: 14,
-                                    ),
-                                    SizedBox(width: 2),
-                                    Text(
-                                      '0',
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400,
-                                        color: gray600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+
+                                // Row(
+                                //   children: [
+                                //     SvgPicture.asset(
+                                //       'assets/svg/home.svg',
+                                //       width: 14,
+                                //       height: 14,
+                                //     ),
+                                //     SizedBox(width: 2),
+                                //     Text(
+                                //       '0',
+                                //       style: TextStyle(
+                                //         fontFamily: 'Lato',
+                                //         fontSize: 12,
+                                //         fontWeight: FontWeight.w400,
+                                //         color: gray600,
+                                //       ),
+                                //     ),
+                                //   ],
+                                // ),
+                                // SizedBox(width: 10),
+                                // Container(
+                                //   width: 1,
+                                //   height: 10,
+                                //   decoration: ShapeDecoration(
+                                //     color: gray600,
+                                //     shape: RoundedRectangleBorder(
+                                //       borderRadius: BorderRadius.circular(320),
+                                //     ),
+                                //   ),
+                                // ),
+                                // SizedBox(width: 10),
+                                // Row(
+                                //   children: [
+                                //     SvgPicture.asset(
+                                //       'assets/svg/heart.svg',
+                                //       width: 14,
+                                //       height: 14,
+                                //     ),
+                                //     SizedBox(width: 2),
+                                //     Text(
+                                //       '0',
+                                //       style: TextStyle(
+                                //         fontFamily: 'Lato',
+                                //         fontSize: 12,
+                                //         fontWeight: FontWeight.w400,
+                                //         color: gray600,
+                                //       ),
+                                //     ),
+                                //   ],
+                                // ),
+                                // SizedBox(width: 10),
+                                // Container(
+                                //   width: 1,
+                                //   height: 10,
+                                //   clipBehavior: Clip.antiAlias,
+                                //   decoration: ShapeDecoration(
+                                //     color: gray600,
+                                //     shape: RoundedRectangleBorder(
+                                //       borderRadius: BorderRadius.circular(320),
+                                //     ),
+                                //   ),
+                                // ),
+                                // SizedBox(width: 10),
+                                // Row(
+                                //   children: [
+                                //     SvgPicture.asset(
+                                //       'assets/svg/star_filled.svg',
+                                //       width: 14,
+                                //       height: 14,
+                                //     ),
+                                //     SizedBox(width: 2),
+                                //     Text(
+                                //       '0',
+                                //       style: TextStyle(
+                                //         fontFamily: 'Lato',
+                                //         fontSize: 12,
+                                //         fontWeight: FontWeight.w400,
+                                //         color: gray600,
+                                //       ),
+                                //     ),
+                                //   ],
+                                // ),
                               ],
                             ),
                             SizedBox(height: 4),
@@ -227,21 +249,27 @@ class _GerCardListState extends State<GerCardList> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      '0',
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700,
-                                        color: gray800,
-                                      ),
-                                    ),
-                                    Text(
-                                      '${translateKey.translate('order')[0].toUpperCase()}${translateKey.translate('order').substring(1)}',
+                                      '${translateKey.translate('status')}',
                                       style: TextStyle(
                                         fontFamily: 'Lato',
                                         fontSize: 12,
                                         fontWeight: FontWeight.w400,
                                         color: gray600,
+                                      ),
+                                    ),
+                                    Text(
+                                      // '${translateKey.translate('order')[0].toUpperCase()}${translateKey.translate('order').substring(1)}',
+                                      // '${widget.data.status[0].}',
+                                      widget.data.status == "CONFIRMED"
+                                          ? '${translateKey.translate('confirmed')}'
+                                          : widget.data.status == "NEW"
+                                          ? '${translateKey.translate('new')}'
+                                          : '',
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
+                                        color: gray800,
                                       ),
                                     ),
                                   ],

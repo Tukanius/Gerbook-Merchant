@@ -4,6 +4,7 @@ class BookingProperty {
   String? id;
   String? name;
   String? addressString;
+  // BookingProperty? property;
 
   BookingProperty({this.id, this.name, this.addressString});
   static $fromJson(Map<String, dynamic> json) =>

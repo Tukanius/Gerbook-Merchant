@@ -568,6 +568,7 @@ class _DashboardPageState extends State<DashboardPage> with AfterLayoutMixin {
                                 ),
                               ],
                             ),
+                            SizedBox(height: 8),
                             isLoadingTransaction == true
                                 ? CustomLoader()
                                 : transactionList.rows!.isEmpty

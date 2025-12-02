@@ -1,7 +1,7 @@
 name: merchant_gerbook_flutter
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.1.0
+version: 1.0.0+1
 
 environment:
   sdk: ^3.9.0
@@ -23,6 +23,7 @@ dependencies:
   flutter_blurhash: ^0.9.1
   flutter_form_builder: ^10.2.0
   flutter_keyboard_visibility: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
   flutter_secure_storage: ^9.2.4
   flutter_svg: ^2.2.1
   flutter_widget_from_html: ^0.17.1
@@ -44,6 +45,12 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
 
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/logo_ios.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+
 flutter:
   uses-material-design: true
 
@@ -52,4 +59,5 @@ flutter:
     - assets/images/
     - assets/svg/
     - assets/
+    - assets/icon/
     - assets/map_style.json

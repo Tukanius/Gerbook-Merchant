@@ -1,8 +1,11 @@
-import 'package:merchant_gerbook_flutter/models/properties.dart';
+import 'package:merchant_gerbook_flutter/models/cancel_policy.dart';
+import 'package:merchant_gerbook_flutter/models/create_camp_property.dart';
+import 'package:merchant_gerbook_flutter/models/discount_types.dart';
+import 'package:merchant_gerbook_flutter/models/travel_offers.dart';
 
 part '../parts/camp_create.dart';
 
-class CampCreate {
+class CampCreateModel {
   String? name;
   List<String>? images;
   String? mainImage;
@@ -15,15 +18,16 @@ class CampCreate {
   String? level3;
   String? additionalInformation;
   List<String>? placeOffers;
-  List<String>? discounts;
-  List<String>? cancelPolicies;
+  List<DiscountTypes>? discounts;
+  List<CancelPolicy>? cancelPolicies;
   String? checkInTime;
   String? checkOutTime;
   List<String>? tags;
   bool? isOpenYearRound;
   String? zone;
-  List<String>? travelOffers;
-  List<Properties>? properties;
+  List<TravelOffers>? travelOffers;
+  List<CreateCampProperty>? properties;
+  String? description;
   /*
 properties: Joi.array().items(Joi.object({
     name          : Joi.string().required(),
@@ -38,7 +42,7 @@ properties: Joi.array().items(Joi.object({
   })).min(1).required()
  */
 
-  CampCreate({
+  CampCreateModel({
     this.name,
     this.images,
     this.mainImage,
@@ -60,8 +64,9 @@ properties: Joi.array().items(Joi.object({
     this.zone,
     this.travelOffers,
     this.properties,
+    this.description,
   });
-  factory CampCreate.fromJson(Map<String, dynamic> json) =>
-      _$CampCreateFromJson(json);
-  Map<String, dynamic> toJson() => _$CampCreateToJson(this);
+  factory CampCreateModel.fromJson(Map<String, dynamic> json) =>
+      _$CampCreateModelFromJson(json);
+  Map<String, dynamic> toJson() => _$CampCreateModelToJson(this);
 }

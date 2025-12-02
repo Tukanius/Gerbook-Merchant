@@ -264,57 +264,59 @@ class _CreateCampState extends State<CreateCamp> with AfterLayoutMixin {
                           ),
                   ],
                 ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    color: white,
-                    padding: EdgeInsets.only(
-                      bottom: Platform.isIOS
-                          ? MediaQuery.of(context).padding.bottom
-                          : 16,
-                      left: 16,
-                      right: 16,
-                      top: 16,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(
-                              context,
-                            ).popAndPushNamed(CreateCampPages.routeName);
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: white,
-                              border: Border.all(color: gray300),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 10,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  translateKey.translate('create_camp'),
-                                  style: TextStyle(
-                                    color: primary,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
+                campList.rows?.isEmpty == true
+                    ? SizedBox()
+                    : Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          color: white,
+                          padding: EdgeInsets.only(
+                            bottom: Platform.isIOS
+                                ? MediaQuery.of(context).padding.bottom
+                                : 16,
+                            left: 16,
+                            right: 16,
+                            top: 16,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(
+                                    context,
+                                  ).popAndPushNamed(CreateCampPages.routeName);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: white,
+                                    border: Border.all(color: gray300),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 24,
+                                    vertical: 10,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        translateKey.translate('create_camp'),
+                                        style: TextStyle(
+                                          color: primary,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
               ],
             ),
     );

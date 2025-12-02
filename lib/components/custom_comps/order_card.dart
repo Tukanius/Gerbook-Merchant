@@ -72,7 +72,10 @@ class _OrderCardState extends State<OrderCard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${widget.data.property?.name ?? '-'}',
+                              widget.data.properties
+                                      ?.map((item) => item.property?.name ?? '')
+                                      .join(', ') ??
+                                  '',
                               style: TextStyle(
                                 fontFamily: 'Lato',
                                 fontSize: 14,
@@ -92,7 +95,7 @@ class _OrderCardState extends State<OrderCard> {
                                 ),
                                 Expanded(
                                   child: Text(
-                                    '${widget.data.property?.addressString ?? '-'}',
+                                    '${widget.data.properties?.first.property?.addressString ?? '-'}',
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       fontSize: 12,
@@ -197,7 +200,13 @@ class _OrderCardState extends State<OrderCard> {
                         ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
-                          color: greenSuccess,
+                          color: widget.data.status == "PAID"
+                              ? greenSuccess
+                              : widget.data.status == "CANCELED"
+                              ? redButton
+                              : widget.data.status == "PENDING"
+                              ? warning500
+                              : greenSuccess,
                         ),
                         child: Text(
                           '${translateKey.translate('booking_status_label.${widget.data.status}')}',

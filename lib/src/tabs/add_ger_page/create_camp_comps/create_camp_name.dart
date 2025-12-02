@@ -48,10 +48,6 @@ class _CreateCampNameState extends State<CreateCampName> {
   }
 
   onSubmit() async {
-    widget.pageController.nextPage(
-      duration: Duration(microseconds: 1000),
-      curve: Curves.ease,
-    );
     if (fbkey.currentState!.saveAndValidate()) {
       try {
         setState(() {
