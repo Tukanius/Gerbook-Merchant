@@ -287,7 +287,7 @@ class _EditCampLocationState extends State<EditCampLocation>
             ),
           ),
         ),
-        body: isLoadingPage == true || isLoadingCountry == true
+        body: isLoadingPage == true
             ? CustomLoader()
             : Stack(
                 children: [

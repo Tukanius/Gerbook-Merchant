@@ -84,7 +84,7 @@ class _CampCardState extends State<CampCard> {
                     SizedBox(width: 2),
                     Expanded(
                       child: Text(
-                        '12 ${widget.data.addressString}',
+                        '${widget.data.addressString}',
                         style: TextStyle(
                           color: gray600,
                           fontSize: 12,

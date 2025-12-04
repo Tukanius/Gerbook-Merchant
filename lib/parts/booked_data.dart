@@ -3,8 +3,13 @@ part of '../models/booked_data.dart';
 BookedData _$BookedDataFromJson(Map<String, dynamic> json) {
   return BookedData(
     id: json['_id'] != null ? json['_id'] as String : null,
-    property: json['property'] != null
-        ? Properties.fromJson(json['property'])
+    // property: json['property'] != null
+    //     ? Properties.fromJson(json['property'])
+    //     : null,
+    properties: json['properties'] != null
+        ? (json['properties'] as List)
+              .map((e) => BookingItem.fromJson(e))
+              .toList()
         : null,
     user: json['user'] != null ? User.fromJson(json['user']) : null,
 
@@ -41,7 +46,7 @@ BookedData _$BookedDataFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$BookedDataToJson(BookedData instance) {
   Map<String, dynamic> json = {};
   if (instance.id != null) json['_id'] = instance.id;
-  if (instance.property != null) json['property'] = instance.property;
+  if (instance.properties != null) json['properties'] = instance.properties;
   if (instance.user != null) json['user'] = instance.user;
   if (instance.code != null) json['code'] = instance.code;
   if (instance.personCount != null) json['personCount'] = instance.personCount;

@@ -13,7 +13,8 @@ import 'package:merchant_gerbook_flutter/api/product_api.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
 import 'package:merchant_gerbook_flutter/models/camp_create_model.dart';
-import 'package:merchant_gerbook_flutter/models/camp_data.dart';
+
+import 'package:merchant_gerbook_flutter/models/camp_data_edit.dart';
 import 'package:merchant_gerbook_flutter/models/create_camp_property.dart';
 import 'package:merchant_gerbook_flutter/provider/camp_create_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
@@ -38,12 +39,18 @@ class CreateGerInfo extends StatefulWidget {
 
 class _CreateGerInfoState extends State<CreateGerInfo> with AfterLayoutMixin {
   bool isLoadingPage = true;
-  CampData data = CampData();
+  CampDataEdit data = CampDataEdit();
+
   @override
   FutureOr<void> afterFirstLayout(BuildContext context) async {
     try {
-      if (widget.campId != '') {
+      if (widget.updateCamp == true) {
         data = await ProductApi().getCampData(widget.campId);
+        print('===test====');
+        print(widget.updateCamp);
+        print(widget.campId);
+        print(data.name);
+        print('===test====');
       }
 
       setState(() {
@@ -130,13 +137,13 @@ class _CreateGerInfoState extends State<CreateGerInfo> with AfterLayoutMixin {
         await Provider.of<CampCreateProvider>(
           context,
           listen: false,
-        ).updateGerPrice(newGerPrice: priceController.text);
+        ).updateGerPrice(newGerPrice: num.parse(priceController.text));
 
         await Provider.of<CampCreateProvider>(
           context,
           listen: false,
         ).updateOriginalPrice(
-          newGerOriginalPrice: originalPriceController.text,
+          newGerOriginalPrice: num.parse(originalPriceController.text),
         );
 
         await Provider.of<CampCreateProvider>(
@@ -199,6 +206,7 @@ class _CreateGerInfoState extends State<CreateGerInfo> with AfterLayoutMixin {
         context,
         listen: false,
       );
+
       try {
         setState(() {
           isLoadingButton = true;
@@ -224,13 +232,19 @@ class _CreateGerInfoState extends State<CreateGerInfo> with AfterLayoutMixin {
         await Provider.of<CampCreateProvider>(
           context,
           listen: false,
-        ).updateGerPrice(newGerPrice: priceController.text);
+        ).updateGerPrice(
+          newGerPrice: priceController.text != ''
+              ? num.parse(priceController.text)
+              : 0,
+        );
 
         await Provider.of<CampCreateProvider>(
           context,
           listen: false,
         ).updateOriginalPrice(
-          newGerOriginalPrice: originalPriceController.text,
+          newGerOriginalPrice: originalPriceController.text != ''
+              ? num.parse(originalPriceController.text)
+              : 0,
         );
 
         await Provider.of<CampCreateProvider>(
@@ -246,6 +260,32 @@ class _CreateGerInfoState extends State<CreateGerInfo> with AfterLayoutMixin {
           context,
           listen: false,
         ).updateGerQuantity(newGerQuantity: quantityController.text);
+
+        print('====yesy====');
+        print('${data.properties?.length}');
+        // print(
+        //   data.properties!.map((p) {
+        //     print(p.id);
+        //     // return CreateCampProperty(
+        //     //   id: p.id,
+        //     //   name: p.name,
+        //     //   description: p.description,
+        //     //   images: p.images != null || p.images != []
+        //     //       ? p.images!
+        //     //             .map((tagObject) => tagObject.url)
+        //     //             .cast<String>()
+        //     //             .toList()
+        //     //       : [],
+        //     //   mainImage: p.mainImage?.url ?? null,
+        //     //   bedsCount: p.bedsCount?.toInt(),
+        //     //   price: p.price,
+        //     //   originalPrice: p.originalPrice,
+        //     //   maxPersonCount: p.maxPersonCount,
+        //     //   quantity: p.quantity,
+        //     // );
+        //   }),
+        // );
+        print('====yesy====');
 
         campData.properties = [
           ...data.properties!.map((p) {
@@ -292,12 +332,13 @@ class _CreateGerInfoState extends State<CreateGerInfo> with AfterLayoutMixin {
                 .toList(),
             mainImage: createCampRoot.gerMainImage.url,
             bedsCount: int.tryParse(createCampRoot.gerBedCount),
-            price: num.tryParse(createCampRoot.gerPrice),
-            originalPrice: num.tryParse(createCampRoot.gerOriginalPrice),
+            price: createCampRoot.gerPrice,
+            originalPrice: createCampRoot.gerOriginalPrice,
             maxPersonCount: int.tryParse(createCampRoot.gerMaxPerson),
             quantity: int.tryParse(createCampRoot.gerQuantity),
           ),
         ];
+
         await ProductApi().putProperty(campData, widget.campId);
 
         await showCreateSuccess(

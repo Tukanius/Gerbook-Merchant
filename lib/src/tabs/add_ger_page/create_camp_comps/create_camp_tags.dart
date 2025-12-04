@@ -107,46 +107,58 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
   String? checkInTime;
   String? checkOutTime;
 
+  bool showTimeError = false;
   onSubmit() async {
-    try {
+    if (checkInTime == null && checkOutTime == null) {
       setState(() {
-        isLoadingButton = true;
+        showTimeError = true;
       });
-      print(isLoadingButton);
-      print('=====am in ?? =====');
-      await Provider.of<CampCreateProvider>(
-        context,
-        listen: false,
-      ).updateOffers(newOffers: filterOffers);
+    } else {
+      setState(() {
+        showTimeError = false;
+      });
+    }
+    if (checkInTime != null && checkOutTime != null) {
+      try {
+        setState(() {
+          isLoadingButton = true;
+        });
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateOffers(newOffers: filterOffers);
 
-      await Provider.of<CampCreateProvider>(
-        context,
-        listen: false,
-      ).updateTags(newTags: filterTags);
-      await Provider.of<CampCreateProvider>(
-        context,
-        listen: false,
-      ).updateCheckIn(newCheckIn: checkInTime.toString());
-      await Provider.of<CampCreateProvider>(
-        context,
-        listen: false,
-      ).updateCheckOut(newCheckOut: checkOutTime.toString());
-      await Provider.of<CampCreateProvider>(
-        context,
-        listen: false,
-      ).updateFourSeasong(newFourSeason: is4Season);
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateTags(newTags: filterTags);
 
-      widget.pageController.nextPage(
-        duration: Duration(microseconds: 1000),
-        curve: Curves.ease,
-      );
-      setState(() {
-        isLoadingButton = false;
-      });
-    } catch (e) {
-      setState(() {
-        isLoadingButton = false;
-      });
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateFourSeasong(newFourSeason: is4Season);
+
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateCheckIn(newCheckIn: checkInTime.toString());
+        await Provider.of<CampCreateProvider>(
+          context,
+          listen: false,
+        ).updateCheckOut(newCheckOut: checkOutTime.toString());
+
+        widget.pageController.nextPage(
+          duration: Duration(microseconds: 1000),
+          curve: Curves.ease,
+        );
+        setState(() {
+          isLoadingButton = false;
+        });
+      } catch (e) {
+        setState(() {
+          isLoadingButton = false;
+        });
+      }
     }
   }
 
@@ -582,6 +594,27 @@ class _CreateCampTagsState extends State<CreateCampTags> with AfterLayoutMixin {
                                     ),
                                   ],
                                 ),
+                                showTimeError == true
+                                    ? Column(
+                                        children: [
+                                          SizedBox(height: 12),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  '${translateKey.translate('this_field_is_required')}',
+                                                  style: TextStyle(
+                                                    color: redButton,
+                                                    fontSize: 11,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                    : SizedBox(),
                                 SizedBox(
                                   height: mediaQuery.padding.bottom + 150,
                                 ),

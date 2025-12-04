@@ -77,6 +77,16 @@ CampDataEdit _$CampDataEditFromJson(Map<String, dynamic> json) {
     tags: json['tags'] != null
         ? (json['tags'] as List).map((e) => Tags.fromJson(e)).toList()
         : null,
+    cancelPolicies: json['cancelPolicies'] != null
+        ? (json['cancelPolicies'] as List)
+              .map((e) => CancelPolicyDetail.fromJson(e))
+              .toList()
+        : null,
+    travelOffers: json['travelOffers'] != null
+        ? (json['travelOffers'] as List)
+              .map((e) => TravelOffersDetail.fromJson(e))
+              .toList()
+        : null,
   );
 }
 
@@ -123,6 +133,10 @@ Map<String, dynamic> _$CampDataEditToJson(CampDataEdit instance) {
   //   json['travelOffers'] = instance.travelOffers;
   if (instance.placeOffers != null) json['placeOffers'] = instance.placeOffers;
   if (instance.tags != null) json['tags'] = instance.tags;
+  if (instance.cancelPolicies != null)
+    json['cancelPolicies'] = instance.cancelPolicies;
+  if (instance.travelOffers != null)
+    json['travelOffers'] = instance.travelOffers;
 
   return json;
 }

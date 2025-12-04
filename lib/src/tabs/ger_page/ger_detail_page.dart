@@ -803,6 +803,341 @@ class _GerDetailPageState extends State<GerDetailPage> with AfterLayoutMixin {
                                           ),
                                         ],
                                       ),
+                                      // Text(
+                                      //   translateKey.translate(
+                                      //     'cancellation_policy',
+                                      //   ),
+                                      //   style: TextStyle(
+                                      //     color: gray800,
+                                      //     fontSize: 18,
+                                      //     fontWeight: FontWeight.w600,
+                                      //   ),
+                                      // ),
+                                      SizedBox(height: 12),
+                                      data.cancelPolicies!.isEmpty == true
+                                          ? Container(
+                                              width: MediaQuery.of(
+                                                context,
+                                              ).size.width,
+                                              padding: EdgeInsets.all(12),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  color: gray200,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                color: white,
+                                              ),
+                                              child: Text(
+                                                translateKey.translate(
+                                                  'anytime_cancel',
+                                                ),
+                                                style: TextStyle(
+                                                  color: primary,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            )
+                                          : data.cancelPolicies!.every(
+                                              (item) => item.rate == 0,
+                                            )
+                                          ? Container(
+                                              width: MediaQuery.of(
+                                                context,
+                                              ).size.width,
+                                              padding: EdgeInsets.all(12),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  color: gray200,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                color: white,
+                                              ),
+                                              child: Text(
+                                                translateKey.translate(
+                                                  'no_refund',
+                                                ),
+                                                style: TextStyle(
+                                                  color: blackText,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            )
+                                          : data.cancelPolicies!.every(
+                                              (item) => item.rate == 100,
+                                            )
+                                          ? Container(
+                                              width: MediaQuery.of(
+                                                context,
+                                              ).size.width,
+                                              padding: EdgeInsets.all(12),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  color: gray200,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                color: white,
+                                              ),
+                                              child: Text(
+                                                translateKey.translate(
+                                                  'anytime_cancel',
+                                                ),
+                                                style: TextStyle(
+                                                  color: blackText,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            )
+                                          : Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Column(
+                                                  children: data.cancelPolicies!
+                                                      .map(
+                                                        (item) => Column(
+                                                          children: [
+                                                            Container(
+                                                              width:
+                                                                  MediaQuery.of(
+                                                                    context,
+                                                                  ).size.width,
+                                                              padding:
+                                                                  EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        12,
+                                                                    vertical:
+                                                                        10,
+                                                                  ),
+                                                              decoration: BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      8,
+                                                                    ),
+                                                                color: white,
+                                                                border:
+                                                                    Border.all(
+                                                                      color:
+                                                                          gray200,
+                                                                    ),
+                                                              ),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Expanded(
+                                                                    child: Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text(
+                                                                          '${translateKey.translate('${item.cancelPolicy?.name}')}',
+                                                                          style: TextStyle(
+                                                                            color:
+                                                                                gray800,
+                                                                            fontSize:
+                                                                                14,
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              6,
+                                                                        ),
+                                                                        Text(
+                                                                          item.cancelPolicy?.start ==
+                                                                                  0
+                                                                              ? '${translateKey.translate('24 цагийн өмнө цуцлах бол_description')}'
+                                                                              : item.cancelPolicy?.start ==
+                                                                                    2
+                                                                              ? '${translateKey.translate('2 - 7 хоногийн өмнө цуцлах бол_description')}'
+                                                                              : item.cancelPolicy?.start ==
+                                                                                    8
+                                                                              ? '${translateKey.translate('8 - 14 хоногийн өмнө цуцлах бол_description')}'
+                                                                              : '${translateKey.translate('15-аас дээш хоногийн өмнө цуцлах бол_description')}',
+                                                                          style: TextStyle(
+                                                                            color:
+                                                                                gray600,
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 10,
+                                                                  ),
+                                                                  Text(
+                                                                    '${item.rate}%',
+                                                                    style: TextStyle(
+                                                                      color:
+                                                                          item.rate ==
+                                                                              100
+                                                                          ? primary
+                                                                          : warningColor,
+                                                                      fontSize:
+                                                                          20,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w700,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              height: 12,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                      .toList(),
+                                                ),
+                                              ],
+                                            ),
+                                      data.travelOffers!.isEmpty == true
+                                          ? SizedBox()
+                                          : Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  translateKey.translate(
+                                                    'additional_services',
+                                                  ),
+                                                  style: TextStyle(
+                                                    color: gray700,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 4),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          8,
+                                                        ),
+                                                    color: white,
+                                                    border: Border.all(
+                                                      color: gray200,
+                                                    ),
+                                                  ),
+                                                  padding: EdgeInsets.all(12),
+                                                  child: Wrap(
+                                                    runSpacing: 12,
+                                                    children: data.travelOffers!
+                                                        .map(
+                                                          (data) => Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              SvgPicture.asset(
+                                                                'assets/svg/check.svg',
+                                                              ),
+                                                              Text(
+                                                                // local.translate('guests'),
+                                                                '${data.travelOffer?.name ?? ''}',
+                                                                style: TextStyle(
+                                                                  color:
+                                                                      gray104,
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                        .toList(),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+
+                                      // data.discount != null &&
+                                      //         data.discount != 0
+                                      //     ? Column(
+                                      //         children: [
+                                      //           SizedBox(height: 12),
+                                      //           Container(
+                                      //             height: 1,
+                                      //             width: MediaQuery.of(
+                                      //               context,
+                                      //             ).size.width,
+                                      //             color: Black08,
+                                      //           ),
+                                      //           SizedBox(height: 12),
+                                      //           Column(
+                                      //             crossAxisAlignment:
+                                      //                 CrossAxisAlignment.start,
+                                      //             children: [
+                                      //               Text(
+                                      //                 translateKey.translate(
+                                      //                   'discounts',
+                                      //                 ),
+                                      //                 style: TextStyle(
+                                      //                   color: blackText,
+                                      //                   fontSize: 14,
+                                      //                   fontWeight:
+                                      //                       FontWeight.w700,
+                                      //                 ),
+                                      //               ),
+                                      //               SizedBox(height: 8),
+                                      //               Row(
+                                      //                 mainAxisAlignment:
+                                      //                     MainAxisAlignment
+                                      //                         .spaceBetween,
+                                      //                 children: [
+                                      //                   Text(
+                                      //                     '${data.discount.discountObj!.discountType!.value} ${translateKey.translate('or_more_nights_of_booking')} ${data.disctount.discountObj!.rate}%',
+                                      //                     style: TextStyle(
+                                      //                       color: blackText,
+                                      //                       fontSize: 14,
+                                      //                       fontWeight:
+                                      //                           FontWeight.w500,
+                                      //                     ),
+                                      //                   ),
+                                      //                   Text(
+                                      //                     '${translateKey
+                                      //                         .formatCurrency(
+                                      //                           bookingData
+                                      //                               .discount!
+                                      //                               .toDouble(),
+                                      //                         ),}',
+                                      //                     style: TextStyle(
+                                      //                       color: verifyGreen,
+                                      //                       fontSize: 14,
+                                      //                       fontWeight:
+                                      //                           FontWeight.w500,
+                                      //                     ),
+                                      //                   ),
+                                      //                 ],
+                                      //               ),
+                                      //             ],
+                                      //           ),
+                                      //         ],
+                                      //       )
+                                      //     : SizedBox(),
                                       // data.cancelPolicies!.isEmpty == true
                                       //     ? Container(
                                       //         width: MediaQuery.of(

@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
@@ -29,7 +32,7 @@ class CreateGerPages extends StatefulWidget {
 }
 
 class _CreateGerPagesState extends State<CreateGerPages>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AfterLayoutMixin {
   final PageController _pageController = PageController();
   @override
   void initState() {
@@ -107,5 +110,13 @@ class _CreateGerPagesState extends State<CreateGerPages>
         ],
       ),
     );
+  }
+
+  @override
+  FutureOr<void> afterFirstLayout(BuildContext context) {
+    print('===test ger create===');
+    print(widget.campId);
+    print(widget.campUpdate);
+    print('===test ger create===');
   }
 }

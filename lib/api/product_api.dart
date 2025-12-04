@@ -168,6 +168,11 @@ class ProductApi extends HttpRequest {
     return res;
   }
 
+  updateCampApit(String id) async {
+    var res = await get('/app/camps/$id/properties');
+    return res;
+  }
+
   // getOrderData(String id) async {
   //   var res = await get('/merchants/orders/chart/$id');
   //   return OrderData.fromJson(res as Map<String, dynamic>);

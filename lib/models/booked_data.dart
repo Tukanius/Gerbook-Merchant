@@ -1,11 +1,12 @@
-import 'package:merchant_gerbook_flutter/models/properties.dart';
+import 'package:merchant_gerbook_flutter/models/booking_item.dart';
 import 'package:merchant_gerbook_flutter/models/user.dart';
 
 part '../parts/booked_data.dart';
 
 class BookedData {
   String? id;
-  Properties? property;
+  // Properties? property;
+  List<BookingItem>? properties;
   User? user;
   String? code;
   num? personCount;
@@ -28,7 +29,7 @@ class BookedData {
 
   BookedData({
     this.id,
-    this.property,
+    this.properties,
     this.user,
     this.code,
     this.personCount,

@@ -265,7 +265,7 @@ class _CreateCampLocationState extends State<CreateCampLocation>
       },
       child: Scaffold(
         backgroundColor: white,
-        body: isLoadingPage == true || isLoadingCountry == true
+        body: isLoadingPage == true
             ? CustomLoader()
             : Stack(
                 children: [

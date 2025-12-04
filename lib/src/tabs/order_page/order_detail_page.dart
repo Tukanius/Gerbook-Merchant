@@ -112,188 +112,112 @@ class _OrderDetailPageState extends State<OrderDetailPage>
                             borderRadius: BorderRadius.circular(12),
                           ),
                           padding: EdgeInsets.all(8),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Container(
-                                  height: 78,
-                                  width: 90,
-                                  child: BlurHash(
-                                    color: gray100,
-                                    hash:
-                                        '${data.property!.mainImage!.blurhash}',
-                                    image: '${data.property!.mainImage!.url}',
-                                    imageFit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-
-                              SizedBox(width: 8),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${data.property!.name ?? ''}',
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: gray800,
+                          child: Column(
+                            children: data.properties!
+                                .map(
+                                  (item) => Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Container(
+                                          height: 78,
+                                          width: 90,
+                                          child: BlurHash(
+                                            color: gray100,
+                                            hash:
+                                                '${item.property!.mainImage!.blurhash}',
+                                            image:
+                                                '${item.property!.mainImage!.url}',
+                                            imageFit: BoxFit.cover,
+                                          ),
+                                        ),
                                       ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    SizedBox(height: 2),
-                                    Row(
-                                      children: [
-                                        SvgPicture.asset(
-                                          'assets/svg/map_pin.svg',
-                                          height: 14,
-                                          color: gray900,
-                                        ),
-                                        SizedBox(width: 2),
-                                        Expanded(
-                                          child: Text(
-                                            '${data.property!.addressString}',
-                                            style: TextStyle(
-                                              fontFamily: 'Lato',
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w400,
-                                              color: gray600,
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 6),
-                                    Row(
-                                      children: <Widget>[
-                                        Row(
+                                      SizedBox(width: 8),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            SvgPicture.asset(
-                                              'assets/svg/home.svg',
-                                              width: 14,
-                                              height: 14,
-                                            ),
-                                            SizedBox(width: 2),
                                             Text(
-                                              '0',
+                                              '${item.property!.name ?? ''}',
                                               style: TextStyle(
                                                 fontFamily: 'Lato',
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                                color: gray600,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                                color: gray800,
                                               ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            SizedBox(height: 2),
+                                            Row(
+                                              children: [
+                                                SvgPicture.asset(
+                                                  'assets/svg/map_pin.svg',
+                                                  height: 14,
+                                                  color: gray900,
+                                                ),
+                                                SizedBox(width: 2),
+                                                Expanded(
+                                                  child: Text(
+                                                    '${item.property!.addressString}',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Lato',
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: gray600,
+                                                    ),
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 6),
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                Text(
+                                                  '${Utils().formatCurrencyDouble(item.property?.originalPrice?.toDouble() ?? 0)}₮',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Lato',
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: primary,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 4),
+                                                Text(
+                                                  translateKey.translate(
+                                                    'price',
+                                                  ),
+                                                  style: TextStyle(
+                                                    fontFamily: 'Lato',
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: gray600,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
-                                        SizedBox(width: 10),
-                                        Container(
-                                          width: 1,
-                                          height: 10,
-                                          decoration: ShapeDecoration(
-                                            color: gray600,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(320),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: 10),
-                                        Row(
-                                          children: [
-                                            SvgPicture.asset(
-                                              'assets/svg/heart.svg',
-                                              width: 14,
-                                              height: 14,
-                                            ),
-                                            SizedBox(width: 2),
-                                            Text(
-                                              '0',
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                                color: gray600,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(width: 10),
-                                        Container(
-                                          width: 1,
-                                          height: 10,
-                                          clipBehavior: Clip.antiAlias,
-                                          decoration: ShapeDecoration(
-                                            color: gray600,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(320),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: 10),
-                                        Row(
-                                          children: [
-                                            SvgPicture.asset(
-                                              'assets/svg/star_filled.svg',
-                                              height: 14,
-                                            ),
-                                            SizedBox(width: 2),
-                                            Text(
-                                              '0',
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                                color: gray600,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 6),
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          '${Utils().formatCurrencyDouble(data.property?.price?.toDouble() ?? 0)}₮',
-                                          style: TextStyle(
-                                            fontFamily: 'Lato',
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700,
-                                            color: primary,
-                                          ),
-                                        ),
-                                        SizedBox(width: 4),
-                                        Text(
-                                          translateKey.translate('price'),
-                                          style: TextStyle(
-                                            fontFamily: 'Lato',
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                            color: gray600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              // SizedBox(width: 8),
-                              // SvgPicture.asset(
-                              //   'assets/svg/chevron_right.svg',
-                              //   height: 24,
-                              //   color: gray800,
-                              // ),
-                            ],
+                                      ),
+                                      // SizedBox(width: 8),
+                                      // SvgPicture.asset(
+                                      //   'assets/svg/chevron_right.svg',
+                                      //   height: 24,
+                                      //   color: gray800,
+                                      // ),
+                                    ],
+                                  ),
+                                )
+                                .toList(),
                           ),
                         ),
                       ),
@@ -488,7 +412,7 @@ class _OrderDetailPageState extends State<OrderDetailPage>
                               children: [
                                 Text(
                                   // '500,000₮',
-                                  '${Utils().formatCurrencyDouble(data.property?.price?.toDouble() ?? 0)}₮',
+                                  '${Utils().formatCurrencyDouble(data.totalAmount?.toDouble() ?? 0)}₮',
                                   style: TextStyle(
                                     fontFamily: 'Lato',
                                     fontSize: 14,
@@ -762,22 +686,25 @@ class _OrderDetailPageState extends State<OrderDetailPage>
                                 SizedBox(height: 4),
                                 Container(
                                   padding: EdgeInsets.symmetric(
-                                    vertical: 4,
                                     horizontal: 10,
+                                    vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: success600,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(320),
-                                    ),
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: data.status == "PAID"
+                                        ? greenSuccess
+                                        : data.status == "CANCELED"
+                                        ? redButton
+                                        : data.status == "PENDING"
+                                        ? warning500
+                                        : greenSuccess,
                                   ),
                                   child: Text(
-                                    '${data.status}',
+                                    '${translateKey.translate('booking_status_label.${data.status}')}',
                                     style: TextStyle(
-                                      fontFamily: 'Lato',
+                                      color: white,
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
-                                      color: white,
                                     ),
                                   ),
                                 ),

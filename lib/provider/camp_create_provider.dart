@@ -132,8 +132,8 @@ class CampCreateProvider extends ChangeNotifier {
   List<UploadImage> gerImages = [];
   String gerName = '';
   String gerDescription = '';
-  String gerPrice = '';
-  String gerOriginalPrice = '';
+  num gerPrice = 0;
+  num gerOriginalPrice = 0;
   String gerBedCount = '';
   String gerMaxPerson = '';
   String gerQuantity = '';
@@ -158,12 +158,12 @@ class CampCreateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  updateGerPrice({required String newGerPrice}) {
+  updateGerPrice({required num newGerPrice}) {
     gerPrice = newGerPrice;
     notifyListeners();
   }
 
-  updateOriginalPrice({required String newGerOriginalPrice}) {
+  updateOriginalPrice({required num newGerOriginalPrice}) {
     gerOriginalPrice = newGerOriginalPrice;
     notifyListeners();
   }
@@ -188,8 +188,8 @@ class CampCreateProvider extends ChangeNotifier {
     gerImages = [];
     gerName = '';
     gerDescription = '';
-    gerPrice = '';
-    gerOriginalPrice = '';
+    gerPrice = 0;
+    gerOriginalPrice = 0;
     gerBedCount = '';
     gerMaxPerson = '';
     gerQuantity = '';
