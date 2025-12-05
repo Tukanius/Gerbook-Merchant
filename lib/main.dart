@@ -31,6 +31,8 @@ import 'package:merchant_gerbook_flutter/src/tabs/ger_page/edit_camp_details/edi
 import 'package:merchant_gerbook_flutter/src/tabs/ger_page/edit_camp_details/edit_camp_name.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/ger_page/edit_camp_details/edit_camp_photo.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/ger_page/edit_camp_details/edit_camp_tags.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/ger_page/edit_ger_details/edit_ger_calendar.dart';
+import 'package:merchant_gerbook_flutter/src/tabs/ger_page/edit_ger_details/edit_ger_pages.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/ger_page/full_screen_image.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/ger_page/ger_detail_page.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/order_page/order_detail_page.dart';
@@ -323,35 +325,65 @@ class _MyAppState extends State<MyApp> with AfterLayoutMixin {
                 },
               );
             case EditCampPhoto.routeName:
+              EditCampPhotoArguments arguments =
+                  settings.arguments as EditCampPhotoArguments;
               return MaterialPageRoute(
                 builder: (context) {
-                  return EditCampPhoto();
+                  return EditCampPhoto(campData: arguments.campData);
                 },
               );
             case EditCampName.routeName:
+              EditCampNameArguments arguments =
+                  settings.arguments as EditCampNameArguments;
               return MaterialPageRoute(
                 builder: (context) {
-                  return EditCampName();
+                  return EditCampName(campData: arguments.campData);
                 },
               );
             case EditCampLocation.routeName:
+              EditCampLocationArguments arguments =
+                  settings.arguments as EditCampLocationArguments;
               return MaterialPageRoute(
                 builder: (context) {
-                  return EditCampLocation();
+                  return EditCampLocation(campData: arguments.campData);
                 },
               );
             case EditCampTags.routeName:
+              EditCampTagsArguments arguments =
+                  settings.arguments as EditCampTagsArguments;
               return MaterialPageRoute(
                 builder: (context) {
-                  return EditCampTags();
+                  return EditCampTags(campData: arguments.campData);
                 },
               );
             case EditCampDiscount.routeName:
+              EditCampDiscountArguments arguments =
+                  settings.arguments as EditCampDiscountArguments;
               return MaterialPageRoute(
                 builder: (context) {
-                  return EditCampDiscount();
+                  return EditCampDiscount(campData: arguments.campData);
                 },
               );
+            case EditGerPages.routeName:
+              EditGerPagesArguments arguments =
+                  settings.arguments as EditGerPagesArguments;
+              return MaterialPageRoute(
+                builder: (context) {
+                  return EditGerPages(
+                    campId: arguments.campId,
+                    propertyId: arguments.propertyId,
+                  );
+                },
+              );
+            case EditGerCalendar.routeName:
+              EditGerCalendarArguments arguments =
+                  settings.arguments as EditGerCalendarArguments;
+              return MaterialPageRoute(
+                builder: (context) {
+                  return EditGerCalendar(id: arguments.id);
+                },
+              );
+
             default:
               return MaterialPageRoute(
                 builder: (_) => SplashPage(seenPage: widget.seenOnboarding),

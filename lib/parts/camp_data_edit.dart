@@ -87,6 +87,16 @@ CampDataEdit _$CampDataEditFromJson(Map<String, dynamic> json) {
               .map((e) => TravelOffersDetail.fromJson(e))
               .toList()
         : null,
+    discounts: json['discounts'] != null
+        ? (json['discounts'] as List)
+              .map((e) => DiscountDetail.fromJson(e))
+              .toList()
+        : null,
+    level0: json['level0'] != null ? LevelModel.fromJson(json['level0']) : null,
+    level1: json['level1'] != null ? LevelModel.fromJson(json['level1']) : null,
+    level2: json['level2'] != null ? LevelModel.fromJson(json['level2']) : null,
+    level3: json['level3'] != null ? LevelModel.fromJson(json['level3']) : null,
+    zone: json['zone'] != null ? Zones.fromJson(json['zone']) : null,
   );
 }
 
@@ -137,6 +147,12 @@ Map<String, dynamic> _$CampDataEditToJson(CampDataEdit instance) {
     json['cancelPolicies'] = instance.cancelPolicies;
   if (instance.travelOffers != null)
     json['travelOffers'] = instance.travelOffers;
+  if (instance.discounts != null) json['discounts'] = instance.discounts;
+  if (instance.level0 != null) json['level0'] = instance.level0;
+  if (instance.level1 != null) json['level1'] = instance.level1;
+  if (instance.level2 != null) json['level2'] = instance.level2;
+  if (instance.level3 != null) json['level3'] = instance.level3;
+  if (instance.zone != null) json['zone'] = instance.zone;
 
   return json;
 }

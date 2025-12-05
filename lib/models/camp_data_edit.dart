@@ -1,9 +1,12 @@
 import 'package:merchant_gerbook_flutter/models/cancel_policy_detail.dart';
+import 'package:merchant_gerbook_flutter/models/discount_detail.dart';
 import 'package:merchant_gerbook_flutter/models/images.dart';
+import 'package:merchant_gerbook_flutter/models/level_model.dart';
 import 'package:merchant_gerbook_flutter/models/place_offers.dart';
 import 'package:merchant_gerbook_flutter/models/properties.dart';
 import 'package:merchant_gerbook_flutter/models/tags.dart';
 import 'package:merchant_gerbook_flutter/models/travel_offers_detail.dart';
+import 'package:merchant_gerbook_flutter/models/zones.dart';
 
 part '../parts/camp_data_edit.dart';
 
@@ -46,10 +49,15 @@ class CampDataEdit {
   List<CancelPolicyDetail>? cancelPolicies;
   List<TravelOffersDetail>? travelOffers;
 
-  // List<Discounts>? discounts;
+  List<DiscountDetail>? discounts;
+
+  LevelModel? level0;
+  LevelModel? level1;
+  LevelModel? level2;
+  LevelModel? level3;
+
   // CampRequest? campRequest;
-  // Zone? zone;
-  // List<String>? rawTravelOffers;
+  Zones? zone;
 
   CampDataEdit({
     this.id,
@@ -88,6 +96,12 @@ class CampDataEdit {
     this.tags,
     this.cancelPolicies,
     this.travelOffers,
+    this.discounts,
+    this.level0,
+    this.level1,
+    this.level2,
+    this.level3,
+    this.zone,
     //
   });
   factory CampDataEdit.fromJson(Map<String, dynamic> json) =>

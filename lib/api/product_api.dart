@@ -1,6 +1,7 @@
 import 'package:merchant_gerbook_flutter/models/address.dart';
 import 'package:merchant_gerbook_flutter/models/booked_data.dart';
 import 'package:merchant_gerbook_flutter/models/booking_list.dart';
+import 'package:merchant_gerbook_flutter/models/calendar.dart';
 import 'package:merchant_gerbook_flutter/models/camp_create_model.dart';
 // import 'package:merchant_gerbook_flutter/models/camp_data.dart';
 import 'package:merchant_gerbook_flutter/models/camp_data_edit.dart';
@@ -168,8 +169,18 @@ class ProductApi extends HttpRequest {
     return res;
   }
 
-  updateCampApit(String id) async {
-    var res = await get('/app/camps/$id/properties');
+  updateCampGer(CampCreateModel data, String id) async {
+    var res = await put('/camps/$id/properties', data: data.toJson());
+    return res;
+  }
+
+  editCampData(CampCreateModel data, String id) async {
+    var res = await put('/camps/$id', data: data.toJson());
+    return res;
+  }
+
+  editGerCalendar(Calendar data, String id) async {
+    var res = await put('/properties/$id/calendar', data: data.toJson());
     return res;
   }
 

@@ -1,4 +1,6 @@
+import 'package:merchant_gerbook_flutter/models/blocked_dates.dart';
 import 'package:merchant_gerbook_flutter/models/images.dart';
+import 'package:merchant_gerbook_flutter/models/special_dates.dart';
 
 part '../parts/properties.dart';
 
@@ -21,6 +23,7 @@ class Properties {
   num? bedsCount;
   num? price;
   num? originalPrice;
+  // num? discountedPrice;
   num? maxPersonCount;
   // List<PlaceOffers>? placeOffers;
   // List<Discount>? discounts;
@@ -56,6 +59,9 @@ class Properties {
   bool? isOpenYearRound;
   bool? isActive;
   bool? isAdminActive;
+
+  List<BlockedDates>? blockedDates;
+  List<SpecialDates>? specialDates;
 
   Properties({
     this.id,
@@ -111,6 +117,9 @@ class Properties {
     this.isOpenYearRound,
     this.isActive,
     this.isAdminActive,
+    this.blockedDates,
+    this.specialDates,
+    // this.discountedPrice,
   });
   static $fromJson(Map<String, dynamic> json) => _$PropertiesFromJson(json);
 

@@ -251,6 +251,50 @@ class _GerCardState extends State<GerCard> {
           SizedBox(height: 4),
           Row(
             children: [
+              // widget.data.price != null && widget.data.price != 0
+              //     ? Row(
+              //         crossAxisAlignment: CrossAxisAlignment.end,
+
+              //         children: [
+              //           Text(
+              //             widget.data.price != null && widget.data.price != 0
+              //                 ? '₮${widget.data.price}'
+              //                 : '₮0',
+              //             style: TextStyle(
+              //               fontFamily: 'Lato',
+              //               fontSize: 16,
+              //               fontWeight: FontWeight.w700,
+              //               color: primary,
+              //             ),
+              //           ),
+              //           Text(
+              //             '/ ₮${widget.data.originalPrice}',
+              //             style: TextStyle(
+              //               color: gray700,
+              //               fontSize: 12,
+              //               fontWeight: FontWeight.w500,
+              //               decoration: TextDecoration.lineThrough,
+              //             ),
+              //             maxLines: 1,
+              //             textAlign: TextAlign.right,
+              //             overflow: TextOverflow.ellipsis,
+              //           ),
+              //         ],
+              //       )
+              //     : Row(
+              //         crossAxisAlignment: CrossAxisAlignment.end,
+              //         children: [
+              //           Text(
+              //             '₮${widget.data.originalPrice}',
+              //             style: TextStyle(
+              //               fontFamily: 'Lato',
+              //               fontSize: 16,
+              //               fontWeight: FontWeight.w700,
+              //               color: primary,
+              //             ),
+              //           ),
+              //         ],
+              //       ),
               Expanded(
                 child: Text(
                   '${Utils().formatCurrencyDouble(widget.data.price?.toDouble() ?? 0)}₮',

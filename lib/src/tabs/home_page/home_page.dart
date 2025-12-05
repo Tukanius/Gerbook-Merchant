@@ -656,7 +656,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
                         ],
                       ),
                     ),
-                    SizedBox(height: mediaQuery.padding.bottom + 100),
+                    SizedBox(height: mediaQuery.padding.bottom + 50),
                   ],
                 ),
               ),

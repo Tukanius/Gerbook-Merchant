@@ -7,8 +7,11 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:merchant_gerbook_flutter/api/product_api.dart';
 import 'package:merchant_gerbook_flutter/components/custom_loader/custom_loader.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
+import 'package:merchant_gerbook_flutter/models/camp_create_model.dart';
+import 'package:merchant_gerbook_flutter/models/camp_data_edit.dart';
 import 'package:merchant_gerbook_flutter/models/cancel_policy.dart';
 import 'package:merchant_gerbook_flutter/models/discount_types.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
@@ -19,9 +22,16 @@ import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/tools/add_service.dart';
 import 'package:provider/provider.dart';
 
+class EditCampDiscountArguments {
+  final CampDataEdit campData;
+  EditCampDiscountArguments({required this.campData});
+}
+
 class EditCampDiscount extends StatefulWidget {
+  final CampDataEdit campData;
+
   static const routeName = "EditCampDiscount";
-  const EditCampDiscount({super.key});
+  const EditCampDiscount({super.key, required this.campData});
 
   @override
   State<EditCampDiscount> createState() => _EditCampDiscountState();
@@ -57,189 +67,228 @@ class _EditCampDiscountState extends State<EditCampDiscount>
 
   bool isLoadingButton = false;
 
+  // onSubmit() async {
+  //   // try {
+  //   //   setState(() {
+  //   //     isLoadingButton = true;
+  //   //   });
+  //   //   print(isLoadingButton);
+  //   //   print('=====am in ?? =====');
+  //   //   await Provider.of<CampCreateProvider>(
+  //   //     context,
+  //   //     listen: false,
+  //   //   ).updateTravelOffers(newTravelOffers: selectedServices);
+
+  //   //   await Provider.of<CampCreateProvider>(
+  //   //     context,
+  //   //     listen: false,
+  //   //   ).updateDiscounts(newDiscounts: selectedDiscount);
+  //   //   await Provider.of<CampCreateProvider>(
+  //   //     context,
+  //   //     listen: false,
+  //   //   ).updateCancelPolicy(newCancelPolicy: selectedCancelPolicy);
+
+  //   //   // widget.pageController.nextPage(
+  //   //   //   duration: Duration(microseconds: 1000),
+  //   //   //   curve: Curves.ease,
+  //   //   // );
+  //   //   setState(() {
+  //   //     isLoadingButton = false;
+  //   //   });
+  //   // } catch (e) {
+  //   //   setState(() {
+  //   //     isLoadingButton = false;
+  //   //   });
+  //   // }
+  // }
   onSubmit() async {
-    // try {
-    //   setState(() {
-    //     isLoadingButton = true;
-    //   });
-    //   print(isLoadingButton);
-    //   print('=====am in ?? =====');
-    //   await Provider.of<CampCreateProvider>(
-    //     context,
-    //     listen: false,
-    //   ).updateTravelOffers(newTravelOffers: selectedServices);
+    final translateKey = Provider.of<LocalizationProvider>(
+      context,
+      listen: false,
+    );
 
-    //   await Provider.of<CampCreateProvider>(
-    //     context,
-    //     listen: false,
-    //   ).updateDiscounts(newDiscounts: selectedDiscount);
-    //   await Provider.of<CampCreateProvider>(
-    //     context,
-    //     listen: false,
-    //   ).updateCancelPolicy(newCancelPolicy: selectedCancelPolicy);
-
-    //   // widget.pageController.nextPage(
-    //   //   duration: Duration(microseconds: 1000),
-    //   //   curve: Curves.ease,
-    //   // );
-    //   setState(() {
-    //     isLoadingButton = false;
-    //   });
-    // } catch (e) {
-    //   setState(() {
-    //     isLoadingButton = false;
-    //   });
-    // }
-  }
-  onSubmitConfirm() async {
-    // final translateKey = Provider.of<LocalizationProvider>(
+    // final createCampRoot = Provider.of<CampCreateProvider>(
     //   context,
     //   listen: false,
     // );
+    print('=====test=====');
+    print(selectedServices);
+    print(selectedDiscount);
+    print(selectedCancelPolicy);
+    print(selectedServices != []);
+    print(selectedDiscount != []);
+    print(selectedCancelPolicy != []);
+    print('=====test=====');
 
-    // try {
-    //   final createCampRoot = Provider.of<CampCreateProvider>(
-    //     context,
-    //     listen: false,
-    //   );
-    //   CampCreateModel campData = CampCreateModel();
-    //   setState(() {
-    //     isLoadingButton = true;
-    //   });
+    if (selectedServices.isEmpty == false ||
+        selectedDiscount.isEmpty == false ||
+        selectedCancelPolicy.isEmpty == false) {
+      try {
+        CampCreateModel campData = CampCreateModel();
+        setState(() {
+          isLoadingButton = true;
+        });
 
-    //   campData.name = createCampRoot.name;
+        campData.name = widget.campData.name;
 
-    //   campData.description = createCampRoot.description;
+        campData.description = widget.campData.description;
 
-    //   campData.longitude = num.parse(createCampRoot.longitude);
-    //   campData.latitude = num.parse(createCampRoot.latitude);
-    //   campData.level0 = createCampRoot.level0;
-    //   campData.level1 = createCampRoot.level1;
-    //   if (createCampRoot.level2 != '') {
-    //     campData.level2 = createCampRoot.level2;
-    //   }
-    //   if (createCampRoot.level3 != '') {
-    //     campData.level3 = createCampRoot.level3;
-    //   }
-    //   campData.additionalInformation = createCampRoot.addressDetail;
-    //   campData.checkInTime = createCampRoot.checkInTime;
-    //   campData.checkOutTime = createCampRoot.checkOutTime;
+        campData.longitude = widget.campData.longitude;
+        campData.latitude = widget.campData.latitude;
 
-    //   campData.isOpenYearRound = createCampRoot.fourSeason;
-    //   campData.zone = createCampRoot.zoneId;
+        campData.level0 = widget.campData.level0 != null
+            ? widget.campData.level0!.id
+            : null;
+        campData.level1 = widget.campData.level1 != null
+            ? widget.campData.level1!.id
+            : null;
+        campData.level2 = widget.campData.level2 != null
+            ? widget.campData.level2!.id
+            : null;
+        campData.level3 = widget.campData.level3 != null
+            ? widget.campData.level3!.id
+            : null;
 
-    //   campData.tags = createCampRoot.tags
-    //       .map((tagObject) => tagObject.id)
-    //       .cast<String>()
-    //       .toList();
+        campData.additionalInformation = widget.campData.addressString;
+        campData.checkInTime = widget.campData.checkInTime;
+        campData.checkOutTime = widget.campData.checkOutTime;
 
-    //   campData.placeOffers = createCampRoot.placeOffers
-    //       .map((tagObject) => tagObject.id)
-    //       .cast<String>()
-    //       .toList();
+        campData.isOpenYearRound = widget.campData.isOpenYearRound;
+        campData.zone = widget.campData.zone != null
+            ? widget.campData.zone!.id
+            : null;
 
-    //   // campData.tags = createCampRoot.tags;
-    //   // campData.placeOffers = createCampRoot.placeOffers;
-    //   // campData.discounts = createCampRoot.discount
-    //   //     .map((d) {
-    //   //       return {
-    //   //         "discountType": d.id,
-    //   //         "rate": d.procent.toString(), // эсвэл d.rate
-    //   //       };
-    //   //     })
-    //   //     .cast<DiscountTypes>()
-    //   //     .toList();
-    //   campData.discounts = createCampRoot.discount.map((d) {
-    //     return DiscountTypes(discountType: d.id, rate: d.procent);
-    //   }).toList();
+        campData.tags = widget.campData.tags != null
+            ? widget.campData.tags!
+                  .map((tagObject) => tagObject.id)
+                  .cast<String>()
+                  .toList()
+            : null;
 
-    //   // campData.discounts = createCampRoot.discount;
-    //   // campData.cancelPolicies = createCampRoot.cancelPolicy
-    //   //     .map((d) {
-    //   //       return {
-    //   //         "discountType": d.id,
-    //   //         "rate": d.rate.toString(), // эсвэл d.rate
-    //   //       };
-    //   //     })
-    //   //     .cast<CancelPolicy>()
-    //   //     .toList();
-    //   campData.cancelPolicies = createCampRoot.cancelPolicy.map((d) {
-    //     return CancelPolicy(cancelPolicy: d.id, rate: d.rate);
-    //   }).toList();
+        campData.placeOffers = widget.campData.placeOffers != null
+            ? widget.campData.placeOffers!
+                  .map((tagObject) => tagObject.id)
+                  .cast<String>()
+                  .toList()
+            : null;
+        campData.discounts = selectedDiscount != []
+            ? selectedDiscount.map((d) {
+                return DiscountTypes(discountType: d.id, rate: d.rate);
+              }).toList()
+            : null;
 
-    //   // campData.cancelPolicies = createCampRoot.cancelPolicy;
-    //   campData.images = createCampRoot.images
-    //       .map((tagObject) => tagObject.url)
-    //       .cast<String>()
-    //       .toList();
+        campData.cancelPolicies = selectedCancelPolicy != []
+            ? selectedCancelPolicy.map((d) {
+                return CancelPolicy(cancelPolicy: d.id, rate: d.rate);
+              }).toList()
+            : null;
 
-    //   // campData.images = createCampRoot.images;
-    //   campData.mainImage = createCampRoot.mainImage.url;
-    //   // campData.mainImage = createCampRoot.mainImage;
-    //   // campData.travelOffers = createCampRoot.travelOffers
-    //   //     .map((d) {
-    //   //       return {
-    //   //         "travelOffer": d.id,
-    //   //         "price": d.price,
-    //   //         "maxQuantity": d.maxQuantity,
-    //   //       };
-    //   //     })
-    //   //     .cast<TravelOffers>()
-    //   //     .toList();
-    //   campData.travelOffers = createCampRoot.travelOffers.map((d) {
-    //     return TravelOffers(
-    //       travelOffer: d.id,
-    //       price: d.price,
-    //       maxQuantity: d.maxQuantity,
-    //     );
-    //   }).toList();
-    //   print('========ibj=-====');
-    //   print(isLoadingButton);
-    //   print(campData.travelOffers);
-    //   print('=data==');
-    //   print(
-    //     createCampRoot.travelOffers.map((d) {
-    //       return TravelOffers(
-    //         travelOffer: d.id,
-    //         price: d.price,
-    //         maxQuantity: d.maxQuantity,
-    //       );
-    //     }).toList(),
-    //   );
-    //   print('========ibj=-====');
+        campData.mainImage = widget.campData.mainImage?.url;
+        campData.images = widget.campData.images != null
+            ? widget.campData.images!
+                  .map((tagObject) => tagObject.url)
+                  .cast<String>()
+                  .toList()
+            : null;
 
-    //   // campData.travelOffers = createCampRoot.travelOffers;
+        campData.travelOffers = selectedServices != []
+            ? selectedServices.map((d) {
+                return TravelOffers(
+                  travelOffer: d.id,
+                  price: d.price,
+                  maxQuantity: d.maxQuantity,
+                );
+              }).toList()
+            : null;
 
-    //   // campData.properties = [
-    //   //   CreateCampProperty(
-    //   //     name: createCampRoot.gerName,
-    //   //     description: createCampRoot.gerDescription,
-    //   //     images: createCampRoot.gerImages
-    //   //         .map((tagObject) => tagObject.url)
-    //   //         .cast<String>()
-    //   //         .toList(),
-    //   //     mainImage: createCampRoot.gerMainImage.url,
-    //   //     bedsCount: int.tryParse(createCampRoot.gerBedCount),
-    //   //     price: num.tryParse(createCampRoot.gerPrice),
-    //   //     originalPrice: num.tryParse(createCampRoot.gerOriginalPrice),
-    //   //     maxPersonCount: int.tryParse(createCampRoot.gerMaxPerson),
-    //   //     quantity: int.tryParse(createCampRoot.gerQuantity),
-    //   //   ),
-    //   // ];
+        await ProductApi().editCampData(campData, widget.campData.id!);
+        await showCreateSuccess(
+          context,
+          '${translateKey.translate('successfully_updated_admin_review')}',
+        );
+        setState(() {
+          isLoadingButton = false;
+        });
+      } catch (e) {
+        setState(() {
+          isLoadingButton = false;
+        });
+      }
+    } else {
+      Navigator.of(context).pop();
+    }
+  }
 
-    //   // await ProductApi().updateCampApi(campData);
-    //   // await showCreateSuccess(
-    //   //   context,
-    //   //   '${translateKey.translate('listing_created_successfully')}',
-    //   // );
-    //   setState(() {
-    //     isLoadingButton = false;
-    //   });
-    // } catch (e) {
-    //   setState(() {
-    //     isLoadingButton = false;
-    //   });
-    // }
+  showCreateSuccess(context, String text) async {
+    final local = Provider.of<LocalizationProvider>(context, listen: false);
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return Container(
+          alignment: Alignment.center,
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SvgPicture.asset('assets/svg/success1.svg'),
+                Text(
+                  local.translate('successful'),
+                  style: TextStyle(
+                    color: black,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
+                    decoration: TextDecoration.none,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  '$text',
+                  style: TextStyle(
+                    color: gray600,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.none,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                ButtonBar(
+                  buttonMinWidth: 100,
+                  alignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    TextButton(
+                      style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.all(
+                          Colors.transparent,
+                        ),
+                      ),
+                      child: Text(
+                        local.translate('close'),
+                        style: TextStyle(
+                          color: black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   // build функц дотор:

@@ -13,45 +13,45 @@ import 'package:merchant_gerbook_flutter/api/product_api.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
 import 'package:merchant_gerbook_flutter/models/camp_create_model.dart';
-
-import 'package:merchant_gerbook_flutter/models/camp_data_edit.dart';
 import 'package:merchant_gerbook_flutter/models/create_camp_property.dart';
-import 'package:merchant_gerbook_flutter/provider/camp_create_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:provider/provider.dart';
 
-class CreateGerInfo extends StatefulWidget {
-  final bool updateCamp;
+class EditGerInfo extends StatefulWidget {
   final String campId;
-
+  final List<String>? gerPhotoList;
+  final String? mainGerImage;
   final PageController pageController;
+  final String propertyId;
 
-  const CreateGerInfo({
+  const EditGerInfo({
     super.key,
     required this.pageController,
-    required this.updateCamp,
     required this.campId,
+    this.gerPhotoList,
+    this.mainGerImage,
+    required this.propertyId,
   });
 
   @override
-  State<CreateGerInfo> createState() => _CreateGerInfoState();
+  State<EditGerInfo> createState() => _EditGerInfoState();
 }
 
-class _CreateGerInfoState extends State<CreateGerInfo> with AfterLayoutMixin {
+class _EditGerInfoState extends State<EditGerInfo> with AfterLayoutMixin {
   bool isLoadingPage = true;
-  CampDataEdit data = CampDataEdit();
+  // CampDataEdit data = CampDataEdit();
 
   @override
   FutureOr<void> afterFirstLayout(BuildContext context) async {
     try {
-      if (widget.updateCamp == true) {
-        data = await ProductApi().getCampData(widget.campId);
-        print('===test====');
-        print(widget.updateCamp);
-        print(widget.campId);
-        print(data.name);
-        print('===test====');
-      }
+      // if (widget.updateCamp == true) {
+      //   data = await ProductApi().getCampData(widget.campId);
+      //   print('===test====');
+      //   print(widget.updateCamp);
+      //   print(widget.campId);
+      //   print(data.name);
+      //   print('===test====');
+      // }
 
       setState(() {
         isLoadingPage = false;
@@ -89,6 +89,10 @@ class _CreateGerInfoState extends State<CreateGerInfo> with AfterLayoutMixin {
   bool maxPersonError = false;
 
   onSubmit() async {
+    final translateKey = Provider.of<LocalizationProvider>(
+      context,
+      listen: false,
+    );
     if (quantity == 0) {
       setState(() {
         quantityError = true;
@@ -119,237 +123,34 @@ class _CreateGerInfoState extends State<CreateGerInfo> with AfterLayoutMixin {
 
     if (fbkey.currentState!.saveAndValidate()) {
       try {
-        setState(() {
-          isLoadingButton = true;
-        });
-        await Provider.of<CampCreateProvider>(
-          context,
-          listen: false,
-        ).updateGerName(newGerName: gerNameController.text);
-
-        await Provider.of<CampCreateProvider>(
-          context,
-          listen: false,
-        ).updateGerDescription(
-          newGerDescription: gerDescriptionController.text,
-        );
-
-        await Provider.of<CampCreateProvider>(
-          context,
-          listen: false,
-        ).updateGerPrice(
-          newGerPrice: priceController.text != ''
-              ? num.parse(priceController.text)
-              : 0,
-        );
-
-        await Provider.of<CampCreateProvider>(
-          context,
-          listen: false,
-        ).updateOriginalPrice(
-          newGerOriginalPrice: originalPriceController.text != ''
-              ? num.parse(originalPriceController.text)
-              : 0,
-        );
-
-        await Provider.of<CampCreateProvider>(
-          context,
-          listen: false,
-        ).updateGerBed(newGerBed: bedController.text);
-        await Provider.of<CampCreateProvider>(
-          context,
-          listen: false,
-        ).updateGerMaxPerson(newGerMaxPerson: maxPersonController.text);
-
-        await Provider.of<CampCreateProvider>(
-          context,
-          listen: false,
-        ).updateGerQuantity(newGerQuantity: quantityController.text);
-
-        Navigator.of(context).pop();
-        setState(() {
-          isLoadingButton = false;
-        });
-      } catch (e) {
-        setState(() {
-          isLoadingButton = false;
-        });
-      }
-    }
-  }
-
-  onSubmitUpdateCamp() async {
-    if (quantity == 0) {
-      setState(() {
-        quantityError = true;
-      });
-    } else {
-      setState(() {
-        quantityError = false;
-      });
-    }
-    if (bedsCount == 0) {
-      setState(() {
-        bedError = true;
-      });
-    } else {
-      setState(() {
-        bedError = false;
-      });
-    }
-    if (maxPersonCount == 0) {
-      setState(() {
-        maxPersonError = true;
-      });
-    } else {
-      setState(() {
-        maxPersonError = false;
-      });
-    }
-
-    if (fbkey.currentState!.saveAndValidate()) {
-      final translateKey = Provider.of<LocalizationProvider>(
-        context,
-        listen: false,
-      );
-
-      try {
-        setState(() {
-          isLoadingButton = true;
-        });
-        final createCampRoot = Provider.of<CampCreateProvider>(
-          context,
-          listen: false,
-        );
         CampCreateModel campData = CampCreateModel();
 
-        await Provider.of<CampCreateProvider>(
-          context,
-          listen: false,
-        ).updateGerName(newGerName: gerNameController.text);
-
-        await Provider.of<CampCreateProvider>(
-          context,
-          listen: false,
-        ).updateGerDescription(
-          newGerDescription: gerDescriptionController.text,
-        );
-
-        await Provider.of<CampCreateProvider>(
-          context,
-          listen: false,
-        ).updateGerPrice(
-          newGerPrice: priceController.text != ''
-              ? num.parse(priceController.text)
-              : 0,
-        );
-
-        await Provider.of<CampCreateProvider>(
-          context,
-          listen: false,
-        ).updateOriginalPrice(
-          newGerOriginalPrice: originalPriceController.text != ''
-              ? num.parse(originalPriceController.text)
-              : 0,
-        );
-
-        await Provider.of<CampCreateProvider>(
-          context,
-          listen: false,
-        ).updateGerBed(newGerBed: bedController.text);
-        await Provider.of<CampCreateProvider>(
-          context,
-          listen: false,
-        ).updateGerMaxPerson(newGerMaxPerson: maxPersonController.text);
-
-        await Provider.of<CampCreateProvider>(
-          context,
-          listen: false,
-        ).updateGerQuantity(newGerQuantity: quantityController.text);
-
-        print('====yesy====');
-        print('${data.properties?.length}');
-        // print(
-        //   data.properties!.map((p) {
-        //     print(p.id);
-        //     // return CreateCampProperty(
-        //     //   id: p.id,
-        //     //   name: p.name,
-        //     //   description: p.description,
-        //     //   images: p.images != null || p.images != []
-        //     //       ? p.images!
-        //     //             .map((tagObject) => tagObject.url)
-        //     //             .cast<String>()
-        //     //             .toList()
-        //     //       : [],
-        //     //   mainImage: p.mainImage?.url ?? null,
-        //     //   bedsCount: p.bedsCount?.toInt(),
-        //     //   price: p.price,
-        //     //   originalPrice: p.originalPrice,
-        //     //   maxPersonCount: p.maxPersonCount,
-        //     //   quantity: p.quantity,
-        //     // );
-        //   }),
-        // );
-        print('====yesy====');
+        setState(() {
+          isLoadingButton = true;
+        });
 
         campData.properties = [
-          ...data.properties!.map((p) {
-            return CreateCampProperty(
-              id: p.id,
-              name: p.name,
-              description: p.description,
-              images: p.images != null || p.images != []
-                  ? p.images!
-                        .map((tagObject) => tagObject.url)
-                        .cast<String>()
-                        .toList()
-                  : [],
-              mainImage: p.mainImage?.url ?? null,
-              bedsCount: p.bedsCount?.toInt(),
-              price: p.price,
-              originalPrice: p.originalPrice,
-              maxPersonCount: p.maxPersonCount,
-              quantity: p.quantity,
-            );
-          }),
-          /*
-          {
-      "_id": "692e83a93359a0b08b913652",
-      "name": "ger test update",
-      "description": "gers",
-      "images": [
-        "https://gerbook.s3.ap-southeast-1.amazonaws.com/3195ae77-0c29-490d-a00e-0c3a63d505c3-1024.jpg"
-      ],
-      "mainImage": "https://gerbook.s3.ap-southeast-1.amazonaws.com/3195ae77-0c29-490d-a00e-0c3a63d505c3-1024.jpg",
-      "bedsCount": 1,
-      "price": 133,
-      "originalPrice": 1234,
-      "maxPersonCount": 1,
-      "quantity": 1
-    },
-           */
           CreateCampProperty(
-            name: createCampRoot.gerName,
-            description: createCampRoot.gerDescription,
-            images: createCampRoot.gerImages
-                .map((tagObject) => tagObject.url)
-                .cast<String>()
-                .toList(),
-            mainImage: createCampRoot.gerMainImage.url,
-            bedsCount: int.tryParse(createCampRoot.gerBedCount),
-            price: createCampRoot.gerPrice,
-            originalPrice: createCampRoot.gerOriginalPrice,
-            maxPersonCount: int.tryParse(createCampRoot.gerMaxPerson),
-            quantity: int.tryParse(createCampRoot.gerQuantity),
+            id: widget.propertyId,
+            name: gerNameController.text,
+            description: gerDescriptionController.text,
+            images: widget.gerPhotoList ?? null,
+            mainImage: widget.mainGerImage ?? null,
+            bedsCount: num.parse(bedController.text),
+            price: priceController.text != ''
+                ? num.parse(priceController.text)
+                : 0,
+            originalPrice: originalPriceController.text != ''
+                ? num.parse(originalPriceController.text)
+                : 0,
+            maxPersonCount: num.parse(maxPersonController.text),
+            quantity: num.parse(quantityController.text),
           ),
         ];
-
-        await ProductApi().putProperty(campData, widget.campId);
-
+        await ProductApi().updateCampGer(campData, widget.campId);
         await showCreateSuccess(
           context,
-          '${translateKey.translate('listing_created_successfully')}',
+          '${translateKey.translate('successfully_updated_admin_review')}',
         );
         setState(() {
           isLoadingButton = false;
@@ -1029,9 +830,7 @@ class _CreateGerInfoState extends State<CreateGerInfo> with AfterLayoutMixin {
                                   onTap: isLoadingButton == true
                                       ? () {}
                                       : () {
-                                          widget.updateCamp == true
-                                              ? onSubmitUpdateCamp()
-                                              : onSubmit();
+                                          onSubmit();
                                         },
                                   child: Container(
                                     decoration: BoxDecoration(

@@ -16,15 +16,27 @@ import 'package:merchant_gerbook_flutter/components/custom_loader/custom_loader.
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
 import 'package:merchant_gerbook_flutter/models/address.dart';
+import 'package:merchant_gerbook_flutter/models/camp_create_model.dart';
+import 'package:merchant_gerbook_flutter/models/camp_data_edit.dart';
+import 'package:merchant_gerbook_flutter/models/cancel_policy.dart';
+import 'package:merchant_gerbook_flutter/models/discount_types.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
+import 'package:merchant_gerbook_flutter/models/travel_offers.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/tools/create_camp_map.dart';
 import 'package:merchant_gerbook_flutter/src/tabs/add_ger_page/create_camp_comps/tools/custom_drop_down.dart';
 import 'package:provider/provider.dart';
 
+class EditCampLocationArguments {
+  final CampDataEdit campData;
+  EditCampLocationArguments({required this.campData});
+}
+
 class EditCampLocation extends StatefulWidget {
+  final CampDataEdit campData;
+
   static const routeName = "EditCampLocation";
-  const EditCampLocation({super.key});
+  const EditCampLocation({super.key, required this.campData});
 
   @override
   State<EditCampLocation> createState() => _EditCampLocationState();
@@ -150,104 +162,405 @@ class _EditCampLocationState extends State<EditCampLocation>
   bool dropPinError = false;
   bool level0Error = false;
   bool level1Error = false;
+  // onSubmit() async {
+  //   final translateKey = Provider.of<LocalizationProvider>(
+  //     context,
+  //     listen: false,
+  //   );
+
+  //   // final createCampRoot = Provider.of<CampCreateProvider>(
+  //   //   context,
+  //   //   listen: false,
+  //   // );
+  //   if (mainImage != null && images.isNotEmpty) {
+  //     try {
+  //       CampCreateModel campData = CampCreateModel();
+  //       setState(() {
+  //         isLoadingButton = true;
+  //       });
+
+  //       campData.name = widget.campData.name;
+
+  //       campData.description = widget.campData.description;
+
+  //       campData.longitude = widget.campData.longitude;
+  //       campData.latitude = widget.campData.latitude;
+
+  //       campData.level0 = widget.campData.level0 != null
+  //           ? widget.campData.level0!.id
+  //           : null;
+  //       campData.level1 = widget.campData.level1 != null
+  //           ? widget.campData.level1!.id
+  //           : null;
+  //       campData.level2 = widget.campData.level2 != null
+  //           ? widget.campData.level2!.id
+  //           : null;
+  //       campData.level3 = widget.campData.level3 != null
+  //           ? widget.campData.level3!.id
+  //           : null;
+
+  //       campData.additionalInformation = widget.campData.addressString;
+  //       campData.checkInTime = widget.campData.checkInTime;
+  //       campData.checkOutTime = widget.campData.checkOutTime;
+
+  //       campData.isOpenYearRound = widget.campData.isOpenYearRound;
+  //       campData.zone = widget.campData.zone != null
+  //           ? widget.campData.zone!.id
+  //           : null;
+
+  //       campData.tags = widget.campData.tags != null
+  //           ? widget.campData.tags!
+  //                 .map((tagObject) => tagObject.id)
+  //                 .cast<String>()
+  //                 .toList()
+  //           : null;
+
+  //       campData.placeOffers = widget.campData.placeOffers != null
+  //           ? widget.campData.placeOffers!
+  //                 .map((tagObject) => tagObject.id)
+  //                 .cast<String>()
+  //                 .toList()
+  //           : null;
+
+  //       campData.discounts = widget.campData.discounts != null
+  //           ? widget.campData.discounts!.map((d) {
+  //               return DiscountTypes(discountType: d.id, rate: d.rate);
+  //             }).toList()
+  //           : null;
+
+  //       campData.cancelPolicies = widget.campData.cancelPolicies != null
+  //           ? widget.campData.cancelPolicies!.map((d) {
+  //               return CancelPolicy(cancelPolicy: d.id, rate: d.rate);
+  //             }).toList()
+  //           : null;
+
+  //       UploadImage upload = UploadImage();
+  //       UploadImage uploadImages = UploadImage();
+
+  //       setState(() {
+  //         isLoadingButton = true;
+  //       });
+  //       if (mainImage != null) {
+  //         upload = await AuthApi().upload(mainImage!.path);
+  //         campData.mainImage = upload.url!;
+  //       }
+  //       if (images.isNotEmpty) {
+  //         List<UploadImage> uploadedUrls = [];
+
+  //         for (var img in images) {
+  //           uploadImages = await AuthApi().upload(img.path);
+  //           uploadedUrls.add(uploadImages);
+  //         }
+  //         campData.images = uploadedUrls
+  //             .map((tagObject) => tagObject.url)
+  //             .cast<String>()
+  //             .toList();
+  //       }
+
+  //       campData.travelOffers = widget.campData.travelOffers != null
+  //           ? widget.campData.travelOffers!.map((d) {
+  //               return TravelOffers(
+  //                 travelOffer: d.id,
+  //                 price: d.price,
+  //                 maxQuantity: d.maxQuantity,
+  //               );
+  //             }).toList()
+  //           : null;
+
+  //       await ProductApi().editCampData(campData, widget.campData.id!);
+  //       await showCreateSuccess(
+  //         context,
+  //         '${translateKey.translate('successfully_updated_admin_review')}',
+  //       );
+  //       setState(() {
+  //         isLoadingButton = false;
+  //       });
+  //     } catch (e) {
+  //       setState(() {
+  //         isLoadingButton = false;
+  //       });
+  //     }
+  //   }
+  // }
+
+  // showCreateSuccess(context, String text) async {
+  //   final local = Provider.of<LocalizationProvider>(context, listen: false);
+  //   showDialog(
+  //     barrierDismissible: false,
+  //     context: context,
+  //     builder: (context) {
+  //       return Container(
+  //         alignment: Alignment.center,
+  //         margin: const EdgeInsets.symmetric(horizontal: 20),
+  //         child: Container(
+  //           decoration: BoxDecoration(
+  //             color: Colors.white,
+  //             borderRadius: BorderRadius.circular(12),
+  //           ),
+  //           padding: const EdgeInsets.all(16),
+  //           child: Column(
+  //             mainAxisSize: MainAxisSize.min,
+  //             children: <Widget>[
+  //               SvgPicture.asset('assets/svg/success1.svg'),
+  //               Text(
+  //                 local.translate('successful'),
+  //                 style: TextStyle(
+  //                   color: black,
+  //                   fontWeight: FontWeight.w700,
+  //                   fontSize: 18,
+  //                   decoration: TextDecoration.none,
+  //                 ),
+  //               ),
+  //               const SizedBox(height: 16),
+  //               Text(
+  //                 '$text',
+  //                 style: TextStyle(
+  //                   color: gray600,
+  //                   fontSize: 14,
+  //                   fontWeight: FontWeight.w500,
+  //                   decoration: TextDecoration.none,
+  //                 ),
+  //                 textAlign: TextAlign.center,
+  //               ),
+  //               ButtonBar(
+  //                 buttonMinWidth: 100,
+  //                 alignment: MainAxisAlignment.spaceEvenly,
+  //                 children: <Widget>[
+  //                   TextButton(
+  //                     style: ButtonStyle(
+  //                       overlayColor: MaterialStateProperty.all(
+  //                         Colors.transparent,
+  //                       ),
+  //                     ),
+  //                     child: Text(
+  //                       local.translate('close'),
+  //                       style: TextStyle(
+  //                         color: black,
+  //                         fontWeight: FontWeight.w500,
+  //                         fontSize: 16,
+  //                       ),
+  //                     ),
+  //                     onPressed: () {
+  //                       Navigator.of(context).pop();
+  //                       Navigator.of(context).pop();
+  //                     },
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   onSubmit() async {
-    // if (droppedPin == null) {
-    //   setState(() {
-    //     dropPinError = true;
-    //   });
-    // } else {
-    //   setState(() {
-    //     dropPinError = false;
-    //   });
-    // }
-    // if (selectedLevel0 == null) {
-    //   setState(() {
-    //     level0Error = true;
-    //   });
-    // } else {
-    //   setState(() {
-    //     level0Error = false;
-    //   });
-    // }
-    // if (selectedLevel1 == null) {
-    //   setState(() {
-    //     level1Error = true;
-    //   });
-    // } else {
-    //   setState(() {
-    //     level1Error = false;
-    //   });
-    // }
+    final translateKey = Provider.of<LocalizationProvider>(
+      context,
+      listen: false,
+    );
+    if (droppedPin == null) {
+      setState(() {
+        dropPinError = true;
+      });
+    } else {
+      setState(() {
+        dropPinError = false;
+      });
+    }
+    if (selectedLevel0 == null) {
+      setState(() {
+        level0Error = true;
+      });
+    } else {
+      setState(() {
+        level0Error = false;
+      });
+    }
+    if (selectedLevel1 == null) {
+      setState(() {
+        level1Error = true;
+      });
+    } else {
+      setState(() {
+        level1Error = false;
+      });
+    }
 
-    // if (fbkey.currentState!.saveAndValidate() &&
-    //     selectedLevel0 != null &&
-    //     selectedLevel1 != null &&
-    //     droppedPin != null) {
-    //   try {
-    //     setState(() {
-    //       isLoadingButton = true;
-    //     });
-    //     print(isLoadingButton);
-    //     print('=====am in ?? =====');
-    //     await Provider.of<CampCreateProvider>(
-    //       context,
-    //       listen: false,
-    //     ).updateLevel0(
-    //       newLevel0: selectedLevel0 != null ? selectedLevel0!.id! : '',
-    //     );
+    if (fbkey.currentState!.saveAndValidate() &&
+        selectedLevel0 != null &&
+        selectedLevel1 != null &&
+        droppedPin != null) {
+      try {
+        setState(() {
+          isLoadingButton = true;
+        });
+        CampCreateModel campData = CampCreateModel();
 
-    //     await Provider.of<CampCreateProvider>(
-    //       context,
-    //       listen: false,
-    //     ).updateLevel1(
-    //       newLevel1: selectedLevel1 != null ? selectedLevel1!.id! : '',
-    //     );
-    //     await Provider.of<CampCreateProvider>(
-    //       context,
-    //       listen: false,
-    //     ).updateLevel2(
-    //       newLevel2: selectedLevel2 != null ? selectedLevel2!.id! : '',
-    //     );
-    //     await Provider.of<CampCreateProvider>(
-    //       context,
-    //       listen: false,
-    //     ).updateLevel3(
-    //       newLevel3: selectedLevel3 != null ? selectedLevel3!.id! : '',
-    //     );
-    //     await Provider.of<CampCreateProvider>(
-    //       context,
-    //       listen: false,
-    //     ).updateAddressDetail(newAddressDetail: campInfo.text);
-    //     await Provider.of<CampCreateProvider>(
-    //       context,
-    //       listen: false,
-    //     ).updateZone(newZone: selectedZone ?? '');
-    //     await Provider.of<CampCreateProvider>(
-    //       context,
-    //       listen: false,
-    //     ).updateLocation(
-    //       newLatitude: droppedPin != null
-    //           ? droppedPin!.latitude.toString()
-    //           : '',
-    //       newLongitude: droppedPin != null
-    //           ? droppedPin!.longitude.toString()
-    //           : '',
-    //     );
+        campData.name = widget.campData.name;
 
-    //     // widget.pageController.nextPage(
-    //     //   duration: Duration(microseconds: 1000),
-    //     //   curve: Curves.ease,
-    //     // );
-    //     setState(() {
-    //       isLoadingButton = false;
-    //     });
-    //   } catch (e) {
-    //     setState(() {
-    //       isLoadingButton = false;
-    //     });
-    //   }
-    // }
+        campData.description = widget.campData.description;
+
+        campData.longitude = droppedPin != null ? droppedPin!.longitude : null;
+        campData.latitude = droppedPin != null ? droppedPin!.latitude : null;
+
+        campData.level0 = selectedLevel0 != null ? selectedLevel0!.id! : '';
+        campData.level1 = selectedLevel1 != null ? selectedLevel1!.id! : '';
+        campData.level2 = selectedLevel2 != null ? selectedLevel2!.id! : '';
+        campData.level3 = selectedLevel3 != null ? selectedLevel3!.id! : '';
+
+        campData.level1 = widget.campData.level1 != null
+            ? widget.campData.level1!.id
+            : null;
+        campData.level2 = widget.campData.level2 != null
+            ? widget.campData.level2!.id
+            : null;
+        campData.level3 = widget.campData.level3 != null
+            ? widget.campData.level3!.id
+            : null;
+
+        campData.additionalInformation = campInfo.text;
+        campData.checkInTime = widget.campData.checkInTime;
+        campData.checkOutTime = widget.campData.checkOutTime;
+
+        campData.isOpenYearRound = widget.campData.isOpenYearRound;
+        campData.zone = selectedZone ?? null;
+
+        campData.tags = widget.campData.tags != null
+            ? widget.campData.tags!
+                  .map((tagObject) => tagObject.id)
+                  .cast<String>()
+                  .toList()
+            : null;
+
+        campData.placeOffers = widget.campData.placeOffers != null
+            ? widget.campData.placeOffers!
+                  .map((tagObject) => tagObject.id)
+                  .cast<String>()
+                  .toList()
+            : null;
+
+        campData.discounts = widget.campData.discounts != null
+            ? widget.campData.discounts!.map((d) {
+                return DiscountTypes(discountType: d.discountType!.id, rate: d.rate);
+              }).toList()
+            : null;
+
+        campData.cancelPolicies = widget.campData.cancelPolicies != null
+            ? widget.campData.cancelPolicies!.map((d) {
+                return CancelPolicy(cancelPolicy: d.cancelPolicy!.id, rate: d.rate);
+              }).toList()
+            : null;
+        campData.mainImage = widget.campData.mainImage?.url;
+        campData.images = widget.campData.images != null
+            ? widget.campData.images!
+                  .map((tagObject) => tagObject.url)
+                  .cast<String>()
+                  .toList()
+            : null;
+
+        campData.travelOffers = widget.campData.travelOffers != null
+            ? widget.campData.travelOffers!.map((d) {
+                return TravelOffers(
+                  travelOffer: d.travelOffer!.id,
+                  price: d.price,
+                  maxQuantity: d.maxQuantity,
+                );
+              }).toList()
+            : null;
+
+        await ProductApi().editCampData(campData, widget.campData.id!);
+
+        await showCreateSuccess(
+          context,
+          '${translateKey.translate('successfully_updated_admin_review')}',
+        );
+        // widget.pageController.nextPage(
+        //   duration: Duration(microseconds: 1000),
+        //   curve: Curves.ease,
+        // );
+        setState(() {
+          isLoadingButton = false;
+        });
+      } catch (e) {
+        setState(() {
+          isLoadingButton = false;
+        });
+      }
+    }
+  }
+
+  showCreateSuccess(context, String text) async {
+    final local = Provider.of<LocalizationProvider>(context, listen: false);
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return Container(
+          alignment: Alignment.center,
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SvgPicture.asset('assets/svg/success1.svg'),
+                Text(
+                  local.translate('successful'),
+                  style: TextStyle(
+                    color: black,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
+                    decoration: TextDecoration.none,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  '$text',
+                  style: TextStyle(
+                    color: gray600,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.none,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                ButtonBar(
+                  buttonMinWidth: 100,
+                  alignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    TextButton(
+                      style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.all(
+                          Colors.transparent,
+                        ),
+                      ),
+                      child: Text(
+                        local.translate('close'),
+                        style: TextStyle(
+                          color: black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override

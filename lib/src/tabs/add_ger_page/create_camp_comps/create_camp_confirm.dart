@@ -75,148 +75,152 @@ class _CreateCampConfirmState extends State<CreateCampConfirm>
       listen: false,
     );
 
-    try {
-      final createCampRoot = Provider.of<CampCreateProvider>(
-        context,
-        listen: false,
-      );
-      CampCreateModel campData = CampCreateModel();
-      setState(() {
-        isLoadingButton = true;
-      });
+    final createCampRoot = Provider.of<CampCreateProvider>(
+      context,
+      listen: false,
+    );
+    if (createCampRoot.gerName != '') {
+      try {
+        CampCreateModel campData = CampCreateModel();
+        setState(() {
+          isLoadingButton = true;
+        });
 
-      campData.name = createCampRoot.name;
+        campData.name = createCampRoot.name;
 
-      campData.description = createCampRoot.description;
+        campData.description = createCampRoot.description;
 
-      campData.longitude = num.parse(createCampRoot.longitude);
-      campData.latitude = num.parse(createCampRoot.latitude);
-      campData.level0 = createCampRoot.level0;
-      campData.level1 = createCampRoot.level1;
-      if (createCampRoot.level2 != '') {
-        campData.level2 = createCampRoot.level2;
-      }
-      if (createCampRoot.level3 != '') {
-        campData.level3 = createCampRoot.level3;
-      }
-      campData.additionalInformation = createCampRoot.addressDetail;
-      campData.checkInTime = createCampRoot.checkInTime;
-      campData.checkOutTime = createCampRoot.checkOutTime;
+        campData.longitude = num.parse(createCampRoot.longitude);
+        campData.latitude = num.parse(createCampRoot.latitude);
+        campData.level0 = createCampRoot.level0;
+        campData.level1 = createCampRoot.level1;
+        if (createCampRoot.level2 != '') {
+          campData.level2 = createCampRoot.level2;
+        }
+        if (createCampRoot.level3 != '') {
+          campData.level3 = createCampRoot.level3;
+        }
+        campData.additionalInformation = createCampRoot.addressDetail;
+        campData.checkInTime = createCampRoot.checkInTime;
+        campData.checkOutTime = createCampRoot.checkOutTime;
 
-      campData.isOpenYearRound = createCampRoot.fourSeason;
-      campData.zone = createCampRoot.zoneId;
+        campData.isOpenYearRound = createCampRoot.fourSeason;
+        campData.zone = createCampRoot.zoneId != ''
+            ? createCampRoot.zoneId
+            : null;
 
-      campData.tags = createCampRoot.tags
-          .map((tagObject) => tagObject.id)
-          .cast<String>()
-          .toList();
+        campData.tags = createCampRoot.tags
+            .map((tagObject) => tagObject.id)
+            .cast<String>()
+            .toList();
 
-      campData.placeOffers = createCampRoot.placeOffers
-          .map((tagObject) => tagObject.id)
-          .cast<String>()
-          .toList();
+        campData.placeOffers = createCampRoot.placeOffers
+            .map((tagObject) => tagObject.id)
+            .cast<String>()
+            .toList();
 
-      // campData.tags = createCampRoot.tags;
-      // campData.placeOffers = createCampRoot.placeOffers;
-      // campData.discounts = createCampRoot.discount
-      //     .map((d) {
-      //       return {
-      //         "discountType": d.id,
-      //         "rate": d.procent.toString(), // эсвэл d.rate
-      //       };
-      //     })
-      //     .cast<DiscountTypes>()
-      //     .toList();
-      campData.discounts = createCampRoot.discount.map((d) {
-        return DiscountTypes(discountType: d.id, rate: d.procent);
-      }).toList();
+        // campData.tags = createCampRoot.tags;
+        // campData.placeOffers = createCampRoot.placeOffers;
+        // campData.discounts = createCampRoot.discount
+        //     .map((d) {
+        //       return {
+        //         "discountType": d.id,
+        //         "rate": d.procent.toString(), // эсвэл d.rate
+        //       };
+        //     })
+        //     .cast<DiscountTypes>()
+        //     .toList();
+        campData.discounts = createCampRoot.discount.map((d) {
+          return DiscountTypes(discountType: d.id, rate: d.procent);
+        }).toList();
 
-      // campData.discounts = createCampRoot.discount;
-      // campData.cancelPolicies = createCampRoot.cancelPolicy
-      //     .map((d) {
-      //       return {
-      //         "discountType": d.id,
-      //         "rate": d.rate.toString(), // эсвэл d.rate
-      //       };
-      //     })
-      //     .cast<CancelPolicy>()
-      //     .toList();
-      campData.cancelPolicies = createCampRoot.cancelPolicy.map((d) {
-        return CancelPolicy(cancelPolicy: d.id, rate: d.rate);
-      }).toList();
+        // campData.discounts = createCampRoot.discount;
+        // campData.cancelPolicies = createCampRoot.cancelPolicy
+        //     .map((d) {
+        //       return {
+        //         "discountType": d.id,
+        //         "rate": d.rate.toString(), // эсвэл d.rate
+        //       };
+        //     })
+        //     .cast<CancelPolicy>()
+        //     .toList();
+        campData.cancelPolicies = createCampRoot.cancelPolicy.map((d) {
+          return CancelPolicy(cancelPolicy: d.id, rate: d.rate);
+        }).toList();
 
-      // campData.cancelPolicies = createCampRoot.cancelPolicy;
-      campData.images = createCampRoot.images
-          .map((tagObject) => tagObject.url)
-          .cast<String>()
-          .toList();
+        // campData.cancelPolicies = createCampRoot.cancelPolicy;
+        campData.images = createCampRoot.images
+            .map((tagObject) => tagObject.url)
+            .cast<String>()
+            .toList();
 
-      // campData.images = createCampRoot.images;
-      campData.mainImage = createCampRoot.mainImage.url;
-      // campData.mainImage = createCampRoot.mainImage;
-      // campData.travelOffers = createCampRoot.travelOffers
-      //     .map((d) {
-      //       return {
-      //         "travelOffer": d.id,
-      //         "price": d.price,
-      //         "maxQuantity": d.maxQuantity,
-      //       };
-      //     })
-      //     .cast<TravelOffers>()
-      //     .toList();
-      campData.travelOffers = createCampRoot.travelOffers.map((d) {
-        return TravelOffers(
-          travelOffer: d.id,
-          price: d.price,
-          maxQuantity: d.maxQuantity,
-        );
-      }).toList();
-      print('========ibj=-====');
-      print(isLoadingButton);
-      print(campData.travelOffers);
-      print('=data==');
-      print(
-        createCampRoot.travelOffers.map((d) {
+        // campData.images = createCampRoot.images;
+        campData.mainImage = createCampRoot.mainImage.url;
+        // campData.mainImage = createCampRoot.mainImage;
+        // campData.travelOffers = createCampRoot.travelOffers
+        //     .map((d) {
+        //       return {
+        //         "travelOffer": d.id,
+        //         "price": d.price,
+        //         "maxQuantity": d.maxQuantity,
+        //       };
+        //     })
+        //     .cast<TravelOffers>()
+        //     .toList();
+        campData.travelOffers = createCampRoot.travelOffers.map((d) {
           return TravelOffers(
             travelOffer: d.id,
             price: d.price,
             maxQuantity: d.maxQuantity,
           );
-        }).toList(),
-      );
-      print('========ibj=-====');
+        }).toList();
+        print('========ibj=-====');
+        print(isLoadingButton);
+        print(campData.travelOffers);
+        print('=data==');
+        print(
+          createCampRoot.travelOffers.map((d) {
+            return TravelOffers(
+              travelOffer: d.id,
+              price: d.price,
+              maxQuantity: d.maxQuantity,
+            );
+          }).toList(),
+        );
+        print('========ibj=-====');
 
-      // campData.travelOffers = createCampRoot.travelOffers;
+        // campData.travelOffers = createCampRoot.travelOffers;
 
-      campData.properties = [
-        CreateCampProperty(
-          name: createCampRoot.gerName,
-          description: createCampRoot.gerDescription,
-          images: createCampRoot.gerImages
-              .map((tagObject) => tagObject.url)
-              .cast<String>()
-              .toList(),
-          mainImage: createCampRoot.gerMainImage.url,
-          bedsCount: int.tryParse(createCampRoot.gerBedCount),
-          price: createCampRoot.gerPrice,
-          originalPrice: createCampRoot.gerPrice,
-          maxPersonCount: int.tryParse(createCampRoot.gerMaxPerson),
-          quantity: int.tryParse(createCampRoot.gerQuantity),
-        ),
-      ];
+        campData.properties = [
+          CreateCampProperty(
+            name: createCampRoot.gerName,
+            description: createCampRoot.gerDescription,
+            images: createCampRoot.gerImages
+                .map((tagObject) => tagObject.url)
+                .cast<String>()
+                .toList(),
+            mainImage: createCampRoot.gerMainImage.url,
+            bedsCount: int.tryParse(createCampRoot.gerBedCount),
+            price: createCampRoot.gerPrice,
+            originalPrice: createCampRoot.gerPrice,
+            maxPersonCount: int.tryParse(createCampRoot.gerMaxPerson),
+            quantity: int.tryParse(createCampRoot.gerQuantity),
+          ),
+        ];
 
-      await ProductApi().createCampApi(campData);
-      await showCreateSuccess(
-        context,
-        '${translateKey.translate('listing_created_successfully')}',
-      );
-      setState(() {
-        isLoadingButton = false;
-      });
-    } catch (e) {
-      setState(() {
-        isLoadingButton = false;
-      });
+        await ProductApi().createCampApi(campData);
+        await showCreateSuccess(
+          context,
+          '${translateKey.translate('listing_created_successfully')}',
+        );
+        setState(() {
+          isLoadingButton = false;
+        });
+      } catch (e) {
+        setState(() {
+          isLoadingButton = false;
+        });
+      }
     }
   }
 
@@ -896,7 +900,7 @@ class _CreateCampConfirmState extends State<CreateCampConfirm>
                                           ),
                                           SizedBox(height: 2),
                                           Text(
-                                            '₮${campProvider.gerPrice}',
+                                            '₮${campProvider.gerOriginalPrice}',
                                             style: TextStyle(
                                               color: primary,
                                               fontSize: 20,
@@ -1013,7 +1017,9 @@ class _CreateCampConfirmState extends State<CreateCampConfirm>
                                         },
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: primary,
+                                      color: campProvider.gerName == ''
+                                          ? primary200
+                                          : primary,
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     padding: EdgeInsets.symmetric(

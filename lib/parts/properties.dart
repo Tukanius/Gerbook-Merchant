@@ -25,6 +25,9 @@ Properties _$PropertiesFromJson(Map<String, dynamic> json) {
         : null,
     longitude: json['longitude'] != null ? json['longitude'] as num : null,
     latitude: json['latitude'] != null ? json['latitude'] as num : null,
+    // discountedPrice: json['discountedPrice'] != null
+    //     ? json['discountedPrice'] as num
+    //     : null,
     // location:
     //     json['location'] != null ? Location.fromJson(json['location']) : null,
     bedRoomsCount: json['bedRoomsCount'] != null
@@ -131,6 +134,16 @@ Properties _$PropertiesFromJson(Map<String, dynamic> json) {
     isAdminActive: json['isAdminActive'] != null
         ? json['isAdminActive'] as bool
         : null,
+    specialDates: json['specialDates'] != null
+        ? (json['specialDates'] as List)
+              .map((e) => SpecialDates.fromJson(e))
+              .toList()
+        : null,
+    blockedDates: json['blockedDates'] != null
+        ? (json['blockedDates'] as List)
+              .map((e) => BlockedDates.fromJson(e))
+              .toList()
+        : null,
   );
 }
 
@@ -207,6 +220,13 @@ Map<String, dynamic> _$PropertiesToJson(Properties instance) {
   if (instance.isActive != null) json['isActive'] = instance.isActive;
   if (instance.isAdminActive != null)
     json['isAdminActive'] = instance.isAdminActive;
+  if (instance.blockedDates != null)
+    json['blockedDates'] = instance.blockedDates;
+  if (instance.specialDates != null)
+    json['specialDates'] = instance.specialDates;
+
+  // if (instance.discountedPrice != null)
+  //   json['discountedPrice'] = instance.discountedPrice;
 
   return json;
 }

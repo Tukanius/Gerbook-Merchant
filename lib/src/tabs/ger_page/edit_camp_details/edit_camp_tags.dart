@@ -12,16 +12,28 @@ import 'package:intl/intl.dart';
 import 'package:merchant_gerbook_flutter/api/product_api.dart';
 import 'package:merchant_gerbook_flutter/components/custom_loader/custom_loader.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
+import 'package:merchant_gerbook_flutter/models/camp_create_model.dart';
+import 'package:merchant_gerbook_flutter/models/camp_data_edit.dart';
+import 'package:merchant_gerbook_flutter/models/cancel_policy.dart';
+import 'package:merchant_gerbook_flutter/models/discount_types.dart';
 import 'package:merchant_gerbook_flutter/models/place_offers.dart';
 import 'package:merchant_gerbook_flutter/models/result.dart';
 import 'package:merchant_gerbook_flutter/models/tags.dart';
+import 'package:merchant_gerbook_flutter/models/travel_offers.dart';
 // import 'package:merchant_gerbook_flutter/provider/camp_create_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:provider/provider.dart';
 
+class EditCampTagsArguments {
+  final CampDataEdit campData;
+  EditCampTagsArguments({required this.campData});
+}
+
 class EditCampTags extends StatefulWidget {
+  final CampDataEdit campData;
+
   static const routeName = "EditCampTags";
-  const EditCampTags({super.key});
+  const EditCampTags({super.key, required this.campData});
 
   @override
   State<EditCampTags> createState() => _EditCampTagsState();
@@ -106,43 +118,237 @@ class _EditCampTagsState extends State<EditCampTags> with AfterLayoutMixin {
   String? checkInTime;
   String? checkOutTime;
 
+  // onSubmit() async {
+  //   try {
+  //     setState(() {
+  //       isLoadingButton = true;
+  //     });
+  //     print(isLoadingButton);
+  //     print('=====am in ?? =====');
+  //     await Provider.of<CampCreateProvider>(
+  //       context,
+  //       listen: false,
+  //     ).updateOffers(newOffers: filterOffers);
+
+  //     await Provider.of<CampCreateProvider>(
+  //       context,
+  //       listen: false,
+  //     ).updateTags(newTags: filterTags);
+  //     // await Provider.of<CampCreateProvider>(
+  //     //   context,
+  //     //   listen: false,
+  //     // ).updateCheckIn(newCheckIn: checkInTime.toString());
+  //     // await Provider.of<CampCreateProvider>(
+  //     //   context,
+  //     //   listen: false,
+  //     // ).updateCheckOut(newCheckOut: checkOutTime.toString());
+  //     // await Provider.of<CampCreateProvider>(
+  //     //   context,
+  //     //   listen: false,
+  //     // ).updateFourSeasong(newFourSeason: is4Season);
+
+  //     setState(() {
+  //       isLoadingButton = false;
+  //     });
+  //   } catch (e) {
+  //     setState(() {
+  //       isLoadingButton = false;
+  //     });
+  //   }
+  // }
+
+  bool showTimeError = false;
+
   onSubmit() async {
-    // try {
-    //   setState(() {
-    //     isLoadingButton = true;
-    //   });
-    //   print(isLoadingButton);
-    //   print('=====am in ?? =====');
-    //   await Provider.of<CampCreateProvider>(
-    //     context,
-    //     listen: false,
-    //   ).updateOffers(newOffers: filterOffers);
+    final translateKey = Provider.of<LocalizationProvider>(
+      context,
+      listen: false,
+    );
+    if (checkInTime == null && checkOutTime == null) {
+      setState(() {
+        showTimeError = true;
+      });
+    } else {
+      setState(() {
+        showTimeError = false;
+      });
+    }
+    // final createCampRoot = Provider.of<CampCreateProvider>(
+    //   context,
+    //   listen: false,
+    // );
+    if (checkInTime != null && checkOutTime != null) {
+      try {
+        CampCreateModel campData = CampCreateModel();
+        setState(() {
+          isLoadingButton = true;
+        });
 
-    //   await Provider.of<CampCreateProvider>(
-    //     context,
-    //     listen: false,
-    //   ).updateTags(newTags: filterTags);
-    //   await Provider.of<CampCreateProvider>(
-    //     context,
-    //     listen: false,
-    //   ).updateCheckIn(newCheckIn: checkInTime.toString());
-    //   await Provider.of<CampCreateProvider>(
-    //     context,
-    //     listen: false,
-    //   ).updateCheckOut(newCheckOut: checkOutTime.toString());
-    //   await Provider.of<CampCreateProvider>(
-    //     context,
-    //     listen: false,
-    //   ).updateFourSeasong(newFourSeason: is4Season);
+        campData.name = widget.campData.name;
 
-    //   setState(() {
-    //     isLoadingButton = false;
-    //   });
-    // } catch (e) {
-    //   setState(() {
-    //     isLoadingButton = false;
-    //   });
-    // }
+        campData.description = widget.campData.description;
+
+        campData.longitude = widget.campData.longitude;
+        campData.latitude = widget.campData.latitude;
+
+        campData.level0 = widget.campData.level0 != null
+            ? widget.campData.level0!.id
+            : null;
+        campData.level1 = widget.campData.level1 != null
+            ? widget.campData.level1!.id
+            : null;
+        campData.level2 = widget.campData.level2 != null
+            ? widget.campData.level2!.id
+            : null;
+        campData.level3 = widget.campData.level3 != null
+            ? widget.campData.level3!.id
+            : null;
+
+        campData.additionalInformation = widget.campData.addressString;
+        campData.checkInTime = checkInTime;
+        campData.checkOutTime = checkOutTime;
+
+        campData.isOpenYearRound = is4Season;
+        campData.zone = widget.campData.zone != null
+            ? widget.campData.zone!.id
+            : null;
+
+        campData.tags = filterTags != []
+            ? filterTags
+                  .map((tagObject) => tagObject.id)
+                  .cast<String>()
+                  .toList()
+            : null;
+
+        campData.placeOffers = filterOffers != []
+            ? filterOffers
+                  .map((tagObject) => tagObject.id)
+                  .cast<String>()
+                  .toList()
+            : null;
+
+        campData.discounts = widget.campData.discounts != null
+            ? widget.campData.discounts!.map((d) {
+                return DiscountTypes(
+                  discountType: d.discountType!.id,
+                  rate: d.rate,
+                );
+              }).toList()
+            : null;
+
+        campData.cancelPolicies = widget.campData.cancelPolicies != null
+            ? widget.campData.cancelPolicies!.map((d) {
+                return CancelPolicy(
+                  cancelPolicy: d.cancelPolicy!.id,
+                  rate: d.rate,
+                );
+              }).toList()
+            : null;
+
+        campData.mainImage = widget.campData.mainImage?.url;
+        campData.images = widget.campData.images != null
+            ? widget.campData.images!
+                  .map((tagObject) => tagObject.url)
+                  .cast<String>()
+                  .toList()
+            : null;
+
+        campData.travelOffers = widget.campData.travelOffers != null
+            ? widget.campData.travelOffers!.map((d) {
+                return TravelOffers(
+                  travelOffer: d.travelOffer!.id,
+                  price: d.price,
+                  maxQuantity: d.maxQuantity,
+                );
+              }).toList()
+            : null;
+
+        await ProductApi().editCampData(campData, widget.campData.id!);
+        await showCreateSuccess(
+          context,
+          '${translateKey.translate('successfully_updated_admin_review')}',
+        );
+        setState(() {
+          isLoadingButton = false;
+        });
+      } catch (e) {
+        setState(() {
+          isLoadingButton = false;
+        });
+      }
+    }
+  }
+
+  showCreateSuccess(context, String text) async {
+    final local = Provider.of<LocalizationProvider>(context, listen: false);
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return Container(
+          alignment: Alignment.center,
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SvgPicture.asset('assets/svg/success1.svg'),
+                Text(
+                  local.translate('successful'),
+                  style: TextStyle(
+                    color: black,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
+                    decoration: TextDecoration.none,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  '$text',
+                  style: TextStyle(
+                    color: gray600,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.none,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                ButtonBar(
+                  buttonMinWidth: 100,
+                  alignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    TextButton(
+                      style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.all(
+                          Colors.transparent,
+                        ),
+                      ),
+                      child: Text(
+                        local.translate('close'),
+                        style: TextStyle(
+                          color: black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -584,6 +790,27 @@ class _EditCampTagsState extends State<EditCampTags> with AfterLayoutMixin {
                                     ),
                                   ],
                                 ),
+                                showTimeError == true
+                                    ? Column(
+                                        children: [
+                                          SizedBox(height: 12),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  '${translateKey.translate('this_field_is_required')}',
+                                                  style: TextStyle(
+                                                    color: redButton,
+                                                    fontSize: 11,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                    : SizedBox(),
                                 SizedBox(
                                   height: mediaQuery.padding.bottom + 150,
                                 ),

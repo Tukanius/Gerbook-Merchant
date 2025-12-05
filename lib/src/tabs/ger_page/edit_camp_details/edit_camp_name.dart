@@ -5,15 +5,28 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:merchant_gerbook_flutter/api/product_api.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
 import 'package:merchant_gerbook_flutter/components/ui/form_textfield.dart';
+import 'package:merchant_gerbook_flutter/models/camp_create_model.dart';
+import 'package:merchant_gerbook_flutter/models/camp_data_edit.dart';
+import 'package:merchant_gerbook_flutter/models/cancel_policy.dart';
+import 'package:merchant_gerbook_flutter/models/discount_types.dart';
+import 'package:merchant_gerbook_flutter/models/travel_offers.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:provider/provider.dart';
 
+class EditCampNameArguments {
+  final CampDataEdit campData;
+  EditCampNameArguments({required this.campData});
+}
+
 class EditCampName extends StatefulWidget {
+  final CampDataEdit campData;
+
   static const routeName = "EditCampName";
 
-  const EditCampName({super.key});
+  const EditCampName({super.key, required this.campData});
 
   @override
   State<EditCampName> createState() => _EditCampNameState();
@@ -47,29 +60,212 @@ class _EditCampNameState extends State<EditCampName> {
     super.dispose();
   }
 
-  onSubmit() async {
-    // if (fbkey.currentState!.saveAndValidate()) {
-    //   try {
-    //     setState(() {
-    //       isLoadingButton = true;
-    //     });
-    //     await Provider.of<CampCreateProvider>(
-    //       context,
-    //       listen: false,
-    //     ).updateNameAndInfo(
-    //       newName: campName.text.trim(),
-    //       newDescription: campInfo.text.trim(),
-    //     );
+  // onSubmit() async {
+  //   // if (fbkey.currentState!.saveAndValidate()) {
+  //   //   try {
+  //   //     setState(() {
+  //   //       isLoadingButton = true;
+  //   //     });
+  //   //     await Provider.of<CampCreateProvider>(
+  //   //       context,
+  //   //       listen: false,
+  //   //     ).updateNameAndInfo(
+  //   //       newName: campName.text.trim(),
+  //   //       newDescription: campInfo.text.trim(),
+  //   //     );
 
-    //     setState(() {
-    //       isLoadingButton = false;
-    //     });
-    //   } catch (e) {
-    //     setState(() {
-    //       isLoadingButton = false;
-    //     });
-    //   }
-    // }
+  //   //     setState(() {
+  //   //       isLoadingButton = false;
+  //   //     });
+  //   //   } catch (e) {
+  //   //     setState(() {
+  //   //       isLoadingButton = false;
+  //   //     });
+  //   //   }
+  //   // }
+  // }
+  onSubmit() async {
+    final translateKey = Provider.of<LocalizationProvider>(
+      context,
+      listen: false,
+    );
+
+    // final createCampRoot = Provider.of<CampCreateProvider>(
+    //   context,
+    //   listen: false,
+    // );
+    if (fbkey.currentState!.saveAndValidate()) {
+      try {
+        CampCreateModel campData = CampCreateModel();
+        setState(() {
+          isLoadingButton = true;
+        });
+
+        campData.name = campName.text.trim();
+
+        campData.description = campInfo.text.trim();
+
+        campData.longitude = widget.campData.longitude;
+        campData.latitude = widget.campData.latitude;
+
+        campData.level0 = widget.campData.level0 != null
+            ? widget.campData.level0!.id
+            : null;
+        campData.level1 = widget.campData.level1 != null
+            ? widget.campData.level1!.id
+            : null;
+        campData.level2 = widget.campData.level2 != null
+            ? widget.campData.level2!.id
+            : null;
+        campData.level3 = widget.campData.level3 != null
+            ? widget.campData.level3!.id
+            : null;
+
+        campData.additionalInformation = widget.campData.addressString;
+        campData.checkInTime = widget.campData.checkInTime;
+        campData.checkOutTime = widget.campData.checkOutTime;
+
+        campData.isOpenYearRound = widget.campData.isOpenYearRound;
+        campData.zone = widget.campData.zone != null
+            ? widget.campData.zone!.id
+            : null;
+
+        campData.tags = widget.campData.tags != null
+            ? widget.campData.tags!
+                  .map((tagObject) => tagObject.id)
+                  .cast<String>()
+                  .toList()
+            : null;
+
+        campData.placeOffers = widget.campData.placeOffers != null
+            ? widget.campData.placeOffers!
+                  .map((tagObject) => tagObject.id)
+                  .cast<String>()
+                  .toList()
+            : null;
+
+        campData.discounts = widget.campData.discounts != null
+            ? widget.campData.discounts!.map((d) {
+                return DiscountTypes(
+                  discountType: d.discountType!.id,
+                  rate: d.rate,
+                );
+              }).toList()
+            : null;
+
+        campData.cancelPolicies = widget.campData.cancelPolicies != null
+            ? widget.campData.cancelPolicies!.map((d) {
+                return CancelPolicy(
+                  cancelPolicy: d.cancelPolicy!.id,
+                  rate: d.rate,
+                );
+              }).toList()
+            : null;
+
+        campData.mainImage = widget.campData.mainImage?.url;
+        campData.images = widget.campData.images != null
+            ? widget.campData.images!
+                  .map((tagObject) => tagObject.url)
+                  .cast<String>()
+                  .toList()
+            : null;
+
+        campData.travelOffers = widget.campData.travelOffers != null
+            ? widget.campData.travelOffers!.map((d) {
+                return TravelOffers(
+                  travelOffer: d.travelOffer!.id,
+                  price: d.price,
+                  maxQuantity: d.maxQuantity,
+                );
+              }).toList()
+            : null;
+
+        await ProductApi().editCampData(campData, widget.campData.id!);
+        await showCreateSuccess(
+          context,
+          '${translateKey.translate('successfully_updated_admin_review')}',
+        );
+        setState(() {
+          isLoadingButton = false;
+        });
+      } catch (e) {
+        setState(() {
+          isLoadingButton = false;
+        });
+      }
+    }
+  }
+
+  showCreateSuccess(context, String text) async {
+    final local = Provider.of<LocalizationProvider>(context, listen: false);
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return Container(
+          alignment: Alignment.center,
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SvgPicture.asset('assets/svg/success1.svg'),
+                Text(
+                  local.translate('successful'),
+                  style: TextStyle(
+                    color: black,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
+                    decoration: TextDecoration.none,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  '$text',
+                  style: TextStyle(
+                    color: gray600,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.none,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                ButtonBar(
+                  buttonMinWidth: 100,
+                  alignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    TextButton(
+                      style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.all(
+                          Colors.transparent,
+                        ),
+                      ),
+                      child: Text(
+                        local.translate('close'),
+                        style: TextStyle(
+                          color: black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override

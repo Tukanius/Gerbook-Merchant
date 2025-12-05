@@ -9,6 +9,7 @@ class CampListData {
   String? name;
   String? description;
   num? price;
+  num? originalPrice;
   // List<Images>? images;
   Images? mainImage;
   // Level0? level0;
@@ -66,6 +67,7 @@ class CampListData {
     this.updatedAt,
     this.price,
     this.capacity,
+    this.originalPrice,
   });
   factory CampListData.fromJson(Map<String, dynamic> json) =>
       _$CampListDataFromJson(json);

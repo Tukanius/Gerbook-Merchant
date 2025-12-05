@@ -6,35 +6,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:merchant_gerbook_flutter/api/auth_api.dart';
-import 'package:merchant_gerbook_flutter/api/product_api.dart';
 import 'package:merchant_gerbook_flutter/components/controller/listen.dart';
 import 'package:merchant_gerbook_flutter/components/custom_loader/custom_loader.dart';
 import 'package:merchant_gerbook_flutter/components/ui/color.dart';
-import 'package:merchant_gerbook_flutter/models/camp_create_model.dart';
-import 'package:merchant_gerbook_flutter/models/camp_data_edit.dart';
-import 'package:merchant_gerbook_flutter/models/cancel_policy.dart';
-import 'package:merchant_gerbook_flutter/models/discount_types.dart';
-import 'package:merchant_gerbook_flutter/models/travel_offers.dart';
 import 'package:merchant_gerbook_flutter/models/upload_image.dart';
+// import 'package:merchant_gerbook_flutter/provider/camp_create_provider.dart';
 import 'package:merchant_gerbook_flutter/provider/localization_provider.dart';
 import 'package:merchant_gerbook_flutter/src/auth/register_pages/register_stepper.dart/camera_page.dart';
 import 'package:provider/provider.dart';
 
-class EditCampPhotoArguments {
-  final CampDataEdit campData;
-  EditCampPhotoArguments({required this.campData});
-}
+class EditGerPhoto extends StatefulWidget {
+  final PageController pageController;
+  final Function({required List<String>? photos, required String? mainImage})
+  onPhotosUpdated;
 
-class EditCampPhoto extends StatefulWidget {
-  final CampDataEdit campData;
-  static const routeName = "EditCampPhoto";
-  const EditCampPhoto({super.key, required this.campData});
+  const EditGerPhoto({
+    super.key,
+    required this.pageController,
+    required this.onPhotosUpdated,
+  });
 
   @override
-  State<EditCampPhoto> createState() => _EditCampPhotoState();
+  State<EditGerPhoto> createState() => _EditGerPhotoState();
 }
 
-class _EditCampPhotoState extends State<EditCampPhoto> {
+class _EditGerPhotoState extends State<EditGerPhoto> {
   List<File> images = [];
   File? mainImage;
 
@@ -137,115 +133,43 @@ class _EditCampPhotoState extends State<EditCampPhoto> {
   }
 
   onSubmit() async {
-    final translateKey = Provider.of<LocalizationProvider>(
-      context,
-      listen: false,
-    );
-
-    // final createCampRoot = Provider.of<CampCreateProvider>(
+    // final translateKey = Provider.of<LocalizationProvider>(
     //   context,
     //   listen: false,
     // );
     if (mainImage != null && images.isNotEmpty) {
       try {
-        CampCreateModel campData = CampCreateModel();
-        setState(() {
-          isLoadingButton = true;
-        });
-
-        campData.name = widget.campData.name;
-
-        campData.description = widget.campData.description;
-
-        campData.longitude = widget.campData.longitude;
-        campData.latitude = widget.campData.latitude;
-
-        campData.level0 = widget.campData.level0 != null
-            ? widget.campData.level0!.id
-            : null;
-        campData.level1 = widget.campData.level1 != null
-            ? widget.campData.level1!.id
-            : null;
-        campData.level2 = widget.campData.level2 != null
-            ? widget.campData.level2!.id
-            : null;
-        campData.level3 = widget.campData.level3 != null
-            ? widget.campData.level3!.id
-            : null;
-
-        campData.additionalInformation = widget.campData.addressString;
-        campData.checkInTime = widget.campData.checkInTime;
-        campData.checkOutTime = widget.campData.checkOutTime;
-
-        campData.isOpenYearRound = widget.campData.isOpenYearRound;
-        campData.zone = widget.campData.zone != null
-            ? widget.campData.zone!.id
-            : null;
-
-        campData.tags = widget.campData.tags != null
-            ? widget.campData.tags!
-                  .map((tagObject) => tagObject.id)
-                  .cast<String>()
-                  .toList()
-            : null;
-
-        campData.placeOffers = widget.campData.placeOffers != null
-            ? widget.campData.placeOffers!
-                  .map((tagObject) => tagObject.id)
-                  .cast<String>()
-                  .toList()
-            : null;
-
-        campData.discounts = widget.campData.discounts != null
-            ? widget.campData.discounts!.map((d) {
-                return DiscountTypes(discountType: d.discountType!.id, rate: d.rate);
-              }).toList()
-            : null;
-
-        campData.cancelPolicies = widget.campData.cancelPolicies != null
-            ? widget.campData.cancelPolicies!.map((d) {
-                return CancelPolicy(cancelPolicy: d.cancelPolicy!.id, rate: d.rate);
-              }).toList()
-            : null;
-
         UploadImage upload = UploadImage();
         UploadImage uploadImages = UploadImage();
-
         setState(() {
           isLoadingButton = true;
         });
+        List<UploadImage> uploadedUrls = [];
+
         if (mainImage != null) {
           upload = await AuthApi().upload(mainImage!.path);
-          campData.mainImage = upload.url!;
         }
         if (images.isNotEmpty) {
-          List<UploadImage> uploadedUrls = [];
-
           for (var img in images) {
             uploadImages = await AuthApi().upload(img.path);
             uploadedUrls.add(uploadImages);
           }
-          campData.images = uploadedUrls
+        }
+        widget.onPhotosUpdated(
+          photos: uploadedUrls
               .map((tagObject) => tagObject.url)
               .cast<String>()
-              .toList();
-        }
-
-        campData.travelOffers = widget.campData.travelOffers != null
-            ? widget.campData.travelOffers!.map((d) {
-                return TravelOffers(
-                  travelOffer: d.travelOffer!.id,
-                  price: d.price,
-                  maxQuantity: d.maxQuantity,
-                );
-              }).toList()
-            : null;
-
-        await ProductApi().editCampData(campData, widget.campData.id!);
-        await showCreateSuccess(
-          context,
-          '${translateKey.translate('successfully_updated_admin_review')}',
+              .toList(),
+          mainImage: upload.url,
         );
+        widget.pageController.nextPage(
+          duration: Duration(microseconds: 1000),
+          curve: Curves.ease,
+        );
+        // await showCreateSuccess(
+        //   context,
+        //   '${translateKey.translate('successfully_updated_admin_review')}',
+        // );
         setState(() {
           isLoadingButton = false;
         });
@@ -257,77 +181,77 @@ class _EditCampPhotoState extends State<EditCampPhoto> {
     }
   }
 
-  showCreateSuccess(context, String text) async {
-    final local = Provider.of<LocalizationProvider>(context, listen: false);
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) {
-        return Container(
-          alignment: Alignment.center,
-          margin: const EdgeInsets.symmetric(horizontal: 20),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                SvgPicture.asset('assets/svg/success1.svg'),
-                Text(
-                  local.translate('successful'),
-                  style: TextStyle(
-                    color: black,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                    decoration: TextDecoration.none,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  '$text',
-                  style: TextStyle(
-                    color: gray600,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    decoration: TextDecoration.none,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                ButtonBar(
-                  buttonMinWidth: 100,
-                  alignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    TextButton(
-                      style: ButtonStyle(
-                        overlayColor: MaterialStateProperty.all(
-                          Colors.transparent,
-                        ),
-                      ),
-                      child: Text(
-                        local.translate('close'),
-                        style: TextStyle(
-                          color: black,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+  // showCreateSuccess(context, String text) async {
+  //   final local = Provider.of<LocalizationProvider>(context, listen: false);
+  //   showDialog(
+  //     barrierDismissible: false,
+  //     context: context,
+  //     builder: (context) {
+  //       return Container(
+  //         alignment: Alignment.center,
+  //         margin: const EdgeInsets.symmetric(horizontal: 20),
+  //         child: Container(
+  //           decoration: BoxDecoration(
+  //             color: Colors.white,
+  //             borderRadius: BorderRadius.circular(12),
+  //           ),
+  //           padding: const EdgeInsets.all(16),
+  //           child: Column(
+  //             mainAxisSize: MainAxisSize.min,
+  //             children: <Widget>[
+  //               SvgPicture.asset('assets/svg/success1.svg'),
+  //               Text(
+  //                 local.translate('successful'),
+  //                 style: TextStyle(
+  //                   color: black,
+  //                   fontWeight: FontWeight.w700,
+  //                   fontSize: 18,
+  //                   decoration: TextDecoration.none,
+  //                 ),
+  //               ),
+  //               const SizedBox(height: 16),
+  //               Text(
+  //                 '$text',
+  //                 style: TextStyle(
+  //                   color: gray600,
+  //                   fontSize: 14,
+  //                   fontWeight: FontWeight.w500,
+  //                   decoration: TextDecoration.none,
+  //                 ),
+  //                 textAlign: TextAlign.center,
+  //               ),
+  //               ButtonBar(
+  //                 buttonMinWidth: 100,
+  //                 alignment: MainAxisAlignment.spaceEvenly,
+  //                 children: <Widget>[
+  //                   TextButton(
+  //                     style: ButtonStyle(
+  //                       overlayColor: MaterialStateProperty.all(
+  //                         Colors.transparent,
+  //                       ),
+  //                     ),
+  //                     child: Text(
+  //                       local.translate('close'),
+  //                       style: TextStyle(
+  //                         color: black,
+  //                         fontWeight: FontWeight.w500,
+  //                         fontSize: 16,
+  //                       ),
+  //                     ),
+  //                     onPressed: () {
+  //                       Navigator.of(context).pop();
+  //                       Navigator.of(context).pop();
+  //                     },
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -336,30 +260,6 @@ class _EditCampPhotoState extends State<EditCampPhoto> {
     // final imageTool = Provider.of<CampCreateProvider>(context);
     return Scaffold(
       backgroundColor: white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: white,
-        elevation: 0,
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [SvgPicture.asset('assets/svg/chevron_left.svg')],
-          ),
-        ),
-        centerTitle: false,
-        title: Text(
-          translateKey.translate('edit_camp'),
-          style: TextStyle(
-            color: gray800,
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
       body: Stack(
         children: [
           Column(
@@ -396,10 +296,28 @@ class _EditCampPhotoState extends State<EditCampPhoto> {
                         ],
                       ),
                     ),
+                    SizedBox(width: 8),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: white,
+                        border: Border.all(color: gray300),
+                      ),
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                        '1/2',
+                        style: TextStyle(
+                          color: gray800,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
                     SizedBox(width: 16),
                   ],
                 ),
               ),
+
               Expanded(
                 child: SingleChildScrollView(
                   child: Padding(
@@ -767,7 +685,7 @@ class _EditCampPhotoState extends State<EditCampPhoto> {
                           isLoadingButton == true
                               ? CustomLoader(loadColor: white)
                               : Text(
-                                  translateKey.translate('save'),
+                                  translateKey.translate('continue'),
                                   style: TextStyle(
                                     color: white,
                                     fontSize: 14,
